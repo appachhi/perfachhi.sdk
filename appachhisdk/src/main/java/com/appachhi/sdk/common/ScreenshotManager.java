@@ -83,7 +83,12 @@ public class ScreenshotManager {
         File folder = applicationContext.getExternalFilesDir("appachhi");
         String fileName = String.format(Locale.ENGLISH, "%s-%d.png", screenName, SystemClock.elapsedRealtime());
         final File file = new File(folder, fileName);
-        executor.execute(() -> saveScreenshot(bitmap, file));
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                ScreenshotManager.this.saveScreenshot(bitmap, file);
+            }
+        });
     }
 
     private void saveScreenshot(Bitmap bitmap, File file) {
