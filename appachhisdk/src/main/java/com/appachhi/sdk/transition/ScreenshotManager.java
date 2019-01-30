@@ -1,4 +1,4 @@
-package com.appachhi.sdk.common;
+package com.appachhi.sdk.transition;
 
 import android.app.Activity;
 import android.content.Context;

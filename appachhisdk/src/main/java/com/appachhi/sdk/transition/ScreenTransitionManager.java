@@ -5,8 +5,6 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.appachhi.sdk.common.ScreenshotManager;
-
 import java.util.Locale;
 import java.util.WeakHashMap;
 
