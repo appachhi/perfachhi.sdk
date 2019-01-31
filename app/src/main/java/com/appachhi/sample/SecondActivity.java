@@ -4,10 +4,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.EditText;
 
-import com.appachhi.sdk.transition.ScreenTransitionManager;
+import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

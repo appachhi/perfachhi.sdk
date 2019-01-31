@@ -1,4 +1,4 @@
-package com.appachhi.sdk.transition;
+package com.appachhi.sdk.instrument.transition;
 
 import android.app.Activity;
 import android.content.Context;
@@ -34,7 +34,7 @@ public class ScreenshotManager {
     private ScreenshotManager() {
     }
 
-    public static ScreenshotManager getInstance() {
+    static ScreenshotManager getInstance() {
         synchronized (ScreenshotManager.class) {
             if (instance == null) {
                 instance = new ScreenshotManager();
@@ -59,7 +59,7 @@ public class ScreenshotManager {
      * @param activity   {@link Activity} where screen exist
      * @param screenName Name of the screen
      */
-    public void takeAndSave(@NonNull Activity activity, final String screenName) {
+    void takeAndSave(@NonNull Activity activity, final String screenName) {
         final View view = activity.getWindow().getDecorView().findViewById(android.R.id.content);
         if (isRunningFromReactNative) {
             // Adding delay for react native screenshot

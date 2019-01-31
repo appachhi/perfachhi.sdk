@@ -3,11 +3,11 @@ package com.appachhi.sdk;
 import android.app.Application;
 import android.support.annotation.NonNull;
 
-import com.appachhi.sdk.common.ActivityLifeCycleHandler;
-import com.appachhi.sdk.common.FeatureModule;
-import com.appachhi.sdk.memory.GCInfoFeatureModule;
-import com.appachhi.sdk.memory.MemoryInfoFeatureModule;
-import com.appachhi.sdk.network.NetworkFeatureModule;
+import com.appachhi.sdk.monitor.common.ActivityLifeCycleHandler;
+import com.appachhi.sdk.monitor.common.FeatureModule;
+import com.appachhi.sdk.monitor.memory.GCInfoFeatureModule;
+import com.appachhi.sdk.monitor.memory.MemoryInfoFeatureModule;
+import com.appachhi.sdk.monitor.network.NetworkFeatureModule;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +40,7 @@ public class Appachhi {
     public static Appachhi init(@NonNull Application application) {
         return new Appachhi(application, Arrays.<FeatureModule>asList(
                 new MemoryInfoFeatureModule(application),
-                new NetworkFeatureModule(),
-                new GCInfoFeatureModule()));
+                new GCInfoFeatureModule(),
+                new NetworkFeatureModule()));
     }
 }

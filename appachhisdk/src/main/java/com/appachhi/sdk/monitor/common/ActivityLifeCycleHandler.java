@@ -1,4 +1,4 @@
-package com.appachhi.sdk.common;
+package com.appachhi.sdk.monitor.common;
 
 import android.app.Activity;
 import android.app.Application;

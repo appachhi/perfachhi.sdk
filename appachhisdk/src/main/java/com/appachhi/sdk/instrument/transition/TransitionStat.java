@@ -1,4 +1,4 @@
-package com.appachhi.sdk.transition;
+package com.appachhi.sdk.instrument.transition;
 
 import android.os.SystemClock;
 

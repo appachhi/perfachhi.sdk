@@ -1,4 +1,4 @@
-package com.appachhi.sdk.memory;
+package com.appachhi.sdk.monitor.memory;
 
 import android.util.Log;
 

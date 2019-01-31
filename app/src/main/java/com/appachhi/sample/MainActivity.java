@@ -3,12 +3,9 @@ package com.appachhi.sample;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 
-import com.appachhi.sdk.memory.GCInfoDataModule;
-import com.appachhi.sdk.transition.ScreenTransitionManager;
+import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,10 +1,10 @@
-package com.appachhi.sdk.memory;
+package com.appachhi.sdk.monitor.memory;
 
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.appachhi.sdk.common.DataObserver;
+import com.appachhi.sdk.monitor.common.DataObserver;
 
 
 /**

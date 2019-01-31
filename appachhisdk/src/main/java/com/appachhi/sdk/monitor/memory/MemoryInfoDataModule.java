@@ -1,4 +1,4 @@
-package com.appachhi.sdk.memory;
+package com.appachhi.sdk.monitor.memory;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.os.Looper;
 import android.os.Process;
 import android.support.annotation.Nullable;
 
-import com.appachhi.sdk.common.BaseDataModule;
+import com.appachhi.sdk.monitor.common.BaseDataModule;
 
 /**
  * A Data Module Providing information about the Phone Memory as well as the current process memory

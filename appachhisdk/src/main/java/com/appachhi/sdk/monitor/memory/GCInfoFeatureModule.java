@@ -1,6 +1,6 @@
-package com.appachhi.sdk.memory;
+package com.appachhi.sdk.monitor.memory;
 
-import com.appachhi.sdk.common.FeatureModule;
+import com.appachhi.sdk.monitor.common.FeatureModule;
 
 /**
  *

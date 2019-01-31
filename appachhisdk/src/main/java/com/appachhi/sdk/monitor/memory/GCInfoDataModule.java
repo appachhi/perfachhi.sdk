@@ -1,4 +1,4 @@
-package com.appachhi.sdk.memory;
+package com.appachhi.sdk.monitor.memory;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.appachhi.sdk.common.BaseDataModule;
+import com.appachhi.sdk.monitor.common.BaseDataModule;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class GCInfoDataModule extends BaseDataModule<GCInfo> implements Runnable
     private static final String TAG = "GCInfoDataModule";
     private static final String LOGCAT_NAME = "logcat";
     private static final String LOGCAT_FILTER = "-s";
-    private static final String LOGCAT_FILTER_BY_TAG_AND_PRIORITY = "zygote64:I";
+    private static final String LOGCAT_FILTER_BY_TAG_AND_PRIORITY = "*:I";
 
     /**
      * The Pattern which is used for parsing the Logcat Information
@@ -38,13 +38,7 @@ public class GCInfoDataModule extends BaseDataModule<GCInfo> implements Runnable
      * You can find more information about the logcat format from
      * {@see <a href="https://developer.android.com/studio/debug/am-logcat">Android Documentation</a> }
      */
-    private static final Pattern GC_REGEX = Pattern.compile("" +
-            // 10-10 12:13:25.915 I/art
-            "^.* I[/\\s](art|zygote64|zygote)" +
-            //     ( 8342): Background sticky concurrent mark sweep GC freed 5218(378KB) AllocSpace objects, 3(48KB)
-            ".*: (\\w*) (.*) freed ([\\d]+)\\((.*)\\) AllocSpace objects, ([\\d]+)\\((.*)\\) " +
-            //LOS objects, 0% free, 17MB/17MB, paused 27.227ms total 303.296ms
-            "LOS objects, (.*) free, (.*)/(.*), paused (.*) total (.*)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern GC_REGEX = Pattern.compile("^.* I[/\\s].*: (\\w*) (.*) freed ([\\d]+)\\((.*)\\) AllocSpace objects, ([\\d]+)\\((.*)\\) LOS objects, (.*) free, (.*)/(.*), paused (.*) total (.*)$", Pattern.CASE_INSENSITIVE);
 
     // Executor to parse the adb logcat continuously
     private static Executor executor = Executors.newSingleThreadExecutor();
@@ -53,7 +47,7 @@ public class GCInfoDataModule extends BaseDataModule<GCInfo> implements Runnable
     @NonNull
     private Handler mainHandler = new Handler(Looper.getMainLooper());
     @NonNull
-    private ProcessBuilder logcatProcessBuilder = new ProcessBuilder(LOGCAT_NAME, LOGCAT_FILTER, LOGCAT_FILTER_BY_TAG_AND_PRIORITY);
+    private ProcessBuilder logcatProcessBuilder = new ProcessBuilder(LOGCAT_NAME, LOGCAT_FILTER , LOGCAT_FILTER_BY_TAG_AND_PRIORITY);
     // Current GC Information
     @Nullable
     private GCInfo data;
@@ -90,7 +84,7 @@ public class GCInfoDataModule extends BaseDataModule<GCInfo> implements Runnable
      */
     private void startLogcatProcess() {
         try {
-            Log.d(TAG, "starting Logcat Process");
+            Log.d(TAG, String.format("starting Logcat Process with %s", logcatProcessBuilder.command()));
             runningProcess = logcatProcessBuilder.start();
             brq = new BufferedReader(new InputStreamReader(runningProcess.getInputStream()), 8192);
             isStreamClosed = false;
@@ -127,13 +121,14 @@ public class GCInfoDataModule extends BaseDataModule<GCInfo> implements Runnable
 
     /**
      * Read the information from the running logcat Process and parses and notify the
-     * {@link com.appachhi.sdk.common.DataObserver}
+     * {@link com.appachhi.sdk.monitor.common.DataObserver}
      */
     private void parseLogAndNotify() {
         try {
             String line;
             while (!isStreamClosed && brq != null && (line = brq.readLine()) != null) {
                 if (!line.isEmpty()) {
+                    Log.d(TAG, String.format("Line: %s", line));
                     GCInfo computedData = parseLogToGCInfo(line);
                     if (computedData != null) {
                         data = computedData;
@@ -165,13 +160,13 @@ public class GCInfoDataModule extends BaseDataModule<GCInfo> implements Runnable
         // Couldn't be parsed
         if (!regexMatcher.find()) return null;
         // Couldn't extract all information.Total Group Count is 11
-        if (regexMatcher.groupCount() != 12) return null;
+        if (regexMatcher.groupCount() != 11) return null;
 
-        return new GCInfo(regexMatcher.group(2),
+        return new GCInfo(regexMatcher.group(1),regexMatcher.group(2),
                 regexMatcher.group(3), regexMatcher.group(4),
                 regexMatcher.group(5), regexMatcher.group(6),
                 regexMatcher.group(7), regexMatcher.group(8),
                 regexMatcher.group(9), regexMatcher.group(10),
-                regexMatcher.group(11), regexMatcher.group(12));
+                regexMatcher.group(11));
     }
 }
