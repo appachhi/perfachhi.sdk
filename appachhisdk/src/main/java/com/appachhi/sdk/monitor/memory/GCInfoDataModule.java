@@ -128,7 +128,6 @@ public class GCInfoDataModule extends BaseDataModule<GCInfo> implements Runnable
             String line;
             while (!isStreamClosed && brq != null && (line = brq.readLine()) != null) {
                 if (!line.isEmpty()) {
-                    Log.d(TAG, String.format("Line: %s", line));
                     GCInfo computedData = parseLogToGCInfo(line);
                     if (computedData != null) {
                         data = computedData;
