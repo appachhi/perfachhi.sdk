@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.appachhi.sdk.monitor.common.ActivityLifeCycleHandler;
 import com.appachhi.sdk.monitor.common.FeatureModule;
+import com.appachhi.sdk.monitor.cpu.CpuUsageInfoFeatureModule;
 import com.appachhi.sdk.monitor.memory.GCInfoFeatureModule;
 import com.appachhi.sdk.monitor.memory.MemoryInfoFeatureModule;
 import com.appachhi.sdk.monitor.network.NetworkFeatureModule;
@@ -41,6 +42,7 @@ public class Appachhi {
         return new Appachhi(application, Arrays.<FeatureModule>asList(
                 new MemoryInfoFeatureModule(application),
                 new GCInfoFeatureModule(),
-                new NetworkFeatureModule()));
+                new NetworkFeatureModule(),
+                new CpuUsageInfoFeatureModule()));
     }
 }
