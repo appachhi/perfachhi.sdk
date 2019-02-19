@@ -21,6 +21,12 @@ import java.util.concurrent.atomic.AtomicReference;
  * works as no-ops
  * <p>
  * {@see <a href="https://issuetracker.google.com/issues/37091475">Android Product Forum<>}
+ *
+ * Information are extracted from Proc file which are updated by the kernel for the device
+ * as well as for the app
+ *
+ * You can find the detail for Proc File Data here
+ * {@see <a href="https://www.kernel.org/doc/Documentation/filesystems/proc.txt">Proc File Information</a>}
  */
 class CpuUsageInfoDataModule extends BaseDataModule<CpuUsageInfo> {
 
