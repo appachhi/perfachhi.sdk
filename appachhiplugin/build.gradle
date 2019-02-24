@@ -1,0 +1,20 @@
+apply plugin: 'java-library'
+apply plugin: 'java-gradle-plugin'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.android.tools.build:gradle-api:3.4.0-beta03"
+    implementation "com.android.tools.build:gradle:3.4.0-beta03"
+}
+
+sourceCompatibility = "7"
+targetCompatibility = "7"
+
+gradlePlugin {
+    plugins {
+        appachhi {
+            id = 'com.appachhi.plugin'
+            implementationClass = 'com.appachhi.plugin.AppachhiPlugin'
+        }
+    }
+}
