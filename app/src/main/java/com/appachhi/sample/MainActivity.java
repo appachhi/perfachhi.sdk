@@ -20,6 +20,11 @@ public class MainActivity extends AppCompatActivity {
             Runtime.getRuntime().gc();
             return true;
         });
+        try {
+            testTracing();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -27,6 +32,17 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         ScreenTransitionManager.getInstance().endTransition(this);
 
+    }
+    public void testTracing() throws InterruptedException {
+        Thread.sleep(10);
+        testTracing1();
+    }
+    public void testTracing1() throws InterruptedException {
+        Thread.sleep(10);
+        testTracing2();
+    }
+    public void testTracing2() throws InterruptedException {
+        Thread.sleep(10);
     }
 
 

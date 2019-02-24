@@ -3,6 +3,7 @@ package com.appachhi.sdk;
 import android.app.Application;
 import android.support.annotation.NonNull;
 
+import com.appachhi.sdk.instrument.trace.MethodTrace;
 import com.appachhi.sdk.monitor.common.ActivityLifeCycleHandler;
 import com.appachhi.sdk.monitor.common.FeatureModule;
 import com.appachhi.sdk.monitor.cpu.CpuUsageInfoFeatureModule;
@@ -44,5 +45,13 @@ public class Appachhi {
                 new GCInfoFeatureModule(),
                 new NetworkFeatureModule(),
                 new CpuUsageInfoFeatureModule()));
+    }
+
+    public static MethodTrace startMethodTrace(String className, String methodName) {
+        return new MethodTrace(className, methodName);
+    }
+
+    public static MethodTrace startMethodTrace(String traceName) {
+        return new MethodTrace(traceName);
     }
 }
