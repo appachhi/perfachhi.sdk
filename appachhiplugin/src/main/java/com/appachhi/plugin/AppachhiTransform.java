@@ -53,6 +53,7 @@ public class AppachhiTransform extends Transform {
     @SuppressWarnings("FieldCanBeLocal")
     private Instrument instrument;
     private AppExtension appExtension;
+    private AppachhiExtension appachhiExtension;
 
     AppachhiTransform(Project project) {
         this.project = project;
@@ -82,6 +83,7 @@ public class AppachhiTransform extends Transform {
     public void transform(TransformInvocation invocation) throws TransformException, InterruptedException, IOException {
         L.debug("Transformation Begin");
         appExtension = (AppExtension) project.getExtensions().findByName("android");
+        appachhiExtension = (AppachhiExtension) project.getExtensions().findByName("appachhi");
         Collection<TransformInput> inputs = invocation.getInputs();
         Collection<TransformInput> referencedInputs = invocation.getReferencedInputs();
         TransformOutputProvider outputProvider = invocation.getOutputProvider();
@@ -99,8 +101,11 @@ public class AppachhiTransform extends Transform {
             // build
             outputProvider.deleteAll();
         }
+        String methodTracePackageName = appachhiExtension != null &&
+                appachhiExtension.getTracePackage() != null ? appachhiExtension.getTracePackage() :
+                appExtension.getDefaultConfig().getApplicationId();
         // Create Instrument Instance
-        instrument = new Instrument(classLoader, "com.appachhi.sample");
+        instrument = new Instrument(classLoader, methodTracePackageName);
 
         for (TransformInput input : inputs) {
             // Transform the files from directory
@@ -159,7 +164,7 @@ public class AppachhiTransform extends Transform {
             if (lastIndex != -1) {
                 String jarLastName = jarName.substring(0, lastIndex);
                 folderName = String.format(Locale.ENGLISH, "1%d%d%s-%s", jarFilePathHex.length(), jarLastName.length(), jarFilePathHex, jarName);
-            }else {
+            } else {
                 folderName = String.format(Locale.ENGLISH, "1%d%d%s%s", jarFilePathHex.length(), jarName.length(), jarFilePathHex, jarName);
             }
 

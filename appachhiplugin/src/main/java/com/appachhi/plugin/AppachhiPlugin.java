@@ -14,7 +14,7 @@ public class AppachhiPlugin implements Plugin<Project> {
         Object ext = project.getExtensions().findByName("android");
         if (ext instanceof AppExtension) {
             AppExtension androidExt = (AppExtension) ext;
-            project.getExtensions().create("Appachhi", AppachhiExtension.class);
+            project.getExtensions().create("appachhi", AppachhiExtension.class);
             androidExt.registerTransform(new AppachhiTransform(project));
         } else if (ext instanceof LibraryExtension) {
             throw new RuntimeException("Appachhi cannot be applied to a library project.  It must only be used with an Android application project.");

@@ -52,7 +52,7 @@ class InstrumentationVisitor extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String desc, String signature,
                                      String[] exceptions) {
         MethodVisitor mv = cv.visitMethod(access, name, desc, signature, exceptions);
-        boolean shouldTrace = classInfo.getType().getClassName().startsWith(this.appPackageName);
+        boolean shouldTrace = this.appPackageName!=null && classInfo.getType().getClassName().startsWith(this.appPackageName);
         return new InstrumentationMethodVisitor(this.classInfo.getType().getDescriptor(),
                 api, mv, access, name, desc, this.config, shouldTrace);
     }
