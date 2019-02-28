@@ -3,7 +3,7 @@ package com.appachhi.sdk.instrument.transition;
 import android.os.SystemClock;
 
 /**
- * Class holding information about the start and end time of the transition.
+ * Class holding information about the startAndBind and end time of the transition.
  * It also keep information about whether the information has been flushed or not
  */
 final class TransitionStat {
@@ -69,7 +69,7 @@ final class TransitionStat {
     }
 
     /**
-     * Create  a new instance of {@link TransitionStat} for a given id. The start time is taken by System Clock which is
+     * Create  a new instance of {@link TransitionStat} for a given id. The startAndBind time is taken by System Clock which is
      * upto Nano Seconds Precision
      *
      * @param id Id of the transition

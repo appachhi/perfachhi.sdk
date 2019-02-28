@@ -80,7 +80,7 @@ class CpuUsageInfoDataModule extends BaseDataModule<CpuUsageInfo> {
     private final Runnable notifyObserversRunnable = new Runnable() {
         @Override
         public void run() {
-            notifyObserver();
+            notifyObservers();
         }
     };
 

@@ -51,7 +51,7 @@ class MemoryInfoDataModule extends BaseDataModule<MemoryInfo> implements Runnabl
         // Polls the current process memory information
         Debug.MemoryInfo processMemInfo = am.getProcessMemoryInfo(new int[]{Process.myPid()})[0];
         data = new MemoryInfo(processMemInfo, systemMemInfo);
-        notifyObserver();
+        notifyObservers();
         handler.postDelayed(this, interval);
     }
 }

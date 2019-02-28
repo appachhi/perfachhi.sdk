@@ -55,7 +55,7 @@ class NetworkInfoDataModule extends BaseDataModule<NetworkInfo> implements Runna
                 TrafficStats.getUidTxBytes(Process.myUid()),
                 TrafficStats.getUidRxBytes(Process.myUid()))
                 .subtract(initialNetworkInfo);
-        notifyObserver();
+        notifyObservers();
         handler.postDelayed(this, interval);
     }
 }

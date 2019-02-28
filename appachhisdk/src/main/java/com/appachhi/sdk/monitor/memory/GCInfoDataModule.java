@@ -64,7 +64,7 @@ public class GCInfoDataModule extends BaseDataModule<GCInfo> implements Runnable
     private Runnable notifyOnMainThread = new Runnable() {
         @Override
         public void run() {
-            notifyObserver();
+            notifyObservers();
         }
     };
 
@@ -91,7 +91,7 @@ public class GCInfoDataModule extends BaseDataModule<GCInfo> implements Runnable
             isStreamClosed = false;
             Log.d(TAG, "Process Started");
         } catch (IOException e) {
-            Log.e(TAG, "Failed to start logcat Process", e);
+            Log.e(TAG, "Failed to startAndBind logcat Process", e);
         }
     }
 

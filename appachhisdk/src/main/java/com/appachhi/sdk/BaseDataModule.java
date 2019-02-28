@@ -41,7 +41,7 @@ public abstract class BaseDataModule<T> implements DataModule<T> {
      * Notifies all the {@link DataObserver} if there is non null data
      */
     @Override
-    public void notifyObserver() {
+    public void notifyObservers() {
         T data = getData();
         if (data != null) {
             for (DataObserver<T> dataObserver : dataObservers) {

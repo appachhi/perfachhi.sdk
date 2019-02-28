@@ -16,5 +16,5 @@ public interface DataModule<T> {
 
     void removeObserver(@NonNull DataObserver<T> dataObserver);
 
-    void notifyObserver();
+    void notifyObservers();
 }

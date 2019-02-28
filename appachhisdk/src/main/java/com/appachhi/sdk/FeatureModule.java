@@ -1,9 +1,8 @@
 package com.appachhi.sdk;
 
 import android.support.annotation.NonNull;
-
-import com.appachhi.sdk.DataModule;
-import com.appachhi.sdk.DataObserver;
+import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Abstract Feature Module Class which combines a {@link DataModule} and a {@link DataObserver}
@@ -13,24 +12,36 @@ import com.appachhi.sdk.DataObserver;
  *
  * @param <T>
  */
-public abstract class FeatureModule<T> implements DataModule<T>, DataObserver<T> {
+public abstract class FeatureModule<T> implements DataModule<T>, ViewDataObserver<T> {
     private DataModule<T> publisher;
     private DataObserver<T> subscriber;
+    private ViewDataObserver<T> viewDataObserver;
 
     public FeatureModule(DataModule<T> publisher, DataObserver<T> subscriber) {
         this.publisher = publisher;
         this.subscriber = subscriber;
     }
 
+    public FeatureModule(DataModule<T> publisher, ViewDataObserver<T> viewDataObserver, DataObserver<T> subscriber) {
+        this(publisher, subscriber);
+        this.viewDataObserver = viewDataObserver;
+    }
+
     @Override
     public void start() {
         publisher.addObserver(subscriber);
+        if (viewDataObserver != null) {
+            publisher.addObserver(viewDataObserver);
+        }
         publisher.start();
     }
 
     @Override
     public void stop() {
         publisher.removeObserver(subscriber);
+        if (viewDataObserver != null) {
+            publisher.removeObserver(viewDataObserver);
+        }
         publisher.stop();
     }
 
@@ -45,12 +56,20 @@ public abstract class FeatureModule<T> implements DataModule<T>, DataObserver<T>
     }
 
     @Override
-    public void notifyObserver() {
-        publisher.notifyObserver();
+    public void notifyObservers() {
+        publisher.notifyObservers();
     }
 
     @Override
     public void onDataAvailable(@NonNull T data) {
         subscriber.onDataAvailable(data);
+    }
+
+    @Override
+    public View createView(@NonNull ViewGroup root) {
+        if (viewDataObserver != null) {
+            return viewDataObserver.createView(root);
+        }
+        return null;
     }
 }

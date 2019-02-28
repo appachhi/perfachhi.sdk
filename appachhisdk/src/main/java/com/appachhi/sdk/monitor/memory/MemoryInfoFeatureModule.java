@@ -12,6 +12,6 @@ public class MemoryInfoFeatureModule extends FeatureModule<MemoryInfo> {
     private static final int DEFAULT_INTERVAL = 1500; //1500 ms
 
     public MemoryInfoFeatureModule(@NonNull Context context) {
-        super(new MemoryInfoDataModule(context, DEFAULT_INTERVAL), new MemoryInfoDataObserver());
+        super(new MemoryInfoDataModule(context, DEFAULT_INTERVAL), new MemoryInfoViewDataObserver(), new MemoryInfoDataObserver());
     }
 }
