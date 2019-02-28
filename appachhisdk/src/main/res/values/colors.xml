@@ -2,4 +2,5 @@
 <resources>
     <color name="container_background_color">#26000000</color>
     <color name="memory_tag">#FF7ACD7F</color>
+    <color name="cpu_tag">#FFAA5A</color>
 </resources>
