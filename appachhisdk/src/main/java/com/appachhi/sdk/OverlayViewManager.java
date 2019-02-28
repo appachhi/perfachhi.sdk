@@ -12,6 +12,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.content.PermissionChecker;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -105,17 +106,15 @@ class OverlayViewManager {
         }
         //noinspection WrongConstant
         layoutParams.type = getWindowTypeForOverlay(allowSystemLayer);
-        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
-        layoutParams.format = PixelFormat.TRANSLUCENT;
-        layoutParams.gravity = Gravity.TOP | Gravity.START;
+        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        layoutParams.format = PixelFormat.TRANSPARENT;
+        layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.END;
         return layoutParams;
     }
 
     private ViewGroup createRoot() {
-        LinearLayout overlayRoot = new LinearLayout(context);
-        overlayRoot.setOrientation(LinearLayout.VERTICAL);
-        overlayRoot.setBackgroundColor(Color.TRANSPARENT);
-        return overlayRoot;
+        return (LinearLayout) LayoutInflater.from(context)
+                .inflate(R.layout.overlay_container, null);
     }
 
     class OverlayViewAttachStateChangeListener implements View.OnAttachStateChangeListener {
@@ -127,7 +126,7 @@ class OverlayViewManager {
                 _rootView.removeAllViews();
                 for (FeatureModule featureModule : featureModules) {
                     View view = featureModule.createView(_rootView);
-                    if (view!=null && view.getParent() == null) {
+                    if (view != null && view.getParent() == null) {
                         _rootView.addView(view);
                     }
                 }
@@ -144,7 +143,7 @@ class OverlayViewManager {
             int layoutParamsWidth = WindowManager.LayoutParams.WRAP_CONTENT;
             for (FeatureModule overlayModule : featureModules) {
                 View view = overlayModule.createView(_rootView);
-                if (view!=null && view.getParent() == null) {
+                if (view != null && view.getParent() == null) {
                     if (view.getLayoutParams() != null && view.getLayoutParams().width == ViewGroup.LayoutParams.MATCH_PARENT) {
                         layoutParamsWidth = WindowManager.LayoutParams.MATCH_PARENT;
                     }
