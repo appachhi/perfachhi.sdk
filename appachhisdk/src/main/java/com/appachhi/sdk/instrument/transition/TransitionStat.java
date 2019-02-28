@@ -49,6 +49,7 @@ final class TransitionStat {
      *
      * @return Duration of the screen transition
      */
+    @SuppressWarnings("JavadocReference")
     long transitionDuration() throws IllegalStateException {
         if (endTime == -1) {
             throw new IllegalStateException("Cannot compute duration for unfinished transition");

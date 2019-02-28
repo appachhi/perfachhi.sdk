@@ -1,6 +1,6 @@
 package com.appachhi.sdk.monitor.cpu;
 
-import com.appachhi.sdk.monitor.common.FeatureModule;
+import com.appachhi.sdk.FeatureModule;
 
 /**
  * Feature Module for CPU Usage Information

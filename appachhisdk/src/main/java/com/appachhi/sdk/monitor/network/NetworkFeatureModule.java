@@ -1,6 +1,6 @@
 package com.appachhi.sdk.monitor.network;
 
-import com.appachhi.sdk.monitor.common.FeatureModule;
+import com.appachhi.sdk.FeatureModule;
 
 /**
  * A Feature Module connecting {@link NetworkInfoDataModule} and {@link NetworkInfoDataObserver}

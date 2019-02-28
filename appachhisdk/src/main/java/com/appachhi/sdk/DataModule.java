@@ -1,4 +1,4 @@
-package com.appachhi.sdk.monitor.common;
+package com.appachhi.sdk;
 
 import android.support.annotation.NonNull;
 

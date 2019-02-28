@@ -13,6 +13,7 @@ import java.util.WeakHashMap;
  * activity as well as generic screen name. Precession of the time duration is up to millis i.e all time information
  * provided by this API will be in {@link java.util.concurrent.TimeUnit#MILLISECONDS}
  */
+@SuppressWarnings("JavadocReference")
 final public class ScreenTransitionManager {
     private static ScreenTransitionManager instance;
 

@@ -3,7 +3,7 @@ package com.appachhi.sdk.monitor.memory;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.appachhi.sdk.monitor.common.FeatureModule;
+import com.appachhi.sdk.FeatureModule;
 
 /**
  * A Feature Module connecting {@link MemoryInfoDataModule} and {@link MemoryInfoDataObserver}

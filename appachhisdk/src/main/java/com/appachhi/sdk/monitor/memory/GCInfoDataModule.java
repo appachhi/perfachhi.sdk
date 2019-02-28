@@ -6,7 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.appachhi.sdk.monitor.common.BaseDataModule;
+import com.appachhi.sdk.BaseDataModule;
+import com.appachhi.sdk.DataObserver;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -121,7 +122,7 @@ public class GCInfoDataModule extends BaseDataModule<GCInfo> implements Runnable
 
     /**
      * Read the information from the running logcat Process and parses and notify the
-     * {@link com.appachhi.sdk.monitor.common.DataObserver}
+     * {@link DataObserver}
      */
     private void parseLogAndNotify() {
         try {

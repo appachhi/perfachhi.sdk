@@ -3,7 +3,7 @@ package com.appachhi.sdk.monitor.cpu;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.appachhi.sdk.monitor.common.DataObserver;
+import com.appachhi.sdk.DataObserver;
 
 /**
  * {@link CpuUsageInfo} Data Observer logging the CPU Usage related information on to the logcat

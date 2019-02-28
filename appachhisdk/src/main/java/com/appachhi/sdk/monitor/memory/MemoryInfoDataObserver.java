@@ -4,7 +4,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.appachhi.sdk.monitor.common.DataObserver;
+import com.appachhi.sdk.DataObserver;
 
 
 /**

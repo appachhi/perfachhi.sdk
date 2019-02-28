@@ -6,7 +6,7 @@ import android.os.Looper;
 import android.os.Process;
 import android.support.annotation.Nullable;
 
-import com.appachhi.sdk.monitor.common.BaseDataModule;
+import com.appachhi.sdk.BaseDataModule;
 
 /**
  * Data Module providing information about the data usage for the current process

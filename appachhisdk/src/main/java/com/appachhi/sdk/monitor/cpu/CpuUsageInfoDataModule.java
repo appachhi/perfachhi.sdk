@@ -7,7 +7,7 @@ import android.os.Process;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.appachhi.sdk.monitor.common.BaseDataModule;
+import com.appachhi.sdk.BaseDataModule;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

@@ -1,6 +1,9 @@
-package com.appachhi.sdk.monitor.common;
+package com.appachhi.sdk;
 
 import android.support.annotation.NonNull;
+
+import com.appachhi.sdk.DataModule;
+import com.appachhi.sdk.DataObserver;
 
 /**
  * Abstract Feature Module Class which combines a {@link DataModule} and a {@link DataObserver}

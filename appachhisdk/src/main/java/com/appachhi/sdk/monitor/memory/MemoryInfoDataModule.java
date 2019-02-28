@@ -8,7 +8,7 @@ import android.os.Looper;
 import android.os.Process;
 import android.support.annotation.Nullable;
 
-import com.appachhi.sdk.monitor.common.BaseDataModule;
+import com.appachhi.sdk.BaseDataModule;
 
 /**
  * A Data Module Providing information about the Phone Memory as well as the current process memory
