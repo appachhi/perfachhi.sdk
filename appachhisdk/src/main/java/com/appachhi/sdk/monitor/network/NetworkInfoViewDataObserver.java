@@ -1,4 +1,4 @@
-package com.appachhi.sdk.monitor.memory;
+package com.appachhi.sdk.monitor.network;
 
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -14,11 +14,10 @@ import com.appachhi.sdk.R;
 
 import java.util.Locale;
 
-public class MemoryInfoViewDataObserver extends BaseViewDataObserver<MemoryInfo> {
+public class NetworkInfoViewDataObserver extends BaseViewDataObserver<NetworkInfo> {
     private TextView dataTextView;
-    private TextView typeTextView;
 
-    MemoryInfoViewDataObserver() {
+    NetworkInfoViewDataObserver() {
         super(R.layout.simple_layout);
     }
 
@@ -28,22 +27,29 @@ public class MemoryInfoViewDataObserver extends BaseViewDataObserver<MemoryInfo>
         View view = LayoutInflater.from(root.getContext()).inflate(getLayoutResId(), null);
         dataTextView = view.findViewById(R.id.data);
         dataTextView.setTextColor(Color.WHITE);
-        typeTextView = view.findViewById(R.id.type);
+        TextView typeTextView = view.findViewById(R.id.type);
         if (typeTextView != null) {
-            typeTextView.setText("Mem");
+            typeTextView.setText("Net");
             typeTextView.setTextColor(Color.BLACK);
-            typeTextView.setBackgroundColor(ContextCompat.getColor(root.getContext(), R.color.color_memory_tag));
+            typeTextView.setBackgroundColor(ContextCompat.getColor(root.getContext(), R.color.color_network_tag));
         }
         return view;
     }
 
     @Override
-    public void onDataAvailable(@NonNull MemoryInfo data) {
+    public void onDataAvailable(@NonNull NetworkInfo data) {
         if (dataTextView != null) {
             dataTextView.setText(String.format(Locale.ENGLISH,
-                    "%d MB / %d MB",
-                    (data.getTotalPrivateDirty() + data.getTotalSharedDirty()) / 1024,
-                    (data.getThreshold() / 1024)));
+                    "Send : %s\nRec : %s", getDataText(data.getByteSend()),
+                    getDataText(data.getByteReceived())));
+        }
+    }
+
+    private String getDataText(long dataTransmitted) {
+        if (dataTransmitted < (1024 * 1024)) {
+            return String.format(Locale.ENGLISH, "%d KB", dataTransmitted / 1024);
+        } else {
+            return String.format(Locale.ENGLISH, "%d MB", dataTransmitted / (1024 * 1204));
         }
     }
 }

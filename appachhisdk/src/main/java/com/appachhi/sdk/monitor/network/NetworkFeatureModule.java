@@ -9,6 +9,8 @@ public class NetworkFeatureModule extends FeatureModule<NetworkInfo> {
     private static final int DEFAULT_INTERVAL = 1500; // millis
 
     public NetworkFeatureModule() {
-        super(new NetworkInfoDataModule(DEFAULT_INTERVAL), new NetworkInfoDataObserver());
+        super(new NetworkInfoDataModule(DEFAULT_INTERVAL),
+                new NetworkInfoViewDataObserver(),
+                new NetworkInfoDataObserver());
     }
 }
