@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -39,7 +40,7 @@ public class OverlayService extends Service {
     public static void startAndBind(Context context, Appachhi.Config config) {
         Intent intent = createIntent(context);
         intent.putExtra(CONFIG_KEY, config);
-        context.startService(intent);
+        ContextCompat.startForegroundService(context,intent);
     }
 
     public static Intent createIntent(Context context) {
@@ -172,15 +173,6 @@ public class OverlayService extends Service {
         }
     }
 
-    private IntentFilter createOverlayToggleFilter() {
-        IntentFilter intentFilter = new IntentFilter();
-        String packageName = getPackageName();
-        actionShow = packageName + ACTION_SHOW_SUFFIX;
-        actionHide = packageName + ACTION_HIDE_SUFFIX;
-        intentFilter.addAction(actionShow);
-        intentFilter.addAction(actionShow);
-        return intentFilter;
-    }
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -206,7 +198,6 @@ public class OverlayService extends Service {
 
     private void showNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.appachhi_monitor_notification_title)))
                 .setSmallIcon(R.drawable.ic_monitor)
                 .setOngoing(true)
                 .setContentTitle(getString(R.string.appachhi_monitor_notification_title))

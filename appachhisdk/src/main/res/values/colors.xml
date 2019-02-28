@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_container_background">#26000000</color>
+    <color name="color_container_background">#33000000</color>
     <color name="color_memory_tag">#FF7ACD7F</color>
     <color name="color_cpu_tag">#FFAA5A</color>
     <color name="color_network_tag">#6696FE</color>

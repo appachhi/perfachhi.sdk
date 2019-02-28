@@ -3,7 +3,6 @@ package com.appachhi.sdk;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
@@ -106,8 +105,8 @@ class OverlayViewManager {
         }
         //noinspection WrongConstant
         layoutParams.type = getWindowTypeForOverlay(allowSystemLayer);
-        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        layoutParams.format = PixelFormat.TRANSPARENT;
+        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        layoutParams.format = PixelFormat.TRANSLUCENT;
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.END;
         return layoutParams;
     }
