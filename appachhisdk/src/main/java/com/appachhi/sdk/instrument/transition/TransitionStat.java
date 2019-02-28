@@ -16,18 +16,21 @@ final class TransitionStat {
     // Whether the transition information has been flushed or not
     private boolean flushed = false;
 
-    private TransitionStat(int id, long startTime, long endTime, boolean flushed) {
-        this(id, startTime);
+    private String screenName;
+
+    private TransitionStat(String screenName, int id, long startTime, long endTime, boolean flushed) {
+        this(screenName, id, startTime);
         this.endTime = endTime;
         this.flushed = flushed;
     }
 
-    private TransitionStat(int id, long startTime) {
+    private TransitionStat(String screenName, int id, long startTime) {
+        this.screenName = screenName;
         this.id = id;
         this.startTime = startTime;
     }
 
-     int getId() {
+    int getId() {
         return id;
     }
 
@@ -41,6 +44,10 @@ final class TransitionStat {
 
     boolean isFlushed() {
         return flushed;
+    }
+
+    String getScreenName() {
+        return screenName;
     }
 
     /**
@@ -64,8 +71,8 @@ final class TransitionStat {
      * @param startTime Start Time of the transition
      * @return TransitionStat
      */
-    private static TransitionStat beginTransitionStat(int id, long startTime) {
-        return new TransitionStat(id, startTime);
+    private static TransitionStat beginTransitionStat(String screenName, int id, long startTime) {
+        return new TransitionStat(screenName, id, startTime);
     }
 
     /**
@@ -75,11 +82,11 @@ final class TransitionStat {
      * @param id Id of the transition
      * @return TransitionStat
      */
-    static TransitionStat beginTransitionStat(int id) {
-        return beginTransitionStat(id, SystemClock.elapsedRealtime());
+    static TransitionStat beginTransitionStat(String screenName, int id) {
+        return beginTransitionStat(screenName, id, SystemClock.elapsedRealtime());
     }
 
     TransitionStat copy(long endTime) {
-        return new TransitionStat(id, startTime, endTime, true);
+        return new TransitionStat(screenName, id, startTime, endTime, true);
     }
 }

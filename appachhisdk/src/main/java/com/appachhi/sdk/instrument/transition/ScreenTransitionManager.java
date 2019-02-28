@@ -5,7 +5,8 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import java.util.Locale;
+import com.appachhi.sdk.Appachhi;
+
 import java.util.WeakHashMap;
 
 /**
@@ -15,22 +16,25 @@ import java.util.WeakHashMap;
  */
 @SuppressWarnings("JavadocReference")
 final public class ScreenTransitionManager {
+    private static final String TAG = "ScrTransitionMgr";
     private static ScreenTransitionManager instance;
+    private ScreenshotManager screenshotManager;
+    private OnTransitionListener onTransitionListener;
 
-    private ScreenTransitionManager() {
+    private ScreenTransitionManager(ScreenshotManager screenshotManager) {
+        this.screenshotManager = screenshotManager;
     }
 
     public static ScreenTransitionManager getInstance() {
         synchronized (ScreenTransitionManager.class) {
             if (instance == null) {
-                instance = new ScreenTransitionManager();
+                instance = new ScreenTransitionManager(new ScreenshotManager());
             }
             return instance;
         }
     }
 
     private WeakHashMap<String, TransitionStat> screenTransitionStats = new WeakHashMap<>();
-    private static String tag = "ScreenTransitionManager";
 
     /**
      * Starts the transition tracing.It the callers responsibility to call the method with a
@@ -40,6 +44,9 @@ final public class ScreenTransitionManager {
      * @param activity A Non Null {@link Activity}
      */
     public void beginTransition(@NonNull Activity activity) {
+        if (Appachhi.DEBUG) {
+            Log.d(TAG, "beginTransition");
+        }
         String screenName = getScreenNameFromActivity(activity);
         beginTransition(activity, screenName);
     }
@@ -47,15 +54,26 @@ final public class ScreenTransitionManager {
     /**
      * Starts the transition tracing.It the callers responsibility to call the method with a unique screen name
      * to prevent naming collision.If the passed screen name already exist,then tracing will not be started for the
-     * subsequent screen of the same name
+     * subsequent screen of the same name.
+     * <p>
+     * Also  notifies the listener about if it is attached
      *
      * @param screenName Name of the screen for which transition tracing is to started
      */
     public void beginTransition(@NonNull Activity activity, @NonNull String screenName) {
+        Log.d(TAG, "beginTransition");
         boolean doesScreenNameAlreadyExist = screenTransitionStats.containsKey(screenName);
         if (!doesScreenNameAlreadyExist) {
-            TransitionStat transitionStat = TransitionStat.beginTransitionStat(activity.hashCode());
+            TransitionStat transitionStat = TransitionStat.beginTransitionStat(screenName, activity.hashCode());
             screenTransitionStats.put(screenName, transitionStat);
+            if (this.onTransitionListener != null) {
+                if (Appachhi.DEBUG) {
+                    Log.d(TAG, "Notifying listener");
+                }
+                onTransitionListener.onTransitionBegin(screenName);
+            } else {
+                Log.d(TAG, "No Listener attached");
+            }
         }
     }
 
@@ -68,6 +86,9 @@ final public class ScreenTransitionManager {
      * @param activity {@link Activity} for which transition need to be stopped
      */
     public void endTransition(@NonNull Activity activity) {
+        if (Appachhi.DEBUG) {
+            Log.d(TAG, "endTransition");
+        }
         String screenName = getScreenNameFromActivity(activity);
         endTransition(activity, screenName);
     }
@@ -83,10 +104,47 @@ final public class ScreenTransitionManager {
      */
 
     public void endTransition(@NonNull Activity activity, @NonNull String screenName) {
+        if (Appachhi.DEBUG) {
+            Log.d(TAG, "endTransition");
+        }
         TransitionStat transitionStat = screenTransitionStats.get(screenName);
         if (transitionStat != null && !transitionStat.isFlushed() && activity.hashCode() == transitionStat.getId()) {
             endTransitionWhenStatsExist(activity, screenName, transitionStat);
         }
+    }
+
+    /**
+     * Return the attached onTransitionListener
+     *
+     * @return null in case the onTransitionListener has not been attached
+     */
+    OnTransitionListener getOnTransitionListener() {
+        return onTransitionListener;
+    }
+
+    /**
+     * Register a listener to get notified whenever  their is a screen transition
+     *
+     * @param onTransitionListener {@link OnTransitionListener}
+     */
+    synchronized void registerListener(@NonNull OnTransitionListener onTransitionListener) {
+        if (Appachhi.DEBUG) {
+            //noinspection ConstantConditions
+            Log.d(TAG, String.format("registerListener %s", onTransitionListener!=null));
+        }
+        this.onTransitionListener = onTransitionListener;
+    }
+
+    /**
+     * Removes any screen screen transition attached
+     *
+     * @param onTransitionListener {@link OnTransitionListener}
+     */
+    synchronized void unRegister(@NonNull OnTransitionListener onTransitionListener) {
+        if (Appachhi.DEBUG) {
+            Log.d(TAG, "unRegister");
+        }
+        this.onTransitionListener = null;
     }
 
     /**
@@ -99,21 +157,27 @@ final public class ScreenTransitionManager {
      */
     private void endTransitionWhenStatsExist(@NonNull Activity activity, @NonNull String screenName,
                                              @NonNull TransitionStat transitionStat) {
+        Log.d(TAG, "endTransitionWhenStatsExist");
         TransitionStat updatedStat = transitionStat.copy(SystemClock.elapsedRealtime());
-        screenTransitionStats.put(screenName, updatedStat);
-        flushTransitionDetails(screenName, updatedStat);
-        ScreenshotManager.getInstance().takeAndSave(activity, screenName);
-    }
 
-    private void flushTransitionDetails(@NonNull String screenName, @NonNull TransitionStat transitionStat) {
-        try {
-            long duration = transitionStat.transitionDuration();
-            Log.d(tag, String.format(Locale.ENGLISH, "%s took %d milliseconds to complete transition", screenName, duration));
-            // Remove Transition Stats information after is logged out
-            screenTransitionStats.remove(screenName);
-        } catch (IllegalStateException e) {
-            Log.e(tag, "Failed to log transition details", e);
+        // Notify the screen transition has been completed
+        if (this.onTransitionListener != null) {
+            if (Appachhi.DEBUG) {
+                Log.d(TAG, "endTransitionWhenStatsExist");
+            }
+            onTransitionListener.onTransitionEnd(updatedStat);
+        } else {
+            if (Appachhi.DEBUG) {
+                Log.d(TAG, "Not Notifying as listener is not registered: ");
+            }
         }
+        screenTransitionStats.remove(screenName);
+        // Take a screenshot
+        if (Appachhi.DEBUG) {
+            Log.d(TAG, "Take Screenshot");
+        }
+        screenshotManager.takeAndSave(activity, screenName);
+
     }
 
     /**
@@ -125,6 +189,13 @@ final public class ScreenTransitionManager {
     @NonNull
     private String getScreenNameFromActivity(@NonNull Activity activity) {
         return activity.getComponentName().getClassName();
+    }
+
+    static abstract class OnTransitionListener {
+
+        abstract void onTransitionBegin(String name);
+
+        abstract void onTransitionEnd(TransitionStat transitionStat);
     }
 }
 

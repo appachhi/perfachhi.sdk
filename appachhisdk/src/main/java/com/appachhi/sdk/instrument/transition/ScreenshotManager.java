@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 /**
  * ScreenshotManager is responsible for taking screenshot and saves them
  */
-public class ScreenshotManager {
+class ScreenshotManager {
     private static ScreenshotManager instance;
     private static boolean isRunningFromReactNative = false;
     private Handler mainHandler = new Handler(Looper.myLooper());
@@ -31,16 +31,7 @@ public class ScreenshotManager {
     @SuppressWarnings("FieldCanBeLocal")
     private String tag = "ScreenshotManager";
 
-    private ScreenshotManager() {
-    }
-
-    static ScreenshotManager getInstance() {
-        synchronized (ScreenshotManager.class) {
-            if (instance == null) {
-                instance = new ScreenshotManager();
-            }
-            return instance;
-        }
+    ScreenshotManager() {
     }
 
     /**

@@ -12,24 +12,25 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.service.autofill.SaveRequest;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.appachhi.sdk.instrument.trace.MethodTrace;
+import com.appachhi.sdk.instrument.transition.ScreenTransitionFeatureModule;
+import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
 import com.appachhi.sdk.monitor.cpu.CpuUsageInfoFeatureModule;
 import com.appachhi.sdk.monitor.memory.GCInfoFeatureModule;
 import com.appachhi.sdk.monitor.memory.MemoryInfoFeatureModule;
 import com.appachhi.sdk.monitor.network.NetworkFeatureModule;
 
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 public class Appachhi {
-    public static final String ACTION_UNBIND = "com.appachhi.sdk.overlay.ACTION_UNBIND";
+    static final String ACTION_UNBIND = "com.appachhi.sdk.overlay.ACTION_UNBIND";
     public static boolean DEBUG = false;
     private static final String TAG = "Appachhi-DEBUG";
     private List<FeatureModule> featureModules;
@@ -38,14 +39,17 @@ public class Appachhi {
     private Config config;
     private Application application;
     private boolean unBindRequestReceived;
+    @SuppressWarnings("FieldCanBeLocal")
     private ActivityCallbacks activityCallbacks;
 
     private Appachhi(Application application, List<FeatureModule> featureModules, Config config) {
         this.application = application;
         this.featureModules = featureModules;
         this.config = config;
-
         overlayViewManager = new OverlayViewManager(application, config);
+
+        // Adds Screen Transition Module
+        featureModules.add(new ScreenTransitionFeatureModule(ScreenTransitionManager.getInstance()));
         overlayViewManager.setFeatureModules(featureModules);
         startAndBindDebugOverlayService();
         activityCallbacks = new ActivityCallbacks();
@@ -54,11 +58,11 @@ public class Appachhi {
 
     public static Appachhi init(@NonNull Application application) {
         DEBUG = true;
-        List<FeatureModule> modules = Arrays.<FeatureModule>asList(
-                new MemoryInfoFeatureModule(application),
-                new GCInfoFeatureModule(),
-                new NetworkFeatureModule(),
-                new CpuUsageInfoFeatureModule());
+        List<FeatureModule> modules = new LinkedList<FeatureModule>();
+        modules.add(new MemoryInfoFeatureModule(application));
+        modules.add(new GCInfoFeatureModule());
+        modules.add(new NetworkFeatureModule());
+        modules.add(new CpuUsageInfoFeatureModule());
         return new Appachhi(application, modules, new Config(true, true));
     }
 
