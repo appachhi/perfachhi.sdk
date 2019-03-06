@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/configuration_list_container">
 
+    <View
+        android:id="@+id/emptyArea"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
     <ScrollView
         android:layout_width="250dp"
         android:layout_height="match_parent"
@@ -24,6 +29,7 @@
                 android:gravity="center"
                 android:text="On-screen Performance"
                 android:textSize="16sp"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
             <TextView
@@ -33,6 +39,7 @@
                 android:layout_marginBottom="4dp"
                 android:layout_marginStart="16dp"
                 android:text="Metric"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_marginLeft="16dp" />
 
@@ -63,6 +70,7 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="Screen Transition"
+                    android:textColor="@android:color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
                     android:textSize="14sp" />
 
@@ -81,6 +89,7 @@
                 android:paddingLeft="4dp"
                 android:paddingEnd="4dp"
                 android:paddingRight="4dp"
+                android:textColor="@android:color/white"
                 android:text="Transition configured to capture the time take to complete the rendering"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="13sp" />
@@ -107,6 +116,7 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="Memory Usage"
+                    android:textColor="@android:color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
                     android:textSize="14sp" />
 
@@ -138,6 +148,7 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="CPU Usage"
+                    android:textColor="@android:color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
                     android:textSize="14sp" />
 
@@ -169,6 +180,7 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="Network Usage"
+                    android:textColor="@android:color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
                     android:textSize="14sp" />
 
@@ -200,6 +212,7 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="Method Calls"
+                    android:textColor="@android:color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
                     android:textSize="14sp" />
 
@@ -221,6 +234,7 @@
                 android:paddingEnd="4dp"
                 android:paddingRight="4dp"
                 android:text="Displays trace only for method defined by the app"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="13sp" />
 
@@ -246,6 +260,7 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="Memory Leaks"
+                    android:textColor="@android:color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
                     android:textSize="14sp" />
 
@@ -278,6 +293,7 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="API Calls"
+                    android:textColor="@android:color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
                     android:textSize="14sp" />
 
@@ -298,6 +314,7 @@
                 android:paddingEnd="4dp"
                 android:paddingRight="4dp"
                 android:text="Network API calls will be monitored during the test session"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="13sp" />
 
@@ -311,6 +328,7 @@
                 android:paddingEnd="4dp"
                 android:paddingRight="4dp"
                 android:text="(Available only on Web)"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="13sp" />
 
@@ -321,6 +339,7 @@
                 android:layout_marginBottom="4dp"
                 android:layout_marginStart="16dp"
                 android:text="Reports"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_marginLeft="16dp" />
 
@@ -346,6 +365,7 @@
                     android:paddingRight="8dp"
                     android:text="Push to Web"
                     android:clickable="false"
+                    android:textColor="@android:color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
                     android:textSize="14sp" />
 
@@ -363,9 +383,10 @@
                 android:paddingLeft="4dp"
                 android:paddingEnd="4dp"
                 android:paddingRight="4dp"
+                android:textColor="@android:color/white"
                 android:text="The entire session data will be pushed when the app goes to the background"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="13sp" />
         </LinearLayout>
     </ScrollView>
-</FrameLayout>
+</LinearLayout>

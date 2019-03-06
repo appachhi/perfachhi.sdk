@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
@@ -27,6 +28,7 @@ public class ConfigurationActivity extends AppCompatActivity {
     private Switch cpuUsageSwitch;
     private Switch memoryUsageSwitch;
     private Switch networkUsage;
+    private View emptyArea;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -38,6 +40,13 @@ public class ConfigurationActivity extends AppCompatActivity {
         cpuUsageSwitch = findViewById(R.id.cpuUsageSwitch);
         memoryUsageSwitch = findViewById(R.id.memoryUsageSwitch);
         networkUsage = findViewById(R.id.networkUsageSwitch);
+        emptyArea = findViewById(R.id.emptyArea);
+        emptyArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                supportFinishAfterTransition();
+            }
+        });
         initializeConfigurationSwitch();
         setConfigurationSwitchListener();
     }
@@ -90,6 +99,7 @@ public class ConfigurationActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        overridePendingTransition(R.anim.left_slide_out, 0);
         super.onPause();
     }
 
