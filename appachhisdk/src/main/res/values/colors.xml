@@ -5,4 +5,8 @@
     <color name="color_cpu_tag">#FFAA5A</color>
     <color name="color_network_tag">#6696FE</color>
     <color name="color_screen_transition_tag">#FFD09E</color>
+    <color name="color_method_calls_tag">#B6A1CC</color>
+    <color name="color_memory_leaks_tag">#CF719D</color>
+    <color name="color_api_calls_tag">#FF9500</color>
+    <color name="color_configuration_background">#D9D9D9</color>
 </resources>

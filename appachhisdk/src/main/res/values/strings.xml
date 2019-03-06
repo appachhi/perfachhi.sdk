@@ -2,7 +2,7 @@
     <string name="app_name">Appachhi SDK</string>
     <string name="appachhi_monitor_notification_channel">Appachhi Monitor</string>
     <string name="appachhi_monitor_notification_title">Appachhi Monitor</string>
-    <string name="appachhi_monitor_notification_body">Control Monitoring</string>
+    <string name="appachhi_monitor_notification_body">Click to configure on screen performance overlay</string>
     <string name="appachhi_monitor_notification_show">Start Monitoring</string>
     <string name="appachhi_monitor_notification_hide">Stop Monitoring</string>
 </resources>

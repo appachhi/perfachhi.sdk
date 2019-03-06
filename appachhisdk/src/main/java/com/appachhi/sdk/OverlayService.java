@@ -17,6 +17,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.appachhi.sdk.ui.ConfigurationActivity;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -27,20 +29,36 @@ public class OverlayService extends Service {
     private static final String CONFIG_KEY = "OverlayServiceConfig";
     private static final String ACTION_SHOW_SUFFIX = ".overlay.ACTION_SHOW";
     private static final String ACTION_HIDE_SUFFIX = ".overlay.ACTION_HIDE";
+    private static String actionShow;
+    private static String actionHide;
+
     private OverlayServiceBinder binder = new OverlayServiceBinder();
     private OverlayViewManager overlayViewManager;
     private List<FeatureModule> featureModules = Collections.emptyList();
     private NotificationManager notificationManager;
     private Appachhi.Config config;
-    private String actionShow;
-    private String actionHide;
     private boolean modulesStarted;
 
 
     public static void startAndBind(Context context, Appachhi.Config config) {
         Intent intent = createIntent(context);
         intent.putExtra(CONFIG_KEY, config);
-        ContextCompat.startForegroundService(context,intent);
+        ContextCompat.startForegroundService(context, intent);
+    }
+
+    public static void showOverlay(Context context) {
+        if (actionShow != null) {
+            Intent intent = new Intent(actionShow);
+            context.sendBroadcast(intent);
+        }
+
+    }
+
+    public static void hideOverlay(Context context) {
+        if (actionHide != null) {
+            Intent intent = new Intent(actionHide);
+            context.sendBroadcast(intent);
+        }
     }
 
     public static Intent createIntent(Context context) {
@@ -203,14 +221,6 @@ public class OverlayService extends Service {
                 .setContentTitle(getString(R.string.appachhi_monitor_notification_title))
                 .setContentText(getString(R.string.appachhi_monitor_notification_body))
                 .setContentIntent(getNotificationIntent(null));
-        if (overlayViewManager.isSystemOverlayShown()) {
-            builder.addAction(R.drawable.ic_pause, getString(R.string.appachhi_monitor_notification_hide),
-                    getNotificationIntent(actionHide));
-        } else {
-            builder.addAction(R.drawable.ic_start, getString(R.string.appachhi_monitor_notification_show),
-                    getNotificationIntent(actionShow));
-        }
-
         // show the notification
         startForeground(NOTIFICATION_ID, builder.build());
     }
@@ -220,7 +230,7 @@ public class OverlayService extends Service {
             Log.d(TAG, String.format("getNotificationIntent %s", action));
         }
         if (action == null) {
-           return  null;
+            return ConfigurationActivity.getPendingIntent(this);
         } else {
             Intent intent = new Intent(action);
             return PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);

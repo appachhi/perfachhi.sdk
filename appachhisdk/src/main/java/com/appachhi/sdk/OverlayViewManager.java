@@ -1,6 +1,7 @@
 package com.appachhi.sdk;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -15,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 
 import java.util.Collections;
 import java.util.List;
@@ -111,9 +111,9 @@ class OverlayViewManager {
         return layoutParams;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private ViewGroup createRoot() {
-        return (LinearLayout) LayoutInflater.from(context)
-                .inflate(R.layout.overlay_container, null);
+        return (ViewGroup) LayoutInflater.from(context).inflate(R.layout.overlay_container, null);
     }
 
     class OverlayViewAttachStateChangeListener implements View.OnAttachStateChangeListener {

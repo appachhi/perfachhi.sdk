@@ -31,8 +31,10 @@ import java.util.WeakHashMap;
 
 public class Appachhi {
     static final String ACTION_UNBIND = "com.appachhi.sdk.overlay.ACTION_UNBIND";
+    private static Appachhi instance;
     public static boolean DEBUG = false;
     private static final String TAG = "Appachhi-DEBUG";
+
     private List<FeatureModule> featureModules;
     private OverlayViewManager overlayViewManager;
     private OverlayService overlayService;
@@ -42,20 +44,7 @@ public class Appachhi {
     @SuppressWarnings("FieldCanBeLocal")
     private ActivityCallbacks activityCallbacks;
 
-    private Appachhi(Application application, List<FeatureModule> featureModules, Config config) {
-        this.application = application;
-        this.featureModules = featureModules;
-        this.config = config;
-        overlayViewManager = new OverlayViewManager(application, config);
-
-        // Adds Screen Transition Module
-        featureModules.add(new ScreenTransitionFeatureModule(ScreenTransitionManager.getInstance()));
-        overlayViewManager.setFeatureModules(featureModules);
-        startAndBindDebugOverlayService();
-        activityCallbacks = new ActivityCallbacks();
-        application.registerActivityLifecycleCallbacks(activityCallbacks);
-    }
-
+    @SuppressWarnings("UnusedReturnValue")
     public static Appachhi init(@NonNull Application application) {
         DEBUG = true;
         List<FeatureModule> modules = new LinkedList<FeatureModule>();
@@ -63,62 +52,118 @@ public class Appachhi {
         modules.add(new GCInfoFeatureModule());
         modules.add(new NetworkFeatureModule());
         modules.add(new CpuUsageInfoFeatureModule());
-        return new Appachhi(application, modules, new Config(true, true));
+        modules.add(new ScreenTransitionFeatureModule(ScreenTransitionManager.getInstance()));
+        instance = new Appachhi(application, modules, new Config(true, true));
+        return instance;
     }
 
-    public static MethodTrace startMethodTrace(String className, String methodName) {
-        return new MethodTrace(className, methodName);
+    public static Appachhi getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("Cannot request Appachhi instance before calling init()");
+        }
+        return instance;
     }
 
     public static MethodTrace startMethodTrace(String traceName) {
         return new MethodTrace(traceName);
     }
 
-    public static class Config implements Parcelable {
-        private final boolean overlayAllowed;
-        private final boolean showNotification;
+    private Appachhi(Application application, List<FeatureModule> featureModules, Config config) {
+        this.application = application;
+        this.featureModules = featureModules;
+        this.config = config;
+        overlayViewManager = new OverlayViewManager(application, config);
 
-        Config(boolean overlayAllowed, boolean showNotification) {
-            this.overlayAllowed = overlayAllowed;
-            this.showNotification = showNotification;
-        }
-
-        boolean isOverlayAllowed() {
-            return overlayAllowed;
-        }
-
-        boolean showNotification() {
-            return showNotification;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeByte(this.overlayAllowed ? (byte) 1 : (byte) 0);
-            dest.writeByte(this.showNotification ? (byte) 1 : (byte) 0);
-        }
-
-        Config(Parcel in) {
-            this.overlayAllowed = in.readByte() != 0;
-            this.showNotification = in.readByte() != 0;
-        }
-
-        public static final Creator<Config> CREATOR = new Creator<Config>() {
-            @Override
-            public Config createFromParcel(Parcel source) {
-                return new Config(source);
-            }
-
-            @Override
-            public Config[] newArray(int size) {
-                return new Config[size];
-            }
-        };
+        overlayViewManager.setFeatureModules(featureModules);
+        startAndBindDebugOverlayService();
+        activityCallbacks = new ActivityCallbacks();
+        application.registerActivityLifecycleCallbacks(activityCallbacks);
     }
+
+    public boolean isScreenTransitionOverlayEnabled() {
+        for (FeatureModule featureModule : this.featureModules) {
+            if (featureModule instanceof ScreenTransitionFeatureModule) {
+                ScreenTransitionFeatureModule transitionFeatureModule = (ScreenTransitionFeatureModule) featureModule;
+                return transitionFeatureModule.isOverlayEnabled();
+            }
+        }
+        return false;
+    }
+
+    public boolean setScreenTransitionOverlay(boolean enabled) {
+        for (FeatureModule featureModule : this.featureModules) {
+            if (featureModule instanceof ScreenTransitionFeatureModule) {
+                ScreenTransitionFeatureModule transitionFeatureModule = (ScreenTransitionFeatureModule) featureModule;
+                transitionFeatureModule.setOverlayEnabled(enabled);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isMemoryInfoOverlayEnabled() {
+        for (FeatureModule featureModule : this.featureModules) {
+            if (featureModule instanceof MemoryInfoFeatureModule) {
+                MemoryInfoFeatureModule memoryInfoFeatureModule = (MemoryInfoFeatureModule) featureModule;
+                return memoryInfoFeatureModule.isOverlayEnabled();
+            }
+        }
+        return false;
+    }
+
+    public boolean setMemoryInfoOverlayEnabled(boolean enabled) {
+        for (FeatureModule featureModule : this.featureModules) {
+            if (featureModule instanceof MemoryInfoFeatureModule) {
+                MemoryInfoFeatureModule memoryInfoFeatureModule = (MemoryInfoFeatureModule) featureModule;
+                memoryInfoFeatureModule.setOverlayEnabled(enabled);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isNetworkOverlayEnabled() {
+        for (FeatureModule featureModule : this.featureModules) {
+            if (featureModule instanceof NetworkFeatureModule) {
+                NetworkFeatureModule networkFeatureModule = (NetworkFeatureModule) featureModule;
+                return networkFeatureModule.isOverlayEnabled();
+            }
+        }
+        return false;
+    }
+
+    public boolean setNetworkOverlayEnabled(boolean enabled) {
+        for (FeatureModule featureModule : this.featureModules) {
+            if (featureModule instanceof NetworkFeatureModule) {
+                NetworkFeatureModule networkFeatureModule = (NetworkFeatureModule) featureModule;
+                networkFeatureModule.setOverlayEnabled(enabled);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isCpuUsageOverlayEnabled() {
+        for (FeatureModule featureModule : this.featureModules) {
+            if (featureModule instanceof CpuUsageInfoFeatureModule) {
+                CpuUsageInfoFeatureModule cpuUsageInfoFeatureModule = (CpuUsageInfoFeatureModule) featureModule;
+                return cpuUsageInfoFeatureModule.isOverlayEnabled();
+            }
+        }
+        return false;
+    }
+
+    public boolean setCpuUsageOverlayEnabled(boolean enabled) {
+        for (FeatureModule featureModule : this.featureModules) {
+            if (featureModule instanceof CpuUsageInfoFeatureModule) {
+                CpuUsageInfoFeatureModule cpuUsageInfoFeatureModule = (CpuUsageInfoFeatureModule) featureModule;
+                cpuUsageInfoFeatureModule.setOverlayEnabled(enabled);
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * This class decides when the modules should startAndBind observing for the data changes and when to stop
@@ -297,7 +342,7 @@ public class Appachhi {
         public void onServiceDisconnected(ComponentName name) {
         }
     };
-    final BroadcastReceiver receiver = new BroadcastReceiver() {
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (ACTION_UNBIND.equals(intent.getAction())) {
@@ -324,4 +369,49 @@ public class Appachhi {
         LocalBroadcastManager.getInstance(application).unregisterReceiver(receiver);
     }
 
+    public static class Config implements Parcelable {
+        private final boolean overlayAllowed;
+        private final boolean showNotification;
+
+        Config(boolean overlayAllowed, boolean showNotification) {
+            this.overlayAllowed = overlayAllowed;
+            this.showNotification = showNotification;
+        }
+
+        boolean isOverlayAllowed() {
+            return overlayAllowed;
+        }
+
+        boolean showNotification() {
+            return showNotification;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeByte(this.overlayAllowed ? (byte) 1 : (byte) 0);
+            dest.writeByte(this.showNotification ? (byte) 1 : (byte) 0);
+        }
+
+        Config(Parcel in) {
+            this.overlayAllowed = in.readByte() != 0;
+            this.showNotification = in.readByte() != 0;
+        }
+
+        public static final Creator<Config> CREATOR = new Creator<Config>() {
+            @Override
+            public Config createFromParcel(Parcel source) {
+                return new Config(source);
+            }
+
+            @Override
+            public Config[] newArray(int size) {
+                return new Config[size];
+            }
+        };
+    }
 }
