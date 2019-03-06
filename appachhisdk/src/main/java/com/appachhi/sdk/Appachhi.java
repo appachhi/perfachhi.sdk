@@ -327,7 +327,7 @@ public class Appachhi {
             if (Appachhi.DEBUG) {
                 Log.d(TAG, "onServiceConnected");
             }
-            // We've bound to DebugOverlayService, cast the IBinder and get DebugOverlayService instance
+            // We've bound to OverlayService, cast the IBinder and get OverlayService instance
             OverlayService.OverlayServiceBinder binder = (OverlayService.OverlayServiceBinder) serviceBinder;
             overlayService = binder.getService();
             overlayService.setOverlayModules(featureModules);
