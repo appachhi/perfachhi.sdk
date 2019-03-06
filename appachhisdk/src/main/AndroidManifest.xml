@@ -1,8 +1,14 @@
-<manifest package="com.appachhi.sdk"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.appachhi.sdk">
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application>
-        <service android:name=".OverlayService"/>
+        <service android:name=".OverlayService" />
+        <activity
+            android:name=".ui.ConfigurationActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/TransparentActivity" />
     </application>
 </manifest>
