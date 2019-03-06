@@ -38,7 +38,7 @@ public class FpsViewDataObserver extends BaseViewDataObserver<Double> {
     @Override
     public void onDataAvailable(@NonNull Double data) {
         if (dataTextView != null) {
-            dataTextView.setText(String.valueOf(data));
+            dataTextView.setText(String.valueOf(data.intValue()));
         }
     }
 }
