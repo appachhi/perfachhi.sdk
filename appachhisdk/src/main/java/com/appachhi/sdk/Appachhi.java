@@ -20,6 +20,7 @@ import com.appachhi.sdk.instrument.trace.MethodTrace;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionFeatureModule;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
 import com.appachhi.sdk.monitor.cpu.CpuUsageInfoFeatureModule;
+import com.appachhi.sdk.monitor.fps.FpsFeatureModule;
 import com.appachhi.sdk.monitor.memory.GCInfoFeatureModule;
 import com.appachhi.sdk.monitor.memory.MemoryInfoFeatureModule;
 import com.appachhi.sdk.monitor.network.NetworkFeatureModule;
@@ -52,6 +53,7 @@ public class Appachhi {
         modules.add(new GCInfoFeatureModule());
         modules.add(new NetworkFeatureModule());
         modules.add(new CpuUsageInfoFeatureModule());
+        modules.add(new FpsFeatureModule());
         modules.add(new ScreenTransitionFeatureModule(ScreenTransitionManager.getInstance()));
         instance = new Appachhi(application, modules, new Config(true, true));
         return instance;
@@ -158,6 +160,27 @@ public class Appachhi {
             if (featureModule instanceof CpuUsageInfoFeatureModule) {
                 CpuUsageInfoFeatureModule cpuUsageInfoFeatureModule = (CpuUsageInfoFeatureModule) featureModule;
                 cpuUsageInfoFeatureModule.setOverlayEnabled(enabled);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isFpsOverlayEnabled() {
+        for (FeatureModule featureModule : this.featureModules) {
+            if (featureModule instanceof FpsFeatureModule) {
+                FpsFeatureModule fpsFeatureModule = (FpsFeatureModule) featureModule;
+                return fpsFeatureModule.isOverlayEnabled();
+            }
+        }
+        return false;
+    }
+
+    public boolean setFpsOverlayEnabled(boolean enabled) {
+        for (FeatureModule featureModule : this.featureModules) {
+            if (featureModule instanceof FpsFeatureModule) {
+                FpsFeatureModule fpsFeatureModule = (FpsFeatureModule) featureModule;
+                fpsFeatureModule.setOverlayEnabled(enabled);
                 return true;
             }
         }

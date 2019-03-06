@@ -28,6 +28,7 @@ public class ConfigurationActivity extends AppCompatActivity {
     private Switch cpuUsageSwitch;
     private Switch memoryUsageSwitch;
     private Switch networkUsage;
+    private Switch fpsUsageSwitch;
     private View emptyArea;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -40,6 +41,7 @@ public class ConfigurationActivity extends AppCompatActivity {
         cpuUsageSwitch = findViewById(R.id.cpuUsageSwitch);
         memoryUsageSwitch = findViewById(R.id.memoryUsageSwitch);
         networkUsage = findViewById(R.id.networkUsageSwitch);
+        fpsUsageSwitch = findViewById(R.id.fpsUsageSwitch);
         emptyArea = findViewById(R.id.emptyArea);
         emptyArea.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +76,12 @@ public class ConfigurationActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Appachhi.getInstance().setNetworkOverlayEnabled(isChecked);
+            }
+        });
+        fpsUsageSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Appachhi.getInstance().setFpsOverlayEnabled(isChecked);
             }
         });
     }
