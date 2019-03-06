@@ -8,5 +8,6 @@
     <color name="color_method_calls_tag">#B6A1CC</color>
     <color name="color_memory_leaks_tag">#CF719D</color>
     <color name="color_api_calls_tag">#FF9500</color>
+    <color name="color_fps_tag">#9C27B0</color>
     <color name="color_configuration_background">#99000000</color>
 </resources>
