@@ -6,6 +6,7 @@
 
     <application>
         <service android:name=".OverlayService" />
+
         <activity
             android:name=".ui.ConfigurationActivity"
             android:launchMode="singleTop"

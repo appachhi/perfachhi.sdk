@@ -5,4 +5,7 @@
     <string name="appachhi_monitor_notification_body">Click to configure on screen performance overlay</string>
     <string name="appachhi_monitor_notification_show">Start Monitoring</string>
     <string name="appachhi_monitor_notification_hide">Stop Monitoring</string>
+    <string name="appachhi_memory_leak">Appachhi Memory Leak</string>
+
+    <string name="memory_leak_view_message">Leaks : %d</string>
 </resources>
