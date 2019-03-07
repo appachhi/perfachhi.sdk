@@ -25,6 +25,7 @@ import com.appachhi.sdk.monitor.memory.GCInfoFeatureModule;
 import com.appachhi.sdk.monitor.memory.MemoryInfoFeatureModule;
 import com.appachhi.sdk.monitor.memoryleak.MemoryLeakFeatureModule;
 import com.appachhi.sdk.monitor.network.NetworkFeatureModule;
+import com.squareup.leakcanary.LeakCanary;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -48,6 +49,9 @@ public class Appachhi {
 
     @SuppressWarnings("UnusedReturnValue")
     public static Appachhi init(@NonNull Application application) {
+        if (LeakCanary.isInAnalyzerProcess(application)){
+            return null;
+        }
         DEBUG = true;
         List<FeatureModule> modules = new LinkedList<FeatureModule>();
         modules.add(new MemoryInfoFeatureModule(application));
@@ -191,9 +195,9 @@ public class Appachhi {
 
     public boolean isMemoryLeakOverlayEnabled() {
         for (FeatureModule featureModule : this.featureModules) {
-            if (featureModule instanceof MemoryInfoFeatureModule) {
-                MemoryInfoFeatureModule memoryInfoFeatureModule = (MemoryInfoFeatureModule) featureModule;
-                return memoryInfoFeatureModule.isOverlayEnabled();
+            if (featureModule instanceof MemoryLeakFeatureModule) {
+                MemoryLeakFeatureModule memoryLeakFeatureModule = (MemoryLeakFeatureModule) featureModule;
+                return memoryLeakFeatureModule.isOverlayEnabled();
             }
         }
         return false;
@@ -201,9 +205,9 @@ public class Appachhi {
 
     public boolean setMemoryLeakOverlayEnabled(boolean enabled) {
         for (FeatureModule featureModule : this.featureModules) {
-            if (featureModule instanceof MemoryInfoFeatureModule) {
-                MemoryInfoFeatureModule memoryInfoFeatureModule = (MemoryInfoFeatureModule) featureModule;
-                memoryInfoFeatureModule.setOverlayEnabled(enabled);
+            if (featureModule instanceof MemoryLeakFeatureModule) {
+                MemoryLeakFeatureModule memoryLeakFeatureModule = (MemoryLeakFeatureModule) featureModule;
+                memoryLeakFeatureModule.setOverlayEnabled(enabled);
                 return true;
             }
         }

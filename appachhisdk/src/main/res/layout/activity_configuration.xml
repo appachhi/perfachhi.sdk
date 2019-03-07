@@ -300,8 +300,7 @@
                 <Switch
                     android:id="@+id/memoryLeakSwitch"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"/>
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout

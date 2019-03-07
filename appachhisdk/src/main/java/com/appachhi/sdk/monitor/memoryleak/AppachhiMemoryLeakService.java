@@ -22,8 +22,6 @@ import static com.squareup.leakcanary.LeakCanary.leakInfo;
 @SuppressLint("PrivateResource")
 public class AppachhiMemoryLeakService extends AbstractAnalysisResultService {
 
-    public static final String NOTIFICATION_CHANNEL_ID = "com.appachhi.sdk.memoryleak";
-
     @Override
     protected final void onHeapAnalyzed(@NonNull AnalyzedHeap analyzedHeap) {
         HeapDump heapDump = analyzedHeap.heapDump;

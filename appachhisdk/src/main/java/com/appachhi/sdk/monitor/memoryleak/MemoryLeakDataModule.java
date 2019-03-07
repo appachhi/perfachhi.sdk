@@ -61,12 +61,10 @@ public class MemoryLeakDataModule extends BaseDataModule<List<MemoryLeakInfo>> {
 
     MemoryLeakDataModule(Application application) {
         this.application = application;
-        if (!LeakCanary.isInAnalyzerProcess(application)) {
-            LeakCanary.refWatcher(application)
-                    .listenerServiceClass(AppachhiMemoryLeakService.class)
-                    .excludedRefs(AndroidExcludedRefs.createAppDefaults().build())
-                    .buildAndInstall();
-        }
+        LeakCanary.refWatcher(application)
+                .listenerServiceClass(AppachhiMemoryLeakService.class)
+                .excludedRefs(AndroidExcludedRefs.createAppDefaults().build())
+                .buildAndInstall();
     }
 
     @Nullable
