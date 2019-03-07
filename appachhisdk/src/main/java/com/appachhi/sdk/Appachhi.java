@@ -23,6 +23,7 @@ import com.appachhi.sdk.monitor.cpu.CpuUsageInfoFeatureModule;
 import com.appachhi.sdk.monitor.fps.FpsFeatureModule;
 import com.appachhi.sdk.monitor.memory.GCInfoFeatureModule;
 import com.appachhi.sdk.monitor.memory.MemoryInfoFeatureModule;
+import com.appachhi.sdk.monitor.memoryleak.MemoryLeakFeatureModule;
 import com.appachhi.sdk.monitor.network.NetworkFeatureModule;
 
 import java.util.LinkedList;
@@ -54,6 +55,7 @@ public class Appachhi {
         modules.add(new NetworkFeatureModule());
         modules.add(new CpuUsageInfoFeatureModule());
         modules.add(new FpsFeatureModule());
+        modules.add(new MemoryLeakFeatureModule(application));
         modules.add(new ScreenTransitionFeatureModule(ScreenTransitionManager.getInstance()));
         instance = new Appachhi(application, modules, new Config(true, true));
         return instance;
@@ -181,6 +183,27 @@ public class Appachhi {
             if (featureModule instanceof FpsFeatureModule) {
                 FpsFeatureModule fpsFeatureModule = (FpsFeatureModule) featureModule;
                 fpsFeatureModule.setOverlayEnabled(enabled);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isMemoryLeakOverlayEnabled() {
+        for (FeatureModule featureModule : this.featureModules) {
+            if (featureModule instanceof MemoryInfoFeatureModule) {
+                MemoryInfoFeatureModule memoryInfoFeatureModule = (MemoryInfoFeatureModule) featureModule;
+                return memoryInfoFeatureModule.isOverlayEnabled();
+            }
+        }
+        return false;
+    }
+
+    public boolean setMemoryLeakOverlayEnabled(boolean enabled) {
+        for (FeatureModule featureModule : this.featureModules) {
+            if (featureModule instanceof MemoryInfoFeatureModule) {
+                MemoryInfoFeatureModule memoryInfoFeatureModule = (MemoryInfoFeatureModule) featureModule;
+                memoryInfoFeatureModule.setOverlayEnabled(enabled);
                 return true;
             }
         }

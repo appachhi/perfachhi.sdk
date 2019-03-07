@@ -29,7 +29,7 @@ public class ConfigurationActivity extends AppCompatActivity {
     private Switch memoryUsageSwitch;
     private Switch networkUsage;
     private Switch fpsUsageSwitch;
-    private View emptyArea;
+    private Switch memoryLeakSwitch;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -42,7 +42,8 @@ public class ConfigurationActivity extends AppCompatActivity {
         memoryUsageSwitch = findViewById(R.id.memoryUsageSwitch);
         networkUsage = findViewById(R.id.networkUsageSwitch);
         fpsUsageSwitch = findViewById(R.id.fpsUsageSwitch);
-        emptyArea = findViewById(R.id.emptyArea);
+        memoryLeakSwitch = findViewById(R.id.memoryLeakSwitch);
+        View emptyArea = findViewById(R.id.emptyArea);
         emptyArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,6 +85,12 @@ public class ConfigurationActivity extends AppCompatActivity {
                 Appachhi.getInstance().setFpsOverlayEnabled(isChecked);
             }
         });
+        memoryLeakSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Appachhi.getInstance().setMemoryLeakOverlayEnabled(isChecked);
+            }
+        });
     }
 
     private void initializeConfigurationSwitch() {
@@ -91,6 +98,7 @@ public class ConfigurationActivity extends AppCompatActivity {
         cpuUsageSwitch.setChecked(Appachhi.getInstance().isCpuUsageOverlayEnabled());
         memoryUsageSwitch.setChecked(Appachhi.getInstance().isMemoryInfoOverlayEnabled());
         networkUsage.setChecked(Appachhi.getInstance().isNetworkOverlayEnabled());
+        memoryLeakSwitch.setChecked(Appachhi.getInstance().isMemoryLeakOverlayEnabled());
     }
 
     @Override
