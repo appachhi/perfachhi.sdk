@@ -13,16 +13,16 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class SecondActivity extends AppCompatActivity {
+public class NetworkTestActivity extends AppCompatActivity {
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ScreenTransitionManager.getInstance().beginTransition(this, "SecondScreen");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_network_test);
         EditText editText = findViewById(R.id.url);
-        findViewById(R.id.goto_second).setOnClickListener(v -> {
+        findViewById(R.id.action).setOnClickListener(v -> {
             new FetchAsyncTask().execute(editText.getText().toString().isEmpty() ? Uri.parse("https://jsonplaceholder.typicode.com/posts") : Uri.parse(editText.getText().toString()));
         });
     }
