@@ -31,6 +31,7 @@ public class MemoryLeakInfoViewDataObserver extends BaseViewDataObserver<List<Me
         View view = LayoutInflater.from(root.getContext()).inflate(getLayoutResId(), null);
         dataTextView = view.findViewById(R.id.data);
         dataTextView.setTextColor(Color.WHITE);
+        dataTextView.setText(application.getString(R.string.memory_leak_view_message, 0));
         TextView typeTextView = view.findViewById(R.id.type);
         if (typeTextView != null) {
             typeTextView.setText("Leaks");
