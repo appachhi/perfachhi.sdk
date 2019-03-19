@@ -194,23 +194,23 @@ public class Appachhi {
     }
 
     public boolean isMemoryLeakOverlayEnabled() {
-        for (FeatureModule featureModule : this.featureModules) {
-            if (featureModule instanceof MemoryLeakFeatureModule) {
-                MemoryLeakFeatureModule memoryLeakFeatureModule = (MemoryLeakFeatureModule) featureModule;
-                return memoryLeakFeatureModule.isOverlayEnabled();
-            }
-        }
+//        for (FeatureModule featureModule : this.featureModules) {
+//            if (featureModule instanceof MemoryLeakFeatureModule) {
+//                MemoryLeakFeatureModule memoryLeakFeatureModule = (MemoryLeakFeatureModule) featureModule;
+//                return memoryLeakFeatureModule.isOverlayEnabled();
+//            }
+//        }
         return false;
     }
 
     public boolean setMemoryLeakOverlayEnabled(boolean enabled) {
-        for (FeatureModule featureModule : this.featureModules) {
-            if (featureModule instanceof MemoryLeakFeatureModule) {
-                MemoryLeakFeatureModule memoryLeakFeatureModule = (MemoryLeakFeatureModule) featureModule;
-                memoryLeakFeatureModule.setOverlayEnabled(enabled);
-                return true;
-            }
-        }
+//        for (FeatureModule featureModule : this.featureModules) {
+//            if (featureModule instanceof MemoryLeakFeatureModule) {
+//                MemoryLeakFeatureModule memoryLeakFeatureModule = (MemoryLeakFeatureModule) featureModule;
+//                memoryLeakFeatureModule.setOverlayEnabled(enabled);
+//                return true;
+//            }
+//        }
         return false;
     }
 
