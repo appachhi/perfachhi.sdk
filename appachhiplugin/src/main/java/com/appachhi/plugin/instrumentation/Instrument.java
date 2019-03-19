@@ -162,16 +162,23 @@ public class Instrument {
     }
 
     private static boolean checkIfInstrumentable(String name) {
-        return !name.equals("android") && !name.startsWith("android/") && !name.startsWith("kotlinx/") && !name.startsWith("kotlin/") && !name.startsWith("androidx/") && !name.startsWith("com/google/android/material/") && !name.startsWith("com/google/android/apps/common/proguard/") && !name.startsWith("com/google/android/gms/") && !name.startsWith("com/google/common") && !name.startsWith("okhttp3/") && !name.startsWith("com/squareup/okhttp") && !name.startsWith("okio/") && !name.startsWith("io/reactivex/") && !name.startsWith("com/appspector");
+        return !name.equals("android") && !name.startsWith("android/") &&
+                !name.startsWith("kotlinx/") && !name.startsWith("kotlin/") &&
+                !name.startsWith("androidx/") && !name.startsWith("com/google/android/material/") &&
+                !name.startsWith("com/google/android/apps/common/proguard/") &&
+                !name.startsWith("com/google/android/gms/") &&
+                !name.startsWith("com/google/common") &&
+                !name.startsWith("okhttp3/") &&
+                !name.startsWith("com/squareup/okhttp") &&
+                !name.startsWith("okio/") &&
+                !name.startsWith("io/reactivex/") &&
+                !name.startsWith("com/appachhi/sdk") &&
+                !name.startsWith("com/squareup/leakcanary");
     }
 
     private class CustomClassWriter extends ClassWriter {
         CustomClassWriter(final int flags) {
             super(flags);
-        }
-
-        CustomClassWriter(final ClassReader classReader, final int flags) {
-            super(classReader, flags);
         }
 
         protected String getCommonSuperClass(final String type1, final String type2) {
