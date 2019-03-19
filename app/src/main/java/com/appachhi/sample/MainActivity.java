@@ -14,23 +14,33 @@ public class MainActivity extends AppCompatActivity {
         ScreenTransitionManager.getInstance().beginTransition(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.network_usage_test).setOnClickListener(v -> {
-            Intent intent = new Intent(this, NetworkTestActivity.class);
-            startActivity(intent);
+        findViewById(R.id.network_usage_test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, NetworkTestActivity.class);
+                MainActivity.this.startActivity(intent);
+            }
         });
-        findViewById(R.id.gc_test).setOnClickListener(v -> {
-            Intent intent = new Intent(this, GCTestActivity.class);
-            startActivity(intent);
+        findViewById(R.id.gc_test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, GCTestActivity.class);
+                MainActivity.this.startActivity(intent);
+            }
         });
-        findViewById(R.id.memory_leak_test).setOnClickListener(v -> {
-            Intent intent = new Intent(this, LeakingActivity.class);
-            startActivity(intent);
+        findViewById(R.id.memory_leak_test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LeakingActivity.class);
+                MainActivity.this.startActivity(intent);
+            }
         });
-        try {
-            testTracing();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        findViewById(R.id.okhttp_test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, OkHttpTestActivity.class));
+            }
+        });
     }
 
     @Override
@@ -40,22 +50,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void testTracing() throws InterruptedException {
-        Thread.sleep(10);
-        testTracing1();
-    }
-
-    public void testTracing1() throws InterruptedException {
-        Thread.sleep(10);
-        testTracing2();
-    }
-
-    public void testTracing2() throws InterruptedException {
-        Thread.sleep(10);
-    }
-
-
-    private void onClick(View v) {
-        startActivity(new Intent(this, NetworkTestActivity.class));
-    }
 }

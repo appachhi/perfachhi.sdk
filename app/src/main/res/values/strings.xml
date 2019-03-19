@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Appachhi</string>
+    <string-array name="network_request_type">
+        <item>GET</item>
+        <item>POST</item>
+        <item>PUT</item>
+        <item>DELETE</item>
+        <item>PATCH</item>
+        <item>OPTION</item>
+    </string-array>
 </resources>

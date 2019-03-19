@@ -26,4 +26,11 @@
         android:layout_gravity="center"
         android:text="MemoryLeak Test" />
 
+    <Button
+        android:id="@+id/okhttp_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="OkHttp3 Test" />
+
 </LinearLayout>

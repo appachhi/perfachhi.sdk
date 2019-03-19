@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.EditText;
 
 import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
@@ -21,9 +22,12 @@ public class NetworkTestActivity extends AppCompatActivity {
         ScreenTransitionManager.getInstance().beginTransition(this, "SecondScreen");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_network_test);
-        EditText editText = findViewById(R.id.url);
-        findViewById(R.id.action).setOnClickListener(v -> {
-            new FetchAsyncTask().execute(editText.getText().toString().isEmpty() ? Uri.parse("https://jsonplaceholder.typicode.com/posts") : Uri.parse(editText.getText().toString()));
+        final EditText editText = findViewById(R.id.url);
+        findViewById(R.id.action).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new FetchAsyncTask().execute(editText.getText().toString().isEmpty() ? Uri.parse("https://jsonplaceholder.typicode.com/posts") : Uri.parse(editText.getText().toString()));
+            }
         });
     }
 
