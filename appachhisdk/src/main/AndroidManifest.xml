@@ -61,6 +61,9 @@
             android:icon="@drawable/ic_monitor"
             android:roundIcon="@drawable/ic_monitor"
             android:label="@string/leak_canary_storage_permission_activity_label" />
-
+        <provider
+            android:name=".providers.AppachhiInitializer"
+            android:authorities="com.appachhi.sdk.initializer.${applicationId}"
+            android:exported="false"/>
     </application>
 </manifest>
