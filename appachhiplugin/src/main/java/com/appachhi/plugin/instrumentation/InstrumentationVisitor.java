@@ -95,15 +95,14 @@ class InstrumentationVisitor extends ClassVisitor {
         }
 
         @Override
-        public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+        public AnnotationVisitor visitAnnotation(String annotationClassDesc, boolean visible) {
             AnnotationVisitor annotationVisitor = super.visitAnnotation(classDesc, visible);
-            AnnotationInfo annotationInfo = new AnnotationInfo();
-            AnnotationVisitor av = new InstrumentationAnnotationVisitor(api, annotationVisitor, annotationInfo);
-            List<AnnotatedMethodInstrumentationFactory> factories = config.getAnnotatedMethodInstrumentationFactories(classDesc);
+            AnnotationInfo methodAnnotationInfo = new AnnotationInfo();
+            AnnotationVisitor av = new InstrumentationAnnotationVisitor(api, annotationVisitor, methodAnnotationInfo);
+            List<AnnotatedMethodInstrumentationFactory> factories = config.getAnnotatedMethodInstrumentationFactories(annotationClassDesc);
             if (factories != null) {
                 for (AnnotatedMethodInstrumentationFactory fac : factories) {
-                    annotatedMethodAdapters.add(fac.newAnnotatedMethodInstrumentation(
-                            instrumentationContext, this, annotationInfo, methodName, methodDesc));
+                    annotatedMethodAdapters.add(fac.newAnnotatedMethodInstrumentation(this, methodAnnotationInfo, methodName, methodDesc));
                 }
             }
 
