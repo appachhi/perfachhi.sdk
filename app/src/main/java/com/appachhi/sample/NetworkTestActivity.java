@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
+import com.appachhi.sdk.instrument.trace.Trace;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
 
 import java.io.IOException;
@@ -39,12 +40,13 @@ public class NetworkTestActivity extends AppCompatActivity {
 
     private static class FetchAsyncTask extends AsyncTask<Uri, Void, String> {
 
+        @Trace(name = "Network Usage Fetch")
         @Override
         protected String doInBackground(Uri... uris) {
             StringBuilder stringBuilder = new StringBuilder();
             for (Uri uri : uris) {
                 try {
-                    for (int i = 0; i < 2000; i++) {
+                    for (int i = 0; i < 20; i++) {
                         if (!isCancelled()) {
                             HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(uri.toString()).openConnection();
                             String message = httpURLConnection.getResponseMessage();

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.appachhi.sdk.instrument.trace.Trace;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Trace(name = "MainActvity Resume")
     @Override
     protected void onResume() {
         super.onResume();
