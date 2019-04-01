@@ -72,7 +72,7 @@ public class Appachhi {
         return instance;
     }
 
-    public static MethodTrace startMethodTrace(String traceName) {
+    public static MethodTrace newTrace(String traceName) {
         return new MethodTrace(traceName);
     }
 
