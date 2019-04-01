@@ -47,6 +47,7 @@ public class AppachhiTransform extends Transform {
     private final Logger L = Logging.getLogger(NAME);
     private Set<ContentType> inputTypes = Sets.newHashSet(new ContentType[]{DefaultContentType.CLASSES});
     private Set<Scope> scopes = ImmutableSet.of( Scope.PROJECT);
+    private Set<Scope> referencedScopes = ImmutableSet.of(Scope.EXTERNAL_LIBRARIES, Scope.SUB_PROJECTS);
     @SuppressWarnings("FieldCanBeLocal")
     private Project project;
     @SuppressWarnings("FieldCanBeLocal")
@@ -75,7 +76,7 @@ public class AppachhiTransform extends Transform {
 
     @Override
     public Set<? super Scope> getReferencedScopes() {
-        return ImmutableSet.of(Scope.EXTERNAL_LIBRARIES, Scope.SUB_PROJECTS);
+        return referencedScopes;
     }
 
     @Override
@@ -105,11 +106,9 @@ public class AppachhiTransform extends Transform {
             // build
             outputProvider.deleteAll();
         }
-        String methodTracePackageName = appachhiExtension != null &&
-                appachhiExtension.getTracePackage() != null ? appachhiExtension.getTracePackage() :
-                appExtension.getDefaultConfig().getApplicationId();
+
         // Create Instrument Instance
-        instrument = new Instrument(classLoader, methodTracePackageName);
+        instrument = new Instrument(classLoader);
 
         for (TransformInput input : inputs) {
             // Transform the files from directory

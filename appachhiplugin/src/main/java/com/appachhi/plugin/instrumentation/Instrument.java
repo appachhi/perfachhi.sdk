@@ -25,11 +25,9 @@ import java.util.jar.JarInputStream;
 public class Instrument {
     private final Logger L = Logging.getLogger("AppachhiSDKPlugin");
     private InstrumentationConfig instrumentationConfig;
-    private String packageName;
 
-    public Instrument(ClassLoader classLoader, String packageName) {
+    public Instrument(ClassLoader classLoader) {
         instrumentationConfig = new InstrumentationConfigFactory(classLoader).newConfig();
-        this.packageName = packageName;
     }
 
     /**
@@ -156,7 +154,7 @@ public class Instrument {
     private byte[] instrument(byte[] classBytes) {
         ClassReader classReader = new ClassReader(classBytes);
         ClassWriter classWriter = new CustomClassWriter(3);
-        InstrumentationVisitor instrumentationVisitor = new InstrumentationVisitor(classWriter, instrumentationConfig,this.packageName);
+        InstrumentationVisitor instrumentationVisitor = new InstrumentationVisitor(classWriter, instrumentationConfig);
         classReader.accept(instrumentationVisitor, 4);
         return classWriter.toByteArray();
     }

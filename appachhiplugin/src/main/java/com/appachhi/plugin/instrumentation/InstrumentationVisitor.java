@@ -2,7 +2,6 @@ package com.appachhi.plugin.instrumentation;
 
 import com.appachhi.plugin.instrumentation.annotation.AnnotatedMethodAdapter;
 import com.appachhi.plugin.instrumentation.annotation.AnnotatedMethodInstrumentationFactory;
-import com.appachhi.plugin.instrumentation.annotation.AppachhiMethodTraceProcessor;
 import com.appachhi.plugin.instrumentation.model.AnnotationInfo;
 import com.appachhi.plugin.instrumentation.model.ClassInfo;
 import com.appachhi.plugin.instrumentation.network.NetworkObjectInstrumentation;
@@ -22,12 +21,10 @@ class InstrumentationVisitor extends ClassVisitor {
     private ClassInfo classInfo = new ClassInfo();
     private InstrumentationConfig config;
     private final InstrumentationContext instrumentationContext = new InstrumentationContext();
-    private String appPackageName;
 
-    InstrumentationVisitor(ClassVisitor cv, InstrumentationConfig instrumentationConfig, String packageName) {
+    InstrumentationVisitor(ClassVisitor cv, InstrumentationConfig instrumentationConfig) {
         super(Opcodes.ASM5, cv);
         config = instrumentationConfig;
-        this.appPackageName = packageName;
     }
 
     @Override
@@ -52,9 +49,8 @@ class InstrumentationVisitor extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String desc, String signature,
                                      String[] exceptions) {
         MethodVisitor mv = cv.visitMethod(access, name, desc, signature, exceptions);
-        boolean shouldTrace = this.appPackageName!=null && classInfo.getType().getClassName().startsWith(this.appPackageName);
         return new InstrumentationMethodVisitor(this.classInfo.getType().getDescriptor(),
-                api, mv, access, name, desc, this.config, shouldTrace);
+                api, mv, access, name, desc, this.config);
     }
 
     private static class InstrumentationAnnotationVisitor extends AnnotationVisitor {
@@ -79,7 +75,6 @@ class InstrumentationVisitor extends ClassVisitor {
         private String methodDesc;
         private InstrumentationConfig config;
         private List<AnnotatedMethodAdapter> annotatedMethodAdapters = new ArrayList<>();
-        private AppachhiMethodTraceProcessor methodTraceProcessor;
 
         InstrumentationMethodVisitor(final String classDesc, final int api,
                                      final MethodVisitor mv, final int access,
@@ -90,16 +85,6 @@ class InstrumentationVisitor extends ClassVisitor {
             this.methodName = methodName;
             this.methodDesc = methodDesc;
             this.config = config;
-        }
-
-        InstrumentationMethodVisitor(final String classDesc, final int api,
-                                     final MethodVisitor mv, final int access,
-                                     final String methodName, final String methodDesc,
-                                     final InstrumentationConfig config, boolean traceMethod) {
-            this(classDesc, api, mv, access, methodName, methodDesc, config);
-            if (traceMethod) {
-                methodTraceProcessor = new AppachhiMethodTraceProcessor(this, classDesc, methodName);
-            }
         }
 
         @Override
@@ -130,9 +115,6 @@ class InstrumentationVisitor extends ClassVisitor {
             for (AnnotatedMethodAdapter annotatedMethodAdapter : this.annotatedMethodAdapters) {
                 annotatedMethodAdapter.onMethodEnter();
             }
-            if (methodTraceProcessor != null) {
-                methodTraceProcessor.onMethodEnter();
-            }
         }
 
         protected void onMethodExit(final int opcode) {
@@ -141,9 +123,6 @@ class InstrumentationVisitor extends ClassVisitor {
                 annotatedMethodAdapter.onMethodExit();
             }
 
-            if (methodTraceProcessor != null) {
-                methodTraceProcessor.onMethodExit();
-            }
         }
 
         public void visitMethodInsn(final int opcode, final String owner, final String name,
