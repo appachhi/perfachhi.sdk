@@ -8,7 +8,7 @@ import org.json.JSONObject;
 /**
  * Represent CPU usage information for a particular process as well as for the system
  */
-class CpuUsageInfo {
+public class CpuUsageInfo {
     private static final String TAG = "CpuUsageInfo";
     private static final String DEVICE_CPU_USAGE = "DeviceCpuUsage";
     private static final String APP_CPU_USAGE = "AppCPuUsage";
@@ -26,7 +26,7 @@ class CpuUsageInfo {
      * Return the total CPU usage by the device in term of percentage
      * @return CPU Usage Percent
      */
-    double getTotal() {
+    public double getTotal() {
         return total;
     }
 
@@ -34,7 +34,7 @@ class CpuUsageInfo {
      * Return the total CPU usage by the app in term of percentage
      * @return CPU Usage Percent
      */
-    double getMyPid() {
+   public double getMyPid() {
         return myPid;
     }
 

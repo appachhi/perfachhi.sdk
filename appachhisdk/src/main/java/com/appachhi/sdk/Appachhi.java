@@ -13,9 +13,11 @@ import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.appachhi.sdk.database.AppachhiDB;
 import com.appachhi.sdk.instrument.trace.MethodTrace;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionFeatureModule;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
@@ -25,43 +27,54 @@ import com.appachhi.sdk.monitor.memory.GCInfoFeatureModule;
 import com.appachhi.sdk.monitor.memory.MemoryInfoFeatureModule;
 import com.appachhi.sdk.monitor.memoryleak.MemoryLeakFeatureModule;
 import com.appachhi.sdk.monitor.network.NetworkFeatureModule;
+import com.appachhi.sdk.sync.SessionManager;
 import com.squareup.leakcanary.LeakCanary;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Appachhi {
+    // Constants
     static final String ACTION_UNBIND = "com.appachhi.sdk.overlay.ACTION_UNBIND";
-    private static Appachhi instance;
     public static boolean DEBUG = false;
     private static final String TAG = "Appachhi-DEBUG";
 
+    private static Appachhi instance;
+
+    @NonNull
     private List<FeatureModule> featureModules;
+    @NonNull
     private OverlayViewManager overlayViewManager;
+    @Nullable
     private OverlayService overlayService;
+    @NonNull
     private Config config;
+    @NonNull
+    private FeatureConfigManager featureConfigManager;
+    @NonNull
     private Application application;
     private boolean unBindRequestReceived;
+    @NonNull
+    private AppachhiDB db;
+    @NonNull
+    private ExecutorService dbExecutor;
+    @NonNull
+    private SessionManager sessionManager;
     @SuppressWarnings("FieldCanBeLocal")
     private ActivityCallbacks activityCallbacks;
 
     @SuppressWarnings("UnusedReturnValue")
     public static Appachhi init(@NonNull Application application) {
-        if (LeakCanary.isInAnalyzerProcess(application)){
+        AppachhiDB appachhiDB = AppachhiDB.create(application);
+        if (LeakCanary.isInAnalyzerProcess(application)) {
             return null;
         }
         DEBUG = true;
-        List<FeatureModule> modules = new LinkedList<FeatureModule>();
-        modules.add(new MemoryInfoFeatureModule(application));
-        modules.add(new GCInfoFeatureModule());
-        modules.add(new NetworkFeatureModule());
-        modules.add(new CpuUsageInfoFeatureModule());
-        modules.add(new FpsFeatureModule());
-        modules.add(new MemoryLeakFeatureModule(application));
-        modules.add(new ScreenTransitionFeatureModule(ScreenTransitionManager.getInstance()));
-        instance = new Appachhi(application, modules, new Config(true, true));
+        instance = new Appachhi(application, new Config(true, true));
         return instance;
     }
 
@@ -76,144 +89,55 @@ public class Appachhi {
         return new MethodTrace(traceName);
     }
 
-    private Appachhi(Application application, List<FeatureModule> featureModules, Config config) {
+    private Appachhi(@NonNull Application application, @NonNull Config config) {
         this.application = application;
-        this.featureModules = featureModules;
         this.config = config;
-        overlayViewManager = new OverlayViewManager(application, config);
 
+        // Creates DB
+        db = AppachhiDB.create(application);
+        // Creates DatabaseExecutor
+        dbExecutor = Executors.newSingleThreadExecutor();
+
+        // Update the current session
+        sessionManager = new SessionManager(db.sessionDao(), dbExecutor);
+        sessionManager.newSession();
+
+        // Build the feature modules
+        this.featureModules = addModules(application);
+        // Build Feature Configuration Manager
+        featureConfigManager = new FeatureConfigManager(this.featureModules);
+
+        // Build overlay Manager
+        overlayViewManager = new OverlayViewManager(application, config);
         overlayViewManager.setFeatureModules(featureModules);
+
+        // Start overlay
         startAndBindDebugOverlayService();
         activityCallbacks = new ActivityCallbacks();
         application.registerActivityLifecycleCallbacks(activityCallbacks);
     }
 
-    public boolean isScreenTransitionOverlayEnabled() {
-        for (FeatureModule featureModule : this.featureModules) {
-            if (featureModule instanceof ScreenTransitionFeatureModule) {
-                ScreenTransitionFeatureModule transitionFeatureModule = (ScreenTransitionFeatureModule) featureModule;
-                return transitionFeatureModule.isOverlayEnabled();
-            }
-        }
-        return false;
+    @NonNull
+    public SessionManager getSessionManager() {
+        return sessionManager;
     }
 
-    public boolean setScreenTransitionOverlay(boolean enabled) {
-        for (FeatureModule featureModule : this.featureModules) {
-            if (featureModule instanceof ScreenTransitionFeatureModule) {
-                ScreenTransitionFeatureModule transitionFeatureModule = (ScreenTransitionFeatureModule) featureModule;
-                transitionFeatureModule.setOverlayEnabled(enabled);
-                return true;
-            }
-        }
-        return false;
+    @NonNull
+    public FeatureConfigManager getFeatureConfigManager() {
+        return featureConfigManager;
     }
 
-    public boolean isMemoryInfoOverlayEnabled() {
-        for (FeatureModule featureModule : this.featureModules) {
-            if (featureModule instanceof MemoryInfoFeatureModule) {
-                MemoryInfoFeatureModule memoryInfoFeatureModule = (MemoryInfoFeatureModule) featureModule;
-                return memoryInfoFeatureModule.isOverlayEnabled();
-            }
-        }
-        return false;
+    private List<FeatureModule> addModules(Application application) {
+        List<FeatureModule> featureModules = new LinkedList<>();
+        featureModules.add(new MemoryInfoFeatureModule(application));
+        featureModules.add(new GCInfoFeatureModule());
+        featureModules.add(new NetworkFeatureModule());
+        featureModules.add(new CpuUsageInfoFeatureModule(db.cpuUsageDao(), dbExecutor, sessionManager));
+        featureModules.add(new FpsFeatureModule());
+        featureModules.add(new MemoryLeakFeatureModule(application));
+        featureModules.add(new ScreenTransitionFeatureModule(ScreenTransitionManager.getInstance()));
+        return featureModules;
     }
-
-    public boolean setMemoryInfoOverlayEnabled(boolean enabled) {
-        for (FeatureModule featureModule : this.featureModules) {
-            if (featureModule instanceof MemoryInfoFeatureModule) {
-                MemoryInfoFeatureModule memoryInfoFeatureModule = (MemoryInfoFeatureModule) featureModule;
-                memoryInfoFeatureModule.setOverlayEnabled(enabled);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isNetworkOverlayEnabled() {
-        for (FeatureModule featureModule : this.featureModules) {
-            if (featureModule instanceof NetworkFeatureModule) {
-                NetworkFeatureModule networkFeatureModule = (NetworkFeatureModule) featureModule;
-                return networkFeatureModule.isOverlayEnabled();
-            }
-        }
-        return false;
-    }
-
-    public boolean setNetworkOverlayEnabled(boolean enabled) {
-        for (FeatureModule featureModule : this.featureModules) {
-            if (featureModule instanceof NetworkFeatureModule) {
-                NetworkFeatureModule networkFeatureModule = (NetworkFeatureModule) featureModule;
-                networkFeatureModule.setOverlayEnabled(enabled);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isCpuUsageOverlayEnabled() {
-        for (FeatureModule featureModule : this.featureModules) {
-            if (featureModule instanceof CpuUsageInfoFeatureModule) {
-                CpuUsageInfoFeatureModule cpuUsageInfoFeatureModule = (CpuUsageInfoFeatureModule) featureModule;
-                return cpuUsageInfoFeatureModule.isOverlayEnabled();
-            }
-        }
-        return false;
-    }
-
-    public boolean setCpuUsageOverlayEnabled(boolean enabled) {
-        for (FeatureModule featureModule : this.featureModules) {
-            if (featureModule instanceof CpuUsageInfoFeatureModule) {
-                CpuUsageInfoFeatureModule cpuUsageInfoFeatureModule = (CpuUsageInfoFeatureModule) featureModule;
-                cpuUsageInfoFeatureModule.setOverlayEnabled(enabled);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isFpsOverlayEnabled() {
-        for (FeatureModule featureModule : this.featureModules) {
-            if (featureModule instanceof FpsFeatureModule) {
-                FpsFeatureModule fpsFeatureModule = (FpsFeatureModule) featureModule;
-                return fpsFeatureModule.isOverlayEnabled();
-            }
-        }
-        return false;
-    }
-
-    public boolean setFpsOverlayEnabled(boolean enabled) {
-        for (FeatureModule featureModule : this.featureModules) {
-            if (featureModule instanceof FpsFeatureModule) {
-                FpsFeatureModule fpsFeatureModule = (FpsFeatureModule) featureModule;
-                fpsFeatureModule.setOverlayEnabled(enabled);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isMemoryLeakOverlayEnabled() {
-//        for (FeatureModule featureModule : this.featureModules) {
-//            if (featureModule instanceof MemoryLeakFeatureModule) {
-//                MemoryLeakFeatureModule memoryLeakFeatureModule = (MemoryLeakFeatureModule) featureModule;
-//                return memoryLeakFeatureModule.isOverlayEnabled();
-//            }
-//        }
-        return false;
-    }
-
-    public boolean setMemoryLeakOverlayEnabled(boolean enabled) {
-//        for (FeatureModule featureModule : this.featureModules) {
-//            if (featureModule instanceof MemoryLeakFeatureModule) {
-//                MemoryLeakFeatureModule memoryLeakFeatureModule = (MemoryLeakFeatureModule) featureModule;
-//                memoryLeakFeatureModule.setOverlayEnabled(enabled);
-//                return true;
-//            }
-//        }
-        return false;
-    }
-
 
     /**
      * This class decides when the modules should startAndBind observing for the data changes and when to stop

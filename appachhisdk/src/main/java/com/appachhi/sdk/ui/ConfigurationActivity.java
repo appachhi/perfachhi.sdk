@@ -58,47 +58,47 @@ public class ConfigurationActivity extends AppCompatActivity {
         screenTransitionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Appachhi.getInstance().setScreenTransitionOverlay(isChecked);
+                Appachhi.getInstance().getFeatureConfigManager().setScreenTransitionOverlay(isChecked);
             }
         });
         cpuUsageSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Appachhi.getInstance().setCpuUsageOverlayEnabled(isChecked);
+                Appachhi.getInstance().getFeatureConfigManager().setCpuUsageOverlayEnabled(isChecked);
             }
         });
         memoryUsageSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Appachhi.getInstance().setMemoryInfoOverlayEnabled(isChecked);
+                Appachhi.getInstance().getFeatureConfigManager().setMemoryInfoOverlayEnabled(isChecked);
             }
         });
         networkUsage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Appachhi.getInstance().setNetworkOverlayEnabled(isChecked);
+                Appachhi.getInstance().getFeatureConfigManager().setNetworkOverlayEnabled(isChecked);
             }
         });
         fpsUsageSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Appachhi.getInstance().setFpsOverlayEnabled(isChecked);
+                Appachhi.getInstance().getFeatureConfigManager().setFpsOverlayEnabled(isChecked);
             }
         });
         memoryLeakSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Appachhi.getInstance().setMemoryLeakOverlayEnabled(isChecked);
+                Appachhi.getInstance().getFeatureConfigManager().setMemoryLeakOverlayEnabled(isChecked);
             }
         });
     }
 
     private void initializeConfigurationSwitch() {
-        screenTransitionSwitch.setChecked(Appachhi.getInstance().isScreenTransitionOverlayEnabled());
-        cpuUsageSwitch.setChecked(Appachhi.getInstance().isCpuUsageOverlayEnabled());
-        memoryUsageSwitch.setChecked(Appachhi.getInstance().isMemoryInfoOverlayEnabled());
-        networkUsage.setChecked(Appachhi.getInstance().isNetworkOverlayEnabled());
-        memoryLeakSwitch.setChecked(Appachhi.getInstance().isMemoryLeakOverlayEnabled());
+        screenTransitionSwitch.setChecked(Appachhi.getInstance().getFeatureConfigManager().isScreenTransitionOverlayEnabled());
+        cpuUsageSwitch.setChecked(Appachhi.getInstance().getFeatureConfigManager().isCpuUsageOverlayEnabled());
+        memoryUsageSwitch.setChecked(Appachhi.getInstance().getFeatureConfigManager().isMemoryInfoOverlayEnabled());
+        networkUsage.setChecked(Appachhi.getInstance().getFeatureConfigManager().isNetworkOverlayEnabled());
+        memoryLeakSwitch.setChecked(Appachhi.getInstance().getFeatureConfigManager().isMemoryLeakOverlayEnabled());
     }
 
     @Override
