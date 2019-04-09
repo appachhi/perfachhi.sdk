@@ -19,6 +19,7 @@ import android.util.Log;
 
 import com.appachhi.sdk.database.AppachhiDB;
 import com.appachhi.sdk.instrument.trace.MethodTrace;
+import com.appachhi.sdk.instrument.trace.MethodTraceSavingManager;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionFeatureModule;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
 import com.appachhi.sdk.monitor.cpu.CpuUsageInfoFeatureModule;
@@ -64,6 +65,8 @@ public class Appachhi {
     private ExecutorService dbExecutor;
     @NonNull
     private SessionManager sessionManager;
+    @NonNull
+    private MethodTraceSavingManager methodTraceSavingManager;
     @SuppressWarnings("FieldCanBeLocal")
     private ActivityCallbacks activityCallbacks;
 
@@ -86,7 +89,7 @@ public class Appachhi {
     }
 
     public static MethodTrace newTrace(String traceName) {
-        return new MethodTrace(traceName);
+        return new MethodTrace(traceName, Appachhi.getInstance().getMethodTraceSavingManager());
     }
 
     private Appachhi(@NonNull Application application, @NonNull Config config) {
@@ -101,6 +104,8 @@ public class Appachhi {
         // Update the current session
         sessionManager = new SessionManager(db.sessionDao(), dbExecutor);
         sessionManager.newSession();
+
+        methodTraceSavingManager = new MethodTraceSavingManager(db.methodTraceDao(), dbExecutor, sessionManager);
 
         // Build the feature modules
         this.featureModules = addModules(application);
@@ -120,6 +125,11 @@ public class Appachhi {
     @NonNull
     public SessionManager getSessionManager() {
         return sessionManager;
+    }
+
+    @NonNull
+    private MethodTraceSavingManager getMethodTraceSavingManager() {
+        return methodTraceSavingManager;
     }
 
     @NonNull

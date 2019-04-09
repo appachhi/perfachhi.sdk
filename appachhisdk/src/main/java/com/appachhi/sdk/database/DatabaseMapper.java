@@ -7,8 +7,10 @@ import com.appachhi.sdk.database.entity.FpsEntity;
 import com.appachhi.sdk.database.entity.GCEntity;
 import com.appachhi.sdk.database.entity.MemoryEntity;
 import com.appachhi.sdk.database.entity.MemoryLeakEntity;
+import com.appachhi.sdk.database.entity.MethodTraceEntity;
 import com.appachhi.sdk.database.entity.NetworkUsageEntity;
 import com.appachhi.sdk.database.entity.TransitionStatEntity;
+import com.appachhi.sdk.instrument.trace.MethodTrace;
 import com.appachhi.sdk.instrument.transition.TransitionStat;
 import com.appachhi.sdk.monitor.cpu.CpuUsageInfo;
 import com.appachhi.sdk.monitor.memory.GCInfo;
@@ -75,6 +77,10 @@ public class DatabaseMapper {
         AnalysisResult analysisResult = memoryLeakInfo.getAnalysisResult();
         return new MemoryLeakEntity(analysisResult.className,
                 analysisResult.leakFound ? analysisResult.leakTrace != null ? analysisResult.leakTrace.toString() : null : null, sessionId);
+    }
+
+    public static MethodTraceEntity fromMethodTraceToMethodTraceEntity(MethodTrace methodTrace, String sessionId) {
+        return new MethodTraceEntity(methodTrace.getTraceName(), methodTrace.getDuration(), sessionId);
     }
 
     private static boolean isAboveAndroidM() {

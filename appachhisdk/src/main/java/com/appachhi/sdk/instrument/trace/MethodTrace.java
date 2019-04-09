@@ -1,41 +1,37 @@
 package com.appachhi.sdk.instrument.trace;
 
 import android.os.SystemClock;
-import android.util.Log;
 
 public class MethodTrace {
     private static final String TAG = "Appachhi-Trace";
-    private String className;
-    private String methodName;
     private String traceName;
     private long startTime;
     private long duration = -1;
 
-    public MethodTrace(String className, String methodName) {
-        this.className = className;
-        this.methodName = methodName;
+    private MethodTraceSavingManager methodTraceSavingManager;
+
+    public MethodTrace(String traceName, MethodTraceSavingManager methodTraceSavingManager) {
+        this.traceName = traceName;
+        this.methodTraceSavingManager = methodTraceSavingManager;
         startTime = SystemClock.elapsedRealtime();
-        Log.i(TAG, this.startString());
     }
 
-    public MethodTrace(String traceName) {
-        this.traceName = traceName;
-        startTime = SystemClock.elapsedRealtime();
-        Log.i(TAG, this.startString());
+    public String getTraceName() {
+        return traceName;
+    }
+
+    public long getDuration() {
+        return duration;
     }
 
     public void stop() {
         duration = SystemClock.elapsedRealtime() - startTime;
-        Log.i(TAG, this.stopString());
+        methodTraceSavingManager.save(this);
     }
 
 
     private String stopString() {
         final StringBuilder sb = new StringBuilder("MethodEnd{");
-        if (this.className != null) {
-            sb.append("className='").append(className).append('\'');
-            sb.append(", methodName='").append(methodName).append('\'');
-        }
         if (this.traceName != null) {
             sb.append("traceName='").append(traceName).append('\'');
         }
@@ -48,10 +44,6 @@ public class MethodTrace {
 
     private String startString() {
         final StringBuilder sb = new StringBuilder("MethodStart{");
-        if (this.className != null) {
-            sb.append("className='").append(className).append('\'');
-            sb.append("methodName='").append(methodName).append('\'');
-        }
         if (this.traceName != null) {
             sb.append("traceName='").append(traceName).append('\'');
         }
