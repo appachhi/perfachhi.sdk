@@ -12,7 +12,7 @@ import com.appachhi.sdk.sync.SessionManager;
 
 import java.util.concurrent.ExecutorService;
 
-import static com.appachhi.sdk.database.DatabaseMapper.fromNetworkUsageInfoNetworkUsageEntity;
+import static com.appachhi.sdk.database.DatabaseMapper.fromNetworkUsageInfoToNetworkUsageEntity;
 
 /**
  * {@link NetworkInfo} data observer which logs the information on to the logcat
@@ -43,7 +43,7 @@ public class NetworkInfoDataObserver implements DataObserver<NetworkInfo> {
             public void run() {
                 Session session = sessionManager.getCurrentSession();
                 if (session != null && session.getId() != null) {
-                    NetworkUsageEntity networkUsageEntity = fromNetworkUsageInfoNetworkUsageEntity(data, session.getId());
+                    NetworkUsageEntity networkUsageEntity = fromNetworkUsageInfoToNetworkUsageEntity(data, session.getId());
                     long result = networkDao.insertNetworkUsage(networkUsageEntity);
                     if (result > -1) {
                         Log.i(TAG, "Network Usage Data saved");

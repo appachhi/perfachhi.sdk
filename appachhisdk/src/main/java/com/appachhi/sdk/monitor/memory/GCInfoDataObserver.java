@@ -39,7 +39,6 @@ public class GCInfoDataObserver implements DataObserver<GCInfo> {
     @MainThread
     @Override
     public void onDataAvailable(@NonNull final GCInfo data) {
-        Log.i(TAG,"GC Ru info received "+data.asJsonString());
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
