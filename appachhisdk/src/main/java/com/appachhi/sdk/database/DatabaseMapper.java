@@ -3,8 +3,10 @@ package com.appachhi.sdk.database;
 import android.os.Build;
 
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
+import com.appachhi.sdk.database.entity.GCEntity;
 import com.appachhi.sdk.database.entity.MemoryEntity;
 import com.appachhi.sdk.monitor.cpu.CpuUsageInfo;
+import com.appachhi.sdk.monitor.memory.GCInfo;
 import com.appachhi.sdk.monitor.memory.MemoryInfo;
 
 public class DatabaseMapper {
@@ -28,6 +30,23 @@ public class DatabaseMapper {
                 memoryInfo.getTotalSharedDirty(),
                 isAboveAndroidM() ? memoryInfo.getSystemResourceMemory() : 0,
                 isAboveAndroidM() ? memoryInfo.getSwapMemory() : 0,
+                sessionId
+        );
+    }
+
+    public static GCEntity fromGCInfoToGCEntity(GCInfo gcInfo, String sessionId) {
+        return new GCEntity(
+                gcInfo.getGcReason(),
+                gcInfo.getGcName(),
+                gcInfo.getObjectFreed(),
+                gcInfo.getObjectFreedSize(),
+                gcInfo.getAllocSpaceObjectFreed(),
+                gcInfo.getAllocSpaceObjectFreedSize(),
+                gcInfo.getLargeObjectFreedPercentage(),
+                gcInfo.getLargeObjectFreedSize(),
+                gcInfo.getLargeObjectTotalSize(),
+                gcInfo.getGcPauseTime(),
+                gcInfo.getGcRunTime(),
                 sessionId
         );
     }

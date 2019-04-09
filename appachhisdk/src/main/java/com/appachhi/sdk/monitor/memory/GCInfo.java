@@ -8,7 +8,7 @@ import org.json.JSONObject;
 /**
  * Class representing the information collected for each gc run
  */
-class GCInfo {
+public class GCInfo {
     private static final String TAG = "GCInfo";
     private static final String GC_REASON = "GCReason";
     private static final String GC_NAME = "GCName";
@@ -59,6 +59,50 @@ class GCInfo {
         this.largeObjectTotalSize = largeObjectTotalSize;
         this.gcPauseTime = gcPauseTime;
         this.gcRunTime = gcRunTime;
+    }
+
+    public String getGcReason() {
+        return gcReason;
+    }
+
+    public String getGcName() {
+        return gcName;
+    }
+
+    public String getObjectFreed() {
+        return objectFreed;
+    }
+
+    public String getObjectFreedSize() {
+        return objectFreedSize;
+    }
+
+    public String getAllocSpaceObjectFreed() {
+        return allocSpaceObjectFreed;
+    }
+
+    public String getAllocSpaceObjectFreedSize() {
+        return allocSpaceObjectFreedSize;
+    }
+
+    public String getLargeObjectFreedPercentage() {
+        return largeObjectFreedPercentage;
+    }
+
+    public String getLargeObjectFreedSize() {
+        return largeObjectFreedSize;
+    }
+
+    public String getLargeObjectTotalSize() {
+        return largeObjectTotalSize;
+    }
+
+    public String getGcPauseTime() {
+        return gcPauseTime;
+    }
+
+    public String getGcRunTime() {
+        return gcRunTime;
     }
 
     String asJsonString() {
