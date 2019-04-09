@@ -13,7 +13,7 @@ import org.json.JSONObject;
  * Represent memory information for a particular process as well as for the system
  */
 @SuppressWarnings("WeakerAccess")
-class MemoryInfo {
+public class MemoryInfo {
     private static final String TAG = "MemoryInfo";
     private static final String SUMMARY_JAVA_HEAP = "summary.java-heap";
     private static final String SUMMARY_NATIVE_HEAP = "summary.native-heap";
@@ -48,7 +48,7 @@ class MemoryInfo {
      *
      * @return Memory occupied in KB
      */
-    int getJavaMemoryHeap() {
+    public int getJavaMemoryHeap() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return Integer.parseInt(memoryInfo.getMemoryStat(SUMMARY_JAVA_HEAP));
         }
@@ -67,7 +67,7 @@ class MemoryInfo {
      *
      * @return Memory occupied in KB
      */
-    int getNativeMemoryHeap() {
+    public int getNativeMemoryHeap() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return Integer.parseInt(memoryInfo.getMemoryStat(SUMMARY_NATIVE_HEAP));
         }
@@ -81,7 +81,7 @@ class MemoryInfo {
      * @return Memory occupied in KB
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    int getCodeMemory() {
+    public int getCodeMemory() {
         return Integer.parseInt(memoryInfo.getMemoryStat(SUMMARY_CODE));
     }
 
@@ -92,7 +92,7 @@ class MemoryInfo {
      * @return Memory occupied in KB
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    int getStackMemory() {
+    public int getStackMemory() {
         return Integer.parseInt(memoryInfo.getMemoryStat(SUMMARY_STACK));
     }
 
@@ -104,7 +104,7 @@ class MemoryInfo {
      * @return Memory occupied in KB
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    int getGraphicsMemory() {
+    public int getGraphicsMemory() {
         return Integer.parseInt(memoryInfo.getMemoryStat(SUMMARY_GRAPHICS));
     }
 
@@ -114,17 +114,17 @@ class MemoryInfo {
      * @return Memory occupied in KB
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    int getOtherMemory() {
+    public int getOtherMemory() {
         return Integer.parseInt(memoryInfo.getMemoryStat(SUMMARY_PVT_OTHER));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    int getSystemResourceMemory() {
+    public int getSystemResourceMemory() {
         return Integer.parseInt(memoryInfo.getMemoryStat(SUMMARY_SYSTEM));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    int getSwapMemory() {
+    public int getSwapMemory() {
         return Integer.parseInt(memoryInfo.getMemoryStat(SUMMARY_TOTAL_SWAP));
     }
 
@@ -133,7 +133,7 @@ class MemoryInfo {
      *
      * @return Memory occupied in KB
      */
-    int getTotalPssMemory() {
+    public int getTotalPssMemory() {
         return memoryInfo.getTotalPss();
     }
 
@@ -142,7 +142,7 @@ class MemoryInfo {
      *
      * @return Memory occupied in KB
      */
-    int getTotalPrivateDirty() {
+    public int getTotalPrivateDirty() {
         return memoryInfo.getTotalPrivateDirty();
     }
 
@@ -151,7 +151,7 @@ class MemoryInfo {
      *
      * @return Memory occupied in KB
      */
-    int getTotalSharedDirty() {
+    public int getTotalSharedDirty() {
         return memoryInfo.getTotalSharedDirty();
     }
 
@@ -160,7 +160,7 @@ class MemoryInfo {
      *
      * @return Memory occupied in KB
      */
-    long getThreshold() {
+    public long getThreshold() {
         return systemMemoryInfo.threshold / 1024;
     }
 

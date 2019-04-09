@@ -4,13 +4,14 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.appachhi.sdk.DataObserver;
-import com.appachhi.sdk.database.DatabaseMapper;
 import com.appachhi.sdk.database.dao.CpuUsageDao;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
 import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.sync.SessionManager;
 
 import java.util.concurrent.ExecutorService;
+
+import static com.appachhi.sdk.database.DatabaseMapper.fromCpuUsageInfoToCpuUsageEntity;
 
 /**
  * {@link CpuUsageInfo} Data Observer logging the CPU Usage related information on to the logcat
@@ -38,7 +39,7 @@ class CpuUsageInfoDataObserver implements DataObserver<CpuUsageInfo> {
             public void run() {
                 Session session = sessionManager.getCurrentSession();
                 if (session != null && session.getId() != null) {
-                    CpuUsageEntity cpuUsageEntity = DatabaseMapper.fromCpuUsageInfoToCpuUsageEntity(data, sessionManager.getCurrentSession().getId());
+                    CpuUsageEntity cpuUsageEntity = fromCpuUsageInfoToCpuUsageEntity(data, session.getId());
                     long result = cpuUsageDao.insertCpuUsage(cpuUsageEntity);
                     if (result > -1) {
                         Log.i(TAG, "CPU Usage Data saved");

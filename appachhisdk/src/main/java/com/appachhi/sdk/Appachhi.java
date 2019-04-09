@@ -129,7 +129,7 @@ public class Appachhi {
 
     private List<FeatureModule> addModules(Application application) {
         List<FeatureModule> featureModules = new LinkedList<>();
-        featureModules.add(new MemoryInfoFeatureModule(application));
+        featureModules.add(new MemoryInfoFeatureModule(application, db.memoryDao(), dbExecutor, sessionManager));
         featureModules.add(new GCInfoFeatureModule());
         featureModules.add(new NetworkFeatureModule());
         featureModules.add(new CpuUsageInfoFeatureModule(db.cpuUsageDao(), dbExecutor, sessionManager));
