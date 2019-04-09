@@ -2,6 +2,7 @@ package com.appachhi.sdk.database;
 
 import android.os.Build;
 
+import com.appachhi.sdk.database.entity.APICallEntity;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
 import com.appachhi.sdk.database.entity.FpsEntity;
 import com.appachhi.sdk.database.entity.GCEntity;
@@ -10,6 +11,7 @@ import com.appachhi.sdk.database.entity.MemoryLeakEntity;
 import com.appachhi.sdk.database.entity.MethodTraceEntity;
 import com.appachhi.sdk.database.entity.NetworkUsageEntity;
 import com.appachhi.sdk.database.entity.TransitionStatEntity;
+import com.appachhi.sdk.instrument.network.internal.InternalHttpMetric;
 import com.appachhi.sdk.instrument.trace.MethodTrace;
 import com.appachhi.sdk.instrument.transition.TransitionStat;
 import com.appachhi.sdk.monitor.cpu.CpuUsageInfo;
@@ -81,6 +83,19 @@ public class DatabaseMapper {
 
     public static MethodTraceEntity fromMethodTraceToMethodTraceEntity(MethodTrace methodTrace, String sessionId) {
         return new MethodTraceEntity(methodTrace.getTraceName(), methodTrace.getDuration(), sessionId);
+    }
+
+    public static APICallEntity fromInterHttpMetricToApiCallEntity(InternalHttpMetric httpMetric, String sessionId) {
+        return new APICallEntity(
+                httpMetric.getUrl(),
+                httpMetric.getMethodType(),
+                httpMetric.getContentType(),
+                httpMetric.getRequestContentLength(),
+                httpMetric.getResponseCode(),
+                httpMetric.getDuration(),
+                httpMetric.getThreadName(),
+                sessionId);
+
     }
 
     private static boolean isAboveAndroidM() {

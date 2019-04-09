@@ -5,6 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import com.appachhi.sdk.database.dao.APICallDao;
 import com.appachhi.sdk.database.dao.CpuUsageDao;
 import com.appachhi.sdk.database.dao.FpsDao;
 import com.appachhi.sdk.database.dao.GCDao;
@@ -14,6 +15,7 @@ import com.appachhi.sdk.database.dao.MethodTraceDao;
 import com.appachhi.sdk.database.dao.NetworkDao;
 import com.appachhi.sdk.database.dao.ScreenTransitionDao;
 import com.appachhi.sdk.database.dao.SessionDao;
+import com.appachhi.sdk.database.entity.APICallEntity;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
 import com.appachhi.sdk.database.entity.FpsEntity;
 import com.appachhi.sdk.database.entity.GCEntity;
@@ -33,7 +35,8 @@ import com.appachhi.sdk.database.entity.TransitionStatEntity;
         FpsEntity.class,
         TransitionStatEntity.class,
         MemoryLeakEntity.class,
-        MethodTraceEntity.class}, version = 1)
+        MethodTraceEntity.class,
+        APICallEntity.class}, version = 1)
 public abstract class AppachhiDB extends RoomDatabase {
     private static final String DB_NAME = "appachhi";
 
@@ -54,6 +57,8 @@ public abstract class AppachhiDB extends RoomDatabase {
     public abstract ScreenTransitionDao screenTransitionDao();
 
     public abstract MethodTraceDao methodTraceDao();
+
+    public abstract APICallDao apiCallDao();
 
     public static AppachhiDB create(Context context) {
         return Room.databaseBuilder(context, AppachhiDB.class, DB_NAME)

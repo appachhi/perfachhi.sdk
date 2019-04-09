@@ -18,6 +18,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.appachhi.sdk.database.AppachhiDB;
+import com.appachhi.sdk.instrument.network.internal.HttpMetricSavingManager;
+import com.appachhi.sdk.instrument.network.internal.InternalHttpMetric;
 import com.appachhi.sdk.instrument.trace.MethodTrace;
 import com.appachhi.sdk.instrument.trace.MethodTraceSavingManager;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionFeatureModule;
@@ -67,6 +69,8 @@ public class Appachhi {
     private SessionManager sessionManager;
     @NonNull
     private MethodTraceSavingManager methodTraceSavingManager;
+    @NonNull
+    private HttpMetricSavingManager httpMetricSavingManager;
     @SuppressWarnings("FieldCanBeLocal")
     private ActivityCallbacks activityCallbacks;
 
@@ -92,6 +96,10 @@ public class Appachhi {
         return new MethodTrace(traceName, Appachhi.getInstance().getMethodTraceSavingManager());
     }
 
+    public static InternalHttpMetric newHttpTrace() {
+        return new InternalHttpMetric(Appachhi.getInstance().getHttpMetricSavingManager());
+    }
+
     private Appachhi(@NonNull Application application, @NonNull Config config) {
         this.application = application;
         this.config = config;
@@ -106,6 +114,7 @@ public class Appachhi {
         sessionManager.newSession();
 
         methodTraceSavingManager = new MethodTraceSavingManager(db.methodTraceDao(), dbExecutor, sessionManager);
+        httpMetricSavingManager = new HttpMetricSavingManager(db.apiCallDao(), dbExecutor, sessionManager);
 
         // Build the feature modules
         this.featureModules = addModules(application);
@@ -130,6 +139,11 @@ public class Appachhi {
     @NonNull
     private MethodTraceSavingManager getMethodTraceSavingManager() {
         return methodTraceSavingManager;
+    }
+
+    @NonNull
+    private HttpMetricSavingManager getHttpMetricSavingManager() {
+        return httpMetricSavingManager;
     }
 
     @NonNull

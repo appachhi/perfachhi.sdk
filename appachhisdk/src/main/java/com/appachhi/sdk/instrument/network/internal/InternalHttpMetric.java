@@ -1,7 +1,6 @@
 package com.appachhi.sdk.instrument.network.internal;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.Date;
 
@@ -20,9 +19,10 @@ public class InternalHttpMetric {
     private long startTime;
     private long endTime;
     private String threadName;
+    private HttpMetricSavingManager httpMetricSavingManager;
 
-
-    public InternalHttpMetric() {
+    public InternalHttpMetric(HttpMetricSavingManager httpMetricSavingManager) {
+        this.httpMetricSavingManager = httpMetricSavingManager;
         isComplete = false;
         isStarted = false;
         url = "";
@@ -81,7 +81,7 @@ public class InternalHttpMetric {
 
     public void complete() {
         isComplete = true;
-        Log.d(TAG, toString());
+        httpMetricSavingManager.save(this);
     }
 
     public void setThreadName(String threadName) {
@@ -121,6 +121,10 @@ public class InternalHttpMetric {
 
     public void setEndTime(long endTime) {
         this.endTime = endTime;
+    }
+
+    public String getThreadName() {
+        return threadName;
     }
 
     @Override
