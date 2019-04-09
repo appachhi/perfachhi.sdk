@@ -47,8 +47,8 @@ public class MemoryEntity extends BaseEntity {
                         int graphics, int privateOther, int system, int totalSwap,
                         long threshold, int totalPSS, int totalPrivateDirty,
                         int totalSharedDirty, int systemResourceMemory, int swapMemory,
-                        String sessionId) {
-        super(sessionId);
+                        String sessionId, long sessionTime) {
+        super(sessionId, sessionTime);
         this.javaHeap = javaHeap;
         this.nativeHeap = nativeHeap;
         this.code = code;

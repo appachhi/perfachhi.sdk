@@ -19,8 +19,8 @@ public class CpuUsageEntity extends BaseEntity {
     private double deviceCpuUsage;
 
     @Ignore
-    public CpuUsageEntity(double appCpuUsage, double deviceCpuUsage, String sessionId) {
-        super(sessionId);
+    public CpuUsageEntity(double appCpuUsage, double deviceCpuUsage, String sessionId,long sessionTime) {
+        super(sessionId,sessionTime);
         this.appCpuUsage = appCpuUsage;
         this.deviceCpuUsage = deviceCpuUsage;
     }

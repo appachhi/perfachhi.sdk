@@ -52,8 +52,9 @@ public class GCEntity extends BaseEntity {
     public GCEntity(String gcReason, String gcName, String objectFreed, String objectFreedSize,
                     String allocSpaceObjectFreed, String allocSpaceObjectFreedSize,
                     String largeObjectFreedPercentage, String largeObjectFreedSize,
-                    String largeObjectTotalSize, String gcPauseTime, String gcRunTime, String sessionId) {
-        super(sessionId);
+                    String largeObjectTotalSize, String gcPauseTime, String gcRunTime,
+                    String sessionId, long sessionTime) {
+        super(sessionId, sessionTime);
         this.gcReason = gcReason;
         this.gcName = gcName;
         this.objectFreed = objectFreed;

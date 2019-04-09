@@ -9,6 +9,7 @@ import com.appachhi.sdk.database.entity.CpuUsageEntity;
 import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.sync.SessionManager;
 
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 
 import static com.appachhi.sdk.database.DatabaseMapper.fromCpuUsageInfoToCpuUsageEntity;
@@ -38,8 +39,9 @@ class CpuUsageInfoDataObserver implements DataObserver<CpuUsageInfo> {
             @Override
             public void run() {
                 Session session = sessionManager.getCurrentSession();
-                if (session != null && session.getId() != null) {
-                    CpuUsageEntity cpuUsageEntity = fromCpuUsageInfoToCpuUsageEntity(data, session.getId());
+                if (session != null) {
+                    long sessionTimeElapsed = new Date().getTime() - session.getStartTime();
+                    CpuUsageEntity cpuUsageEntity = fromCpuUsageInfoToCpuUsageEntity(data, session.getId(), sessionTimeElapsed);
                     long result = cpuUsageDao.insertCpuUsage(cpuUsageEntity);
                     if (result > -1) {
                         Log.i(TAG, "CPU Usage Data saved");

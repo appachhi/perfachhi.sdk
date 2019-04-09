@@ -9,6 +9,7 @@ import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.database.entity.TransitionStatEntity;
 import com.appachhi.sdk.sync.SessionManager;
 
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 
 import static com.appachhi.sdk.database.DatabaseMapper.fromTransitionStatToTransitionStatEntity;
@@ -33,8 +34,9 @@ public class ScreenTransitionDataObserver implements DataObserver<TransitionStat
                 @Override
                 public void run() {
                     Session session = sessionManager.getCurrentSession();
-                    if (session != null && session.getId() != null) {
-                        TransitionStatEntity transitionStatEntity = fromTransitionStatToTransitionStatEntity(data, session.getId());
+                    if (session != null) {
+                        long sessionTimeElapsed = new Date().getTime() - session.getStartTime();
+                        TransitionStatEntity transitionStatEntity = fromTransitionStatToTransitionStatEntity(data, session.getId(),sessionTimeElapsed);
                         long result = screenTransitionDao.insertScreenTranData(transitionStatEntity);
                         if (result > -1) {
                             Log.i(TAG, "Transition stat saved");

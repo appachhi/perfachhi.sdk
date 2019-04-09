@@ -9,6 +9,7 @@ import com.appachhi.sdk.database.entity.FpsEntity;
 import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.sync.SessionManager;
 
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 
 import static com.appachhi.sdk.database.DatabaseMapper.fromDoubleToFpsEntity;
@@ -33,8 +34,9 @@ public class FpsDataObserver implements DataObserver<Double> {
             @Override
             public void run() {
                 Session session = sessionManager.getCurrentSession();
-                if (session != null && session.getId() != null) {
-                    FpsEntity fpsEntity = fromDoubleToFpsEntity(data, session.getId());
+                if (session != null) {
+                    long sessionTimeElapsed = new Date().getTime() - session.getStartTime();
+                    FpsEntity fpsEntity = fromDoubleToFpsEntity(data, session.getId(),sessionTimeElapsed);
                     long result = fpsDao.insertFps(fpsEntity);
                     if (result > -1) {
                         Log.i(TAG, "Fps Data saved");

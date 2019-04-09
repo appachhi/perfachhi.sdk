@@ -16,8 +16,8 @@ public class MemoryLeakEntity extends BaseEntity {
     private String leakTrace;
 
     @Ignore
-    public MemoryLeakEntity(String className, String leakTrace, String sessionId) {
-        super(sessionId);
+    public MemoryLeakEntity(String className, String leakTrace, String sessionId, long sessionTime) {
+        super(sessionId, sessionTime);
         this.className = className;
         this.leakTrace = leakTrace;
     }

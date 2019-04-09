@@ -11,6 +11,7 @@ import com.appachhi.sdk.database.entity.GCEntity;
 import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.sync.SessionManager;
 
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 
 import static com.appachhi.sdk.database.DatabaseMapper.fromGCInfoToGCEntity;
@@ -43,8 +44,9 @@ public class GCInfoDataObserver implements DataObserver<GCInfo> {
             @Override
             public void run() {
                 Session session = sessionManager.getCurrentSession();
-                if (session != null && session.getId() != null) {
-                    GCEntity gcEntity = fromGCInfoToGCEntity(data, session.getId());
+                if (session != null) {
+                    long sessionTimeElapsed = new Date().getTime() - session.getStartTime();
+                    GCEntity gcEntity = fromGCInfoToGCEntity(data, session.getId(),sessionTimeElapsed);
                     long result = gcDao.insetGcRunInfo(gcEntity);
                     if (result > -1) {
                         Log.i(TAG, "GC Run Data saved");

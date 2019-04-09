@@ -10,6 +10,7 @@ import com.appachhi.sdk.database.entity.NetworkUsageEntity;
 import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.sync.SessionManager;
 
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 
 import static com.appachhi.sdk.database.DatabaseMapper.fromNetworkUsageInfoToNetworkUsageEntity;
@@ -42,8 +43,9 @@ public class NetworkInfoDataObserver implements DataObserver<NetworkInfo> {
             @Override
             public void run() {
                 Session session = sessionManager.getCurrentSession();
-                if (session != null && session.getId() != null) {
-                    NetworkUsageEntity networkUsageEntity = fromNetworkUsageInfoToNetworkUsageEntity(data, session.getId());
+                if (session != null) {
+                    long sessionTimeElapsed = new Date().getTime() - session.getStartTime();
+                    NetworkUsageEntity networkUsageEntity = fromNetworkUsageInfoToNetworkUsageEntity(data, session.getId(),sessionTimeElapsed);
                     long result = networkDao.insertNetworkUsage(networkUsageEntity);
                     if (result > -1) {
                         Log.i(TAG, "Network Usage Data saved");

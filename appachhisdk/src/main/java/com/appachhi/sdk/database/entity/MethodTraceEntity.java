@@ -18,8 +18,8 @@ public class MethodTraceEntity extends BaseEntity {
     private long duration;
 
     @Ignore
-    public MethodTraceEntity(String traceName, long duration, String sessionId) {
-        super(sessionId);
+    public MethodTraceEntity(String traceName, long duration, String sessionId, long sessionTime) {
+        super(sessionId, sessionTime);
         this.traceName = traceName;
         this.duration = duration;
     }

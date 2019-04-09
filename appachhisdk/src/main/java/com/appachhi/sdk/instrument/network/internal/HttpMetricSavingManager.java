@@ -7,6 +7,7 @@ import com.appachhi.sdk.database.entity.APICallEntity;
 import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.sync.SessionManager;
 
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 
 import static com.appachhi.sdk.database.DatabaseMapper.fromInterHttpMetricToApiCallEntity;
@@ -28,8 +29,9 @@ public class HttpMetricSavingManager {
             @Override
             public void run() {
                 Session session = sessionManager.getCurrentSession();
-                if (session != null && session.getId() != null) {
-                    APICallEntity apiCallEntity = fromInterHttpMetricToApiCallEntity(data, session.getId());
+                if (session != null) {
+                    long sessionTimeElapsed = new Date().getTime() - session.getStartTime();
+                    APICallEntity apiCallEntity = fromInterHttpMetricToApiCallEntity(data, session.getId(),sessionTimeElapsed);
                     long result = apiCallDao.insertApiCall(apiCallEntity);
                     if (result > -1) {
                         Log.i(TAG, "Api Call Trace saved");

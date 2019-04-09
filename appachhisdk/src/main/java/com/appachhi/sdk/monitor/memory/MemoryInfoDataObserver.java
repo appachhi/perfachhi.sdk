@@ -10,6 +10,7 @@ import com.appachhi.sdk.database.entity.MemoryEntity;
 import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.sync.SessionManager;
 
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 
 import static com.appachhi.sdk.database.DatabaseMapper.fromMemoryInfoToMemoryEntity;
@@ -39,8 +40,9 @@ public class MemoryInfoDataObserver implements DataObserver<MemoryInfo> {
             @Override
             public void run() {
                 Session session = sessionManager.getCurrentSession();
-                if (session != null && session.getId() != null) {
-                    MemoryEntity memoryEntity = fromMemoryInfoToMemoryEntity(data, session.getId());
+                if (session != null) {
+                    long sessionTimeElapsed = new Date().getTime() - session.getStartTime();
+                    MemoryEntity memoryEntity = fromMemoryInfoToMemoryEntity(data, session.getId(),sessionTimeElapsed);
                     long result = memoryDao.insertMemoryUsage(memoryEntity);
                     if (result > -1) {
                         Log.i(TAG, "Memory Usage Data saved");

@@ -9,6 +9,7 @@ import com.appachhi.sdk.database.entity.MemoryLeakEntity;
 import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.sync.SessionManager;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -35,8 +36,9 @@ public class MemoryLeakDataObserver implements DataObserver<List<MemoryLeakInfo>
                 @Override
                 public void run() {
                     Session session = sessionManager.getCurrentSession();
-                    if (session != null && session.getId() != null) {
-                        MemoryLeakEntity memoryLeakEntity = fromMemoryLeakInfoTOMemoryLeakEntity(data, session.getId());
+                    if (session != null) {
+                        long sessionTimeElapsed = new Date().getTime() - session.getStartTime();
+                        MemoryLeakEntity memoryLeakEntity = fromMemoryLeakInfoTOMemoryLeakEntity(data, session.getId(), sessionTimeElapsed);
                         long result = memoryLeakDao.insertMemoryLeak(memoryLeakEntity);
                         if (result > -1) {
                             Log.i(TAG, "Memory Leak Data saved");

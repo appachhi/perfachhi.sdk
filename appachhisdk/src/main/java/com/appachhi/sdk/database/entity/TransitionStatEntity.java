@@ -16,8 +16,8 @@ public class TransitionStatEntity extends BaseEntity {
     private long duration;
 
     @Ignore
-    public TransitionStatEntity(String name, long duration, String sessionId) {
-        super(sessionId);
+    public TransitionStatEntity(String name, long duration, String sessionId, long sessionTime) {
+        super(sessionId, sessionTime);
         this.name = name;
         this.duration = duration;
     }

@@ -15,8 +15,8 @@ public class FpsEntity extends BaseEntity {
     private double fps;
 
     @Ignore
-    public FpsEntity(double fps, String sessionId) {
-        super(sessionId);
+    public FpsEntity(double fps, String sessionId, long sessionTime) {
+        super(sessionId, sessionTime);
         this.fps = fps;
     }
 

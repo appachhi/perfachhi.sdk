@@ -29,8 +29,8 @@ public class APICallEntity extends BaseEntity {
     @Ignore
     public APICallEntity(String url, String methodType, String contentType,
                          long requestContentLength, int responseCode,
-                         long duration, String threadName, String sessionId) {
-        super(sessionId);
+                         long duration, String threadName, String sessionId,long sessionTime) {
+        super(sessionId,sessionTime);
         this.url = url;
         this.methodType = methodType;
         this.contentType = contentType;

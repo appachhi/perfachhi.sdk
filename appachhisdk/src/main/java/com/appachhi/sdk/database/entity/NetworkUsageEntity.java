@@ -18,8 +18,8 @@ public class NetworkUsageEntity extends BaseEntity {
     private long dataReceived;
 
     @Ignore
-    public NetworkUsageEntity(long dataSent, long dataReceived, String sessionId) {
-        super(sessionId);
+    public NetworkUsageEntity(long dataSent, long dataReceived, String sessionId, long sessionTime) {
+        super(sessionId, sessionTime);
         this.dataSent = dataSent;
         this.dataReceived = dataReceived;
     }
