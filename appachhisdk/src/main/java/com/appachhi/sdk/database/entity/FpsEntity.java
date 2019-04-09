@@ -8,8 +8,9 @@ import android.arch.persistence.room.Index;
 @Entity(tableName = "fps", foreignKeys = @ForeignKey(
         entity = Session.class,
         parentColumns = "id",
-        childColumns = "session_id"),
-indices = {@Index("fps")})
+        childColumns = "session_id",
+        onDelete = ForeignKey.CASCADE),
+        indices = {@Index(name = "fps_session_index", value = "session_id")})
 public class FpsEntity extends BaseEntity {
     private double fps;
 

@@ -6,11 +6,13 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 import com.appachhi.sdk.database.dao.CpuUsageDao;
+import com.appachhi.sdk.database.dao.FpsDao;
 import com.appachhi.sdk.database.dao.GCDao;
 import com.appachhi.sdk.database.dao.MemoryDao;
 import com.appachhi.sdk.database.dao.NetworkDao;
 import com.appachhi.sdk.database.dao.SessionDao;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
+import com.appachhi.sdk.database.entity.FpsEntity;
 import com.appachhi.sdk.database.entity.GCEntity;
 import com.appachhi.sdk.database.entity.MemoryEntity;
 import com.appachhi.sdk.database.entity.NetworkUsageEntity;
@@ -21,7 +23,8 @@ import com.appachhi.sdk.database.entity.Session;
         Session.class,
         MemoryEntity.class,
         GCEntity.class,
-        NetworkUsageEntity.class}, version = 1)
+        NetworkUsageEntity.class,
+        FpsEntity.class}, version = 1)
 public abstract class AppachhiDB extends RoomDatabase {
     private static final String DB_NAME = "appachhi";
 
@@ -32,6 +35,8 @@ public abstract class AppachhiDB extends RoomDatabase {
     public abstract MemoryDao memoryDao();
 
     public abstract GCDao gcDao();
+
+    public abstract FpsDao fpsDao();
 
     public abstract NetworkDao networkDao();
 

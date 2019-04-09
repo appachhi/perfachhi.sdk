@@ -3,6 +3,7 @@ package com.appachhi.sdk.database;
 import android.os.Build;
 
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
+import com.appachhi.sdk.database.entity.FpsEntity;
 import com.appachhi.sdk.database.entity.GCEntity;
 import com.appachhi.sdk.database.entity.MemoryEntity;
 import com.appachhi.sdk.database.entity.NetworkUsageEntity;
@@ -51,6 +52,10 @@ public class DatabaseMapper {
                 gcInfo.getGcRunTime(),
                 sessionId
         );
+    }
+
+    public static FpsEntity fromDoubleToFpsEntity(double fps, String sessionId) {
+        return new FpsEntity(fps, sessionId);
     }
 
     public static NetworkUsageEntity fromNetworkUsageInfoNetworkUsageEntity(NetworkInfo networkInfo, String sessionId) {
