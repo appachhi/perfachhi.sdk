@@ -5,9 +5,11 @@ import android.os.Build;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
 import com.appachhi.sdk.database.entity.GCEntity;
 import com.appachhi.sdk.database.entity.MemoryEntity;
+import com.appachhi.sdk.database.entity.NetworkUsageEntity;
 import com.appachhi.sdk.monitor.cpu.CpuUsageInfo;
 import com.appachhi.sdk.monitor.memory.GCInfo;
 import com.appachhi.sdk.monitor.memory.MemoryInfo;
+import com.appachhi.sdk.monitor.network.NetworkInfo;
 
 public class DatabaseMapper {
     public static CpuUsageEntity fromCpuUsageInfoToCpuUsageEntity(CpuUsageInfo cpuUsageInfo, String sessionId) {
@@ -49,6 +51,10 @@ public class DatabaseMapper {
                 gcInfo.getGcRunTime(),
                 sessionId
         );
+    }
+
+    public static NetworkUsageEntity fromNetworkUsageInfoNetworkUsageEntity(NetworkInfo networkInfo, String sessionId) {
+        return new NetworkUsageEntity(networkInfo.getByteSend(), networkInfo.getByteReceived(), sessionId);
     }
 
     private static boolean isAboveAndroidM() {
