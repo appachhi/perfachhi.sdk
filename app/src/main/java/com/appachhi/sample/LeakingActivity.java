@@ -7,10 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.appachhi.sdk.instrument.trace.Trace;
+import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
 
 public class LeakingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        ScreenTransitionManager.getInstance().beginTransition(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaking);
         findViewById(R.id.action).setOnClickListener(new View.OnClickListener() {
@@ -33,5 +35,11 @@ public class LeakingActivity extends AppCompatActivity {
             }
         };
         new Thread(work).start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ScreenTransitionManager.getInstance().beginTransition(this);
     }
 }

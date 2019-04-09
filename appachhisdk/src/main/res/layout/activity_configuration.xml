@@ -90,7 +90,7 @@
                 android:paddingEnd="4dp"
                 android:paddingRight="4dp"
                 android:textColor="@android:color/white"
-                android:text="Transition configured to capture the time take to complete the rendering"
+                android:text="Transition configured to capture the duration take to complete the rendering"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="13sp" />
 

@@ -7,6 +7,8 @@ import com.appachhi.sdk.database.entity.FpsEntity;
 import com.appachhi.sdk.database.entity.GCEntity;
 import com.appachhi.sdk.database.entity.MemoryEntity;
 import com.appachhi.sdk.database.entity.NetworkUsageEntity;
+import com.appachhi.sdk.database.entity.TransitionStatEntity;
+import com.appachhi.sdk.instrument.transition.TransitionStat;
 import com.appachhi.sdk.monitor.cpu.CpuUsageInfo;
 import com.appachhi.sdk.monitor.memory.GCInfo;
 import com.appachhi.sdk.monitor.memory.MemoryInfo;
@@ -58,8 +60,12 @@ public class DatabaseMapper {
         return new FpsEntity(fps, sessionId);
     }
 
-    public static NetworkUsageEntity fromNetworkUsageInfoNetworkUsageEntity(NetworkInfo networkInfo, String sessionId) {
+    public static NetworkUsageEntity fromNetworkUsageInfoToNetworkUsageEntity(NetworkInfo networkInfo, String sessionId) {
         return new NetworkUsageEntity(networkInfo.getByteSend(), networkInfo.getByteReceived(), sessionId);
+    }
+
+    public static TransitionStatEntity fromTransitionStatToTransitionStatEntity(TransitionStat transitionStat, String sessionId) {
+        return new TransitionStatEntity(transitionStat.getScreenName(), transitionStat.transitionDuration(), sessionId);
     }
 
     private static boolean isAboveAndroidM() {

@@ -6,7 +6,7 @@ import android.os.SystemClock;
  * Class holding information about the startAndBind and end time of the transition.
  * It also keep information about whether the information has been flushed or not
  */
-final class TransitionStat {
+public final class TransitionStat {
     // Id  of the screen transitioned
     private int id;
     // Start time of the transition in milliseconds
@@ -46,7 +46,7 @@ final class TransitionStat {
         return flushed;
     }
 
-    String getScreenName() {
+    public String getScreenName() {
         return screenName;
     }
 
@@ -57,7 +57,7 @@ final class TransitionStat {
      * @return Duration of the screen transition
      */
     @SuppressWarnings("JavadocReference")
-    long transitionDuration() throws IllegalStateException {
+    public long transitionDuration() throws IllegalStateException {
         if (endTime == -1) {
             throw new IllegalStateException("Cannot compute duration for unfinished transition");
         }

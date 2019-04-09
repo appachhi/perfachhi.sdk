@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
+
 import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.Executor;
@@ -30,6 +32,7 @@ public class OkHttpTestActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ScreenTransitionManager.getInstance().beginTransition(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ok_http_test);
         Spinner spinner = findViewById(R.id.request_type);
@@ -125,5 +128,11 @@ public class OkHttpTestActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ScreenTransitionManager.getInstance().beginTransition(this);
     }
 }
