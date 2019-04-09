@@ -134,7 +134,7 @@ public class Appachhi {
         featureModules.add(new NetworkFeatureModule(db.networkDao(), dbExecutor, sessionManager));
         featureModules.add(new CpuUsageInfoFeatureModule(db.cpuUsageDao(), dbExecutor, sessionManager));
         featureModules.add(new FpsFeatureModule(db.fpsDao(), dbExecutor, sessionManager));
-        featureModules.add(new MemoryLeakFeatureModule(application));
+        featureModules.add(new MemoryLeakFeatureModule(application, db.memoryLeakDao(), dbExecutor, sessionManager));
         featureModules.add(new ScreenTransitionFeatureModule(ScreenTransitionManager.getInstance(), db.screenTransitionDao(), dbExecutor, sessionManager));
         return featureModules;
     }
