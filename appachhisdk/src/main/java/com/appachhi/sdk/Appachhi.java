@@ -130,8 +130,8 @@ public class Appachhi {
     private List<FeatureModule> addModules(Application application) {
         List<FeatureModule> featureModules = new LinkedList<>();
         featureModules.add(new MemoryInfoFeatureModule(application, db.memoryDao(), dbExecutor, sessionManager));
-        featureModules.add(new GCInfoFeatureModule(db.gcDao(), dbExecutor,sessionManager));
-        featureModules.add(new NetworkFeatureModule());
+        featureModules.add(new GCInfoFeatureModule(db.gcDao(), dbExecutor, sessionManager));
+        featureModules.add(new NetworkFeatureModule(db.networkDao(), dbExecutor, sessionManager));
         featureModules.add(new CpuUsageInfoFeatureModule(db.cpuUsageDao(), dbExecutor, sessionManager));
         featureModules.add(new FpsFeatureModule());
         featureModules.add(new MemoryLeakFeatureModule(application));

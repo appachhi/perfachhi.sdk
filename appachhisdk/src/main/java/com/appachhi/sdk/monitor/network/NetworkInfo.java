@@ -8,7 +8,7 @@ import org.json.JSONObject;
 /**
  * Class representing network usage information
  */
-class NetworkInfo {
+public class NetworkInfo {
     private static final String TAG = "NetworkInfo";
     private static final String KB_SENT = "Send";
     private static final String KB_RECEIVE = "Receive";
@@ -26,11 +26,11 @@ class NetworkInfo {
         this.byteReceived = byteReceived;
     }
 
-    long getByteSend() {
+    public long getByteSend() {
         return byteSend;
     }
 
-    long getByteReceived() {
+    public long getByteReceived() {
         return byteReceived;
     }
 
