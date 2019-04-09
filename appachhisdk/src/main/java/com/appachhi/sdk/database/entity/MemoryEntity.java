@@ -3,45 +3,50 @@ package com.appachhi.sdk.database.entity;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 
-@Entity(tableName = "memory_usage", foreignKeys = @ForeignKey(entity = Session.class, parentColumns = "id", childColumns = "session_id"))
+@Entity(tableName = "memory_usage",
+        foreignKeys = @ForeignKey(entity = Session.class, parentColumns = "id", childColumns = "session_id"),
+        indices = {@Index(name = "memory_usage_session_index", value = "session_id")})
 public class MemoryEntity extends BaseEntity {
     @ColumnInfo(name = "summary_java_heap")
-    private String javaHeap;
+    private int javaHeap;
     @ColumnInfo(name = "native_heap")
-    private String nativeHeap;
+    private int nativeHeap;
     @ColumnInfo(name = "summary_code")
-    private String code;
+    private int code;
     @ColumnInfo(name = "summary_stack")
-    private String stack;
+    private int stack;
     @ColumnInfo(name = "summary_graphics")
-    private String graphics;
+    private int graphics;
     @ColumnInfo(name = "summary_private_other")
-    private String privateOther;
+    private int privateOther;
     @ColumnInfo(name = "summary_system")
-    private String system;
+    private int system;
     @ColumnInfo(name = "summary_total_swap")
-    private String totalSwap;
+    private int totalSwap;
     @ColumnInfo(name = "threshold")
-    private String threshold;
+    private long threshold;
     @ColumnInfo(name = "total_pss")
-    private String totalPSS;
+    private int totalPSS;
     @ColumnInfo(name = "total_private_dirty")
-    private String totalPrivateDirty;
+    private int totalPrivateDirty;
     @ColumnInfo(name = "total_shared_dirty")
-    private String totalSharedDirty;
+    private int totalSharedDirty;
     @ColumnInfo(name = "system_resource_memory")
-    private String systemResourceMemory;
+    private int systemResourceMemory;
     @ColumnInfo(name = "swap_memory")
-    private String swapMemory;
+    private int swapMemory;
 
     public MemoryEntity() {
     }
 
-    public MemoryEntity(String javaHeap, String nativeHeap, String code, String stack,
-                        String graphics, String privateOther, String system, String totalSwap,
-                        String threshold, String totalPSS, String totalPrivateDirty,
-                        String totalSharedDirty, String systemResourceMemory, String swapMemory,
+    @Ignore
+    public MemoryEntity(int javaHeap, int nativeHeap, int code, int stack,
+                        int graphics, int privateOther, int system, int totalSwap,
+                        long threshold, int totalPSS, int totalPrivateDirty,
+                        int totalSharedDirty, int systemResourceMemory, int swapMemory,
                         String sessionId) {
         super(sessionId);
         this.javaHeap = javaHeap;
@@ -60,115 +65,115 @@ public class MemoryEntity extends BaseEntity {
         this.swapMemory = swapMemory;
     }
 
-    public String getJavaHeap() {
+    public int getJavaHeap() {
         return javaHeap;
     }
 
-    public void setJavaHeap(String javaHeap) {
+    public void setJavaHeap(int javaHeap) {
         this.javaHeap = javaHeap;
     }
 
-    public String getNativeHeap() {
+    public int getNativeHeap() {
         return nativeHeap;
     }
 
-    public void setNativeHeap(String nativeHeap) {
+    public void setNativeHeap(int nativeHeap) {
         this.nativeHeap = nativeHeap;
     }
 
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(int code) {
         this.code = code;
     }
 
-    public String getStack() {
+    public int getStack() {
         return stack;
     }
 
-    public void setStack(String stack) {
+    public void setStack(int stack) {
         this.stack = stack;
     }
 
-    public String getGraphics() {
+    public int getGraphics() {
         return graphics;
     }
 
-    public void setGraphics(String graphics) {
+    public void setGraphics(int graphics) {
         this.graphics = graphics;
     }
 
-    public String getPrivateOther() {
+    public int getPrivateOther() {
         return privateOther;
     }
 
-    public void setPrivateOther(String privateOther) {
+    public void setPrivateOther(int privateOther) {
         this.privateOther = privateOther;
     }
 
-    public String getSystem() {
+    public int getSystem() {
         return system;
     }
 
-    public void setSystem(String system) {
+    public void setSystem(int system) {
         this.system = system;
     }
 
-    public String getTotalSwap() {
+    public int getTotalSwap() {
         return totalSwap;
     }
 
-    public void setTotalSwap(String totalSwap) {
+    public void setTotalSwap(int totalSwap) {
         this.totalSwap = totalSwap;
     }
 
-    public String getThreshold() {
+    public long getThreshold() {
         return threshold;
     }
 
-    public void setThreshold(String threshold) {
+    public void setThreshold(long threshold) {
         this.threshold = threshold;
     }
 
-    public String getTotalPSS() {
+    public int getTotalPSS() {
         return totalPSS;
     }
 
-    public void setTotalPSS(String totalPSS) {
+    public void setTotalPSS(int totalPSS) {
         this.totalPSS = totalPSS;
     }
 
-    public String getTotalPrivateDirty() {
+    public int getTotalPrivateDirty() {
         return totalPrivateDirty;
     }
 
-    public void setTotalPrivateDirty(String totalPrivateDirty) {
+    public void setTotalPrivateDirty(int totalPrivateDirty) {
         this.totalPrivateDirty = totalPrivateDirty;
     }
 
-    public String getTotalSharedDirty() {
+    public int getTotalSharedDirty() {
         return totalSharedDirty;
     }
 
-    public void setTotalSharedDirty(String totalSharedDirty) {
+    public void setTotalSharedDirty(int totalSharedDirty) {
         this.totalSharedDirty = totalSharedDirty;
     }
 
-    public String getSystemResourceMemory() {
+    public int getSystemResourceMemory() {
         return systemResourceMemory;
     }
 
-    public void setSystemResourceMemory(String systemResourceMemory) {
+    public void setSystemResourceMemory(int systemResourceMemory) {
         this.systemResourceMemory = systemResourceMemory;
     }
 
-    public String getSwapMemory() {
+    public int getSwapMemory() {
         return swapMemory;
     }
 
-    public void setSwapMemory(String swapMemory) {
+    public void setSwapMemory(int swapMemory) {
         this.swapMemory = swapMemory;
     }
 }
