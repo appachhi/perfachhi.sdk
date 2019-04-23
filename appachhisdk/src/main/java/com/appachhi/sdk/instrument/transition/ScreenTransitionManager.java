@@ -45,6 +45,7 @@ final public class ScreenTransitionManager {
      *
      * @param activity A Non Null {@link Activity}
      */
+    @Keep
     public void beginTransition(@NonNull Activity activity) {
         if (Appachhi.DEBUG) {
             Log.d(TAG, "beginTransition");
