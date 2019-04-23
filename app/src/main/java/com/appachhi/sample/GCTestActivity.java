@@ -12,7 +12,6 @@ public class GCTestActivity extends AppCompatActivity {
     @Trace(name = "GCTEST")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        ScreenTransitionManager.getInstance().beginTransition(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gc_test);
         findViewById(R.id.action).setOnClickListener(new View.OnClickListener() {
