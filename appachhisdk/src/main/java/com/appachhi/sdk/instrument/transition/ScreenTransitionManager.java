@@ -2,6 +2,7 @@ package com.appachhi.sdk.instrument.transition;
 
 import android.app.Activity;
 import android.os.SystemClock;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -25,6 +26,7 @@ final public class ScreenTransitionManager {
         this.screenshotManager = screenshotManager;
     }
 
+    @Keep
     public static ScreenTransitionManager getInstance() {
         synchronized (ScreenTransitionManager.class) {
             if (instance == null) {
@@ -60,6 +62,7 @@ final public class ScreenTransitionManager {
      *
      * @param screenName Name of the screen for which transition tracing is to started
      */
+    @Keep
     public void beginTransition(@NonNull Activity activity, @NonNull String screenName) {
         Log.d(TAG, "beginTransition");
         boolean doesScreenNameAlreadyExist = screenTransitionStats.containsKey(screenName);
@@ -85,6 +88,7 @@ final public class ScreenTransitionManager {
      *
      * @param activity {@link Activity} for which transition need to be stopped
      */
+    @Keep
     public void endTransition(@NonNull Activity activity) {
         if (Appachhi.DEBUG) {
             Log.d(TAG, "endTransition");
@@ -103,6 +107,7 @@ final public class ScreenTransitionManager {
      * @param screenName Name of the screen which was used during beginTransition
      */
 
+    @Keep
     public void endTransition(@NonNull Activity activity, @NonNull String screenName) {
         if (Appachhi.DEBUG) {
             Log.d(TAG, "endTransition");
@@ -127,6 +132,7 @@ final public class ScreenTransitionManager {
      *
      * @param onTransitionListener {@link OnTransitionListener}
      */
+    @Keep
     synchronized void registerListener(@NonNull OnTransitionListener onTransitionListener) {
         if (Appachhi.DEBUG) {
             //noinspection ConstantConditions
@@ -140,6 +146,7 @@ final public class ScreenTransitionManager {
      *
      * @param onTransitionListener {@link OnTransitionListener}
      */
+    @Keep
     synchronized void unRegister(@NonNull OnTransitionListener onTransitionListener) {
         if (Appachhi.DEBUG) {
             Log.d(TAG, "unRegister");

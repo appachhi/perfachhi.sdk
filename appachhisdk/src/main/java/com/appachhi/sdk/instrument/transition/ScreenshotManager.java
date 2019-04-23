@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
@@ -23,7 +24,7 @@ import java.util.concurrent.Executors;
 /**
  * ScreenshotManager is responsible for taking screenshot and saves them
  */
-class ScreenshotManager {
+public class ScreenshotManager {
     private static ScreenshotManager instance;
     private static boolean isRunningFromReactNative = false;
     private Handler mainHandler = new Handler(Looper.myLooper());
@@ -40,6 +41,7 @@ class ScreenshotManager {
      *
      * @param isRunningFromReactNative true if running from react native
      */
+    @Keep
     public static void setIsRunningFromReactNative(boolean isRunningFromReactNative) {
         ScreenshotManager.isRunningFromReactNative = isRunningFromReactNative;
     }

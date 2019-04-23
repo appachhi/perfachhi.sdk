@@ -1,6 +1,6 @@
 package com.appachhi.sdk.instrument.network.internal.okhttp;
 
-import com.appachhi.sdk.instrument.network.internal.InternalHttpMetric;
+import com.appachhi.sdk.instrument.network.internal.HttpMetric;
 
 import java.io.IOException;
 
@@ -13,9 +13,9 @@ import okhttp3.Response;
 public class OkHttpCallWrapper implements Callback {
     private Callback actualCallback;
     private long startTime;
-    private InternalHttpMetric httpMetric;
+    private HttpMetric httpMetric;
 
-    OkHttpCallWrapper(Callback callback, InternalHttpMetric httpMetric, long startTime) {
+    OkHttpCallWrapper(Callback callback, HttpMetric httpMetric, long startTime) {
         this.actualCallback = callback;
         this.startTime = startTime;
         this.httpMetric = httpMetric;

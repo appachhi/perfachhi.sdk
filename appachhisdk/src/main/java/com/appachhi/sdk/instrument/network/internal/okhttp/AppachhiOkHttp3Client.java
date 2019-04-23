@@ -4,7 +4,7 @@ import android.support.annotation.Keep;
 import android.util.Log;
 
 import com.appachhi.sdk.Appachhi;
-import com.appachhi.sdk.instrument.network.internal.InternalHttpMetric;
+import com.appachhi.sdk.instrument.network.internal.HttpMetric;
 
 import java.io.IOException;
 
@@ -22,7 +22,7 @@ public class AppachhiOkHttp3Client {
 
     @Keep
     public static Response execute(Call call) throws IOException {
-        InternalHttpMetric httpMetric = Appachhi.newHttpTrace();
+        HttpMetric httpMetric = Appachhi.newHttpTrace();
         long startTime = httpMetric.start();
 
         try {
@@ -57,7 +57,7 @@ public class AppachhiOkHttp3Client {
     @Keep
     public static void enqueue(Call call, Callback callback) {
         Log.d(TAG, "enqueue: Before");
-        InternalHttpMetric httpMetric = Appachhi.newHttpTrace();
+        HttpMetric httpMetric = Appachhi.newHttpTrace();
         Log.d(TAG, "enqueue: AFter Creation");
         long startTime = httpMetric.start();
         Log.d(TAG, "enqueue: Metric start");
@@ -65,7 +65,7 @@ public class AppachhiOkHttp3Client {
         Log.d(TAG, "enqueue: After");
     }
 
-    static void handleCallSuccess(Response response, InternalHttpMetric httpMetric,
+    static void handleCallSuccess(Response response, HttpMetric httpMetric,
                                   long startTime, long endTime) throws IOException {
         Request request = response.request();
         if (request != null) {

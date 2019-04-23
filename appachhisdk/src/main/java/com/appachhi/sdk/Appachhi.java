@@ -12,14 +12,15 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.appachhi.sdk.database.AppachhiDB;
+import com.appachhi.sdk.instrument.network.internal.HttpMetric;
 import com.appachhi.sdk.instrument.network.internal.HttpMetricSavingManager;
-import com.appachhi.sdk.instrument.network.internal.InternalHttpMetric;
 import com.appachhi.sdk.instrument.trace.MethodTrace;
 import com.appachhi.sdk.instrument.trace.MethodTraceSavingManager;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionFeatureModule;
@@ -84,6 +85,7 @@ public class Appachhi {
         return instance;
     }
 
+    @Keep
     public static Appachhi getInstance() {
         if (instance == null) {
             throw new IllegalStateException("Cannot request Appachhi instance before calling init()");
@@ -91,12 +93,14 @@ public class Appachhi {
         return instance;
     }
 
+    @Keep
     public static MethodTrace newTrace(String traceName) {
         return new MethodTrace(traceName, Appachhi.getInstance().getMethodTraceSavingManager());
     }
 
-    public static InternalHttpMetric newHttpTrace() {
-        return new InternalHttpMetric(Appachhi.getInstance().getHttpMetricSavingManager());
+    @Keep
+    public static HttpMetric newHttpTrace() {
+        return new HttpMetric(Appachhi.getInstance().getHttpMetricSavingManager());
     }
 
     private Appachhi(@NonNull Application application, @NonNull Config config) {
@@ -131,6 +135,7 @@ public class Appachhi {
     }
 
     @NonNull
+    @Keep
     public SessionManager getSessionManager() {
         return sessionManager;
     }
@@ -146,6 +151,7 @@ public class Appachhi {
     }
 
     @NonNull
+    @Keep
     public FeatureConfigManager getFeatureConfigManager() {
         return featureConfigManager;
     }

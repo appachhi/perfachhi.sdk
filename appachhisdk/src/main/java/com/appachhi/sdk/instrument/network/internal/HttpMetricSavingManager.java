@@ -24,7 +24,7 @@ public class HttpMetricSavingManager {
         this.sessionManager = sessionManager;
     }
 
-    void save(final InternalHttpMetric data) {
+    void save(final HttpMetric data) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

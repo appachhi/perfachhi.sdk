@@ -1,7 +1,9 @@
 package com.appachhi.sdk.instrument.trace;
 
 import android.os.SystemClock;
+import android.support.annotation.Keep;
 
+@Keep
 public class MethodTrace {
     private static final String TAG = "Appachhi-Trace";
     private String traceName;
@@ -24,6 +26,7 @@ public class MethodTrace {
         return duration;
     }
 
+    @Keep
     public void stop() {
         duration = SystemClock.elapsedRealtime() - startTime;
         methodTraceSavingManager.save(this);

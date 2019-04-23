@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 
 import java.util.Date;
 
-public class InternalHttpMetric {
-    private static final String TAG = "InternalHttpMetric";
+public class HttpMetric {
+    private static final String TAG = "HttpMetric";
     @NonNull
     private String url;
     @NonNull
@@ -21,7 +21,7 @@ public class InternalHttpMetric {
     private String threadName;
     private HttpMetricSavingManager httpMetricSavingManager;
 
-    public InternalHttpMetric(HttpMetricSavingManager httpMetricSavingManager) {
+    public HttpMetric(HttpMetricSavingManager httpMetricSavingManager) {
         this.httpMetricSavingManager = httpMetricSavingManager;
         isComplete = false;
         isStarted = false;
@@ -129,18 +129,16 @@ public class InternalHttpMetric {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("InternalHttpMetric{");
-        sb.append("url='").append(url).append('\'');
-        sb.append(", methodType='").append(methodType).append('\'');
-        sb.append(", contentType='").append(contentType).append('\'');
-        sb.append(", requestContentLength=").append(requestContentLength);
-        sb.append(", responseContentLength=").append(responseContentLength);
-        sb.append(", isComplete=").append(isComplete);
-        sb.append(", responseCode=").append(responseCode);
-        sb.append(", startTime=").append(startTime);
-        sb.append(", endTime=").append(endTime);
-        sb.append(", threadName='").append(threadName).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return "HttpMetric{" + "url='" + url + '\'' +
+                ", methodType='" + methodType + '\'' +
+                ", contentType='" + contentType + '\'' +
+                ", requestContentLength=" + requestContentLength +
+                ", responseContentLength=" + responseContentLength +
+                ", isComplete=" + isComplete +
+                ", responseCode=" + responseCode +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", threadName='" + threadName + '\'' +
+                '}';
     }
 }

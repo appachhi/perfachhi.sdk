@@ -7,12 +7,14 @@ import android.content.Context;
 import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.appachhi.sdk.Appachhi;
 
+@Keep
 public class AppachhiInitializer extends ContentProvider {
     public static final String TAG = "AppachhiInitializer";
 
