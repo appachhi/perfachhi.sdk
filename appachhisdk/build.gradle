@@ -1,5 +1,5 @@
 apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.appachhi.android:sdk:0.0.1:'
+group='com.github.appachhi.android'
 apply plugin: 'com.android.library'
 
 android {
