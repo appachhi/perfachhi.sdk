@@ -76,7 +76,6 @@ public class Appachhi {
 
     @SuppressWarnings("UnusedReturnValue")
     public static Appachhi init(@NonNull Application application) {
-        AppachhiDB appachhiDB = AppachhiDB.create(application);
         if (LeakCanary.isInAnalyzerProcess(application)) {
             return null;
         }

@@ -1,9 +1,9 @@
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.appachhi.android:sdk:0.0.1:'
 apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 28
-
-
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 28
@@ -16,7 +16,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
