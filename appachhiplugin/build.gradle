@@ -1,7 +1,9 @@
 apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.appachhi.android'
 apply plugin: 'java-library'
 apply plugin: 'java-gradle-plugin'
+apply plugin: 'maven-publish'
+
+group='com.github.appachhi.android'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
