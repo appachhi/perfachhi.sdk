@@ -17,6 +17,9 @@ public interface MethodTraceDao {
     @Query("SELECT * from method_trace where session_id=:sessionId")
     List<MethodTraceEntity> allMethodTraceForTheSession(String sessionId);
 
+    @Query("SELECT * from method_trace")
+    List<MethodTraceEntity> allMethodTrace();
+
     @Delete
     void deleteMethodTrace(MethodTraceEntity methodTraceEntity);
 }

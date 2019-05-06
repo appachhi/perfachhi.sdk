@@ -22,6 +22,9 @@ public interface CpuUsageDao {
     @Query("SELECT * FROM cpu_usage WHERE session_id = :sessionId")
     public List<CpuUsageEntity> allCpuUsageForTheSession(String sessionId);
 
+    @Query("SELECT * FROM cpu_usage")
+    public List<CpuUsageEntity> allCpuUsage();
+
     @Delete()
     public void deleteCpuUsage(CpuUsageEntity cpuUsageEntity);
 }

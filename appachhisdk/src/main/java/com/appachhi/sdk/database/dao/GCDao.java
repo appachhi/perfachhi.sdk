@@ -21,6 +21,9 @@ public interface GCDao {
     @Query("SELECT * FROM gc WHERE session_id = :sessionId")
     public List<GCEntity> allGCRunForTheSession(String sessionId);
 
+    @Query("SELECT * FROM gc")
+    public List<GCEntity> allGCRun();
+
     @Delete()
     public void deleteGcRuns(GCEntity gcEntity);
 }

@@ -19,6 +19,9 @@ public interface MemoryLeakDao {
     @Query("SELECT * FROM memory_leak WHERE session_id = :sessionId")
     public List<MemoryLeakEntity> allMemoryLeakForTheSession(String sessionId);
 
+    @Query("SELECT * FROM memory_leak")
+    public List<MemoryLeakEntity> allMemoryLeak();
+
     @Delete()
     public void deleteMemoryLeak(MemoryLeakEntity gcEntity);
 }
