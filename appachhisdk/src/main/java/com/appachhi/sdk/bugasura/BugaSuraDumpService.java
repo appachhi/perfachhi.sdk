@@ -64,13 +64,16 @@ public class BugaSuraDumpService extends IntentService {
     }
 
     private Notification createNotification() {
-        Log.d(TAG,"createNotification");
+        Log.d(TAG, "createNotification");
         createNotificationChannelIfNecessary();
-        return new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID).setContentTitle("Dump").build();
+        return new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setContentTitle("Dump")
+                .setContentText("Saving")
+                .build();
     }
 
     private void createNotificationChannelIfNecessary() {
-        Log.d(TAG,"createNotificationChannelIfNecessary");
+        Log.d(TAG, "createNotificationChannelIfNecessary");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID) == null) {
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "Bugasura", NotificationManager.IMPORTANCE_MIN);
             notificationManager.createNotificationChannel(notificationChannel);
@@ -84,7 +87,7 @@ public class BugaSuraDumpService extends IntentService {
                           List<MethodTraceEntity> methodTraceEntities,
                           List<NetworkUsageEntity> networkUsageEntities,
                           List<TransitionStatEntity> transitionStatEntities) {
-        Log.d(TAG,"dumpJson");
+        Log.d(TAG, "dumpJson");
         try {
             File folder = getExternalFilesDir("dumps");
             File dumpFile = new File(folder, "dump.json");
@@ -111,7 +114,7 @@ public class BugaSuraDumpService extends IntentService {
     }
 
     private void writeScreenTransition(JsonWriter jsonWriter, List<TransitionStatEntity> transitionStatEntities) {
-        Log.d(TAG,"writeScreenTransition");
+        Log.d(TAG, "writeScreenTransition");
         try {
             jsonWriter.name("screen_transition").beginArray();
             for (TransitionStatEntity transitionStatEntity : transitionStatEntities) {
@@ -128,7 +131,7 @@ public class BugaSuraDumpService extends IntentService {
     }
 
     private void writeNetworkUsage(JsonWriter jsonWriter, List<NetworkUsageEntity> networkUsageEntities) {
-        Log.d(TAG,"writeNetworkUsage");
+        Log.d(TAG, "writeNetworkUsage");
         try {
             jsonWriter.name("network_usage").beginArray();
             for (NetworkUsageEntity networkUsageEntity : networkUsageEntities) {
@@ -145,7 +148,7 @@ public class BugaSuraDumpService extends IntentService {
     }
 
     private void writeMethodTrace(JsonWriter jsonWriter, List<MethodTraceEntity> methodTraceEntities) {
-        Log.d(TAG,"writeMethodTrace");
+        Log.d(TAG, "writeMethodTrace");
         try {
             jsonWriter.name("method_trace").beginArray();
             for (MethodTraceEntity methodTraceEntity : methodTraceEntities) {
@@ -162,7 +165,7 @@ public class BugaSuraDumpService extends IntentService {
     }
 
     private void writeMemoryLeak(JsonWriter jsonWriter, List<MemoryLeakEntity> memoryLeakEntities) {
-        Log.d(TAG,"writeMemoryLeak");
+        Log.d(TAG, "writeMemoryLeak");
         try {
             jsonWriter.name("memory_leak").beginArray();
             for (MemoryLeakEntity memoryLeakEntity : memoryLeakEntities) {
@@ -179,7 +182,7 @@ public class BugaSuraDumpService extends IntentService {
     }
 
     private void writeMemory(JsonWriter jsonWriter, List<MemoryEntity> memoryEntities) {
-        Log.d(TAG,"writeMemory");
+        Log.d(TAG, "writeMemory");
         try {
             jsonWriter.name("memory").beginArray();
             for (MemoryEntity memoryEntity : memoryEntities) {
@@ -208,7 +211,7 @@ public class BugaSuraDumpService extends IntentService {
     }
 
     private void writeGcRun(JsonWriter jsonWriter, List<GCEntity> gcEntities) {
-        Log.d(TAG,"writeGcRun");
+        Log.d(TAG, "writeGcRun");
         try {
             jsonWriter.name("gc").beginArray();
             for (GCEntity gcEntity : gcEntities) {
@@ -234,7 +237,7 @@ public class BugaSuraDumpService extends IntentService {
     }
 
     private void writeApiCall(JsonWriter jsonWriter, List<APICallEntity> apiCallEntities) {
-        Log.d(TAG,"writeApiCall");
+        Log.d(TAG, "writeApiCall");
         try {
             jsonWriter.name("api_calls").beginArray();
             for (APICallEntity apiCallEntity : apiCallEntities) {
@@ -256,7 +259,7 @@ public class BugaSuraDumpService extends IntentService {
     }
 
     private void writeFps(JsonWriter jsonWriter, List<FpsEntity> fpsEntities) {
-        Log.d(TAG,"writeFps");
+        Log.d(TAG, "writeFps");
         try {
             jsonWriter.name("fps").beginArray();
             for (FpsEntity fpsEntity : fpsEntities) {
@@ -273,7 +276,7 @@ public class BugaSuraDumpService extends IntentService {
 
 
     private void writeCpuUsage(JsonWriter jsonWriter, List<CpuUsageEntity> cpuUsageEntities) {
-        Log.d(TAG,"writeCpuUsage");
+        Log.d(TAG, "writeCpuUsage");
         try {
             jsonWriter.name("cpu_usages").beginArray();
             for (CpuUsageEntity cpuUsageEntity : cpuUsageEntities) {
@@ -300,7 +303,7 @@ public class BugaSuraDumpService extends IntentService {
     }
 
     private void writeSession(JsonWriter jsonWriter, List<Session> sessions) {
-        Log.d(TAG,"writeSession");
+        Log.d(TAG, "writeSession");
         try {
             jsonWriter.name("sessions").beginArray();
             for (Session session : sessions) {
