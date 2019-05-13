@@ -61,6 +61,16 @@ public class BugaSuraDumpService extends IntentService {
                 memoryLeakEntities, methodTraceEntities, networkUsageEntities, transitionStatEntities);
         Log.d(TAG, "Dump Service called");
         stopForeground(true);
+        notifyComplete();
+    }
+
+    private void notifyComplete() {
+        String completeAction = "com.appachhi.sdk.BUGASURA_DUMP_COMPLETE";
+        String bugasuraPackageName = "com.appachhi.bugasura";
+        Intent intent = new Intent(completeAction);
+        intent.putExtra("PACKAGE_NAME", getPackageName());
+        intent.setPackage(bugasuraPackageName);
+        sendBroadcast(intent);
     }
 
     private Notification createNotification() {
