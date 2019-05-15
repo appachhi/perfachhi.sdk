@@ -13,14 +13,20 @@ import java.util.List;
 @Dao
 public interface SessionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public long insertSession(Session session);
+    long insertSession(Session session);
 
     @Query("SELECT * FROM session")
-    public List<Session> allSessions();
+    List<Session> allSessions();
 
     @Delete
-    public void deleteSession(Session session);
+    void deleteSession(Session session);
 
     @Query("DELETE from session")
-    public void deleteAllSession();
+    void deleteAllSession();
+
+    @Query("SELECT * FROM session where syncStatus = 0 ORDER BY start_time ASC limit 200")
+    List<Session> oldest200UnSyncedSessions();
+
+    @Query("UPDATE session SET  syncStatus = 1 WHERE id IN (:ids)")
+    void updateSuccessSyncStatus(List<String> ids);
 }

@@ -156,6 +156,12 @@ public class Appachhi {
         return featureConfigManager;
     }
 
+    @NonNull
+    @Keep
+    public AppachhiDB getDb() {
+        return db;
+    }
+
     private List<FeatureModule> addModules(Application application) {
         List<FeatureModule> featureModules = new LinkedList<>();
         featureModules.add(new MemoryInfoFeatureModule(application, db.memoryDao(), dbExecutor, sessionManager));

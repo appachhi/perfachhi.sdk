@@ -13,11 +13,17 @@ import java.util.List;
 @Dao
 public interface ScreenTransitionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public long insertScreenTranData(TransitionStatEntity transitionStatEntity);
+    long insertScreenTranData(TransitionStatEntity transitionStatEntity);
 
     @Query("SELECT * FROM screen_transition WHERE session_id = :sessionId")
-    public List<TransitionStatEntity> allScreenTransitionDataForTheSession(String sessionId);
+    List<TransitionStatEntity> allScreenTransitionDataForTheSession(String sessionId);
+
+    @Query("SELECT * FROM screen_transition where syncStatus = 0 ORDER BY execution_time ASC limit 200")
+    List<TransitionStatEntity> oldest200UnSyncedTransitionStat();
+
+    @Query("UPDATE screen_transition SET  syncStatus = 1 WHERE id IN (:ids)")
+    void updateSuccessSyncStatus(List<String> ids);
 
     @Delete()
-    public void deleteScreenTransitionData(TransitionStatEntity transitionStatEntity);
+    void deleteScreenTransitionData(TransitionStatEntity transitionStatEntity);
 }

@@ -7,6 +7,8 @@ import android.arch.persistence.room.PrimaryKey;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -14,12 +16,22 @@ import java.util.UUID;
 public class Session {
     @PrimaryKey
     @NonNull
+    @SerializedName("id")
     private String id;
+    @SerializedName("manufacturer")
     private String manufacturer;
+    @SerializedName("model")
     private String model;
-    @NonNull
     @ColumnInfo(name = "start_time")
+    @SerializedName("start_time")
     private long startTime;
+
+    /**
+     * Sync Status 0 means unsynced
+     * Sync Status 1 means synced
+     */
+    @ColumnInfo(name = "syncStatus")
+    private transient int syncStatus;
 
     @Ignore
     public Session(String manufacturer, String model) {
@@ -28,7 +40,6 @@ public class Session {
         this.model = model;
     }
 
-    @SuppressWarnings("WeakerAccess")
     public Session() {
         this.id = UUID.randomUUID().toString();
         this.startTime = new Date().getTime();
@@ -65,6 +76,14 @@ public class Session {
 
     public void setStartTime(long startTime) {
         this.startTime = startTime;
+    }
+
+    public int getSyncStatus() {
+        return syncStatus;
+    }
+
+    public void setSyncStatus(int syncStatus) {
+        this.syncStatus = syncStatus;
     }
 
     public static Session create() {
