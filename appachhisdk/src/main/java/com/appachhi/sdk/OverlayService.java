@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.appachhi.sdk.sync.SyncManager;
 import com.appachhi.sdk.ui.ConfigurationActivity;
 
 import java.util.Collections;
@@ -38,6 +39,9 @@ public class OverlayService extends Service {
     private NotificationManager notificationManager;
     private Appachhi.Config config;
     private boolean modulesStarted;
+
+    // Temporart Work Around for Sync
+    SyncManager syncManager;
 
 
     public static void startAndBind(Context context, Appachhi.Config config) {
@@ -87,6 +91,11 @@ public class OverlayService extends Service {
         intentFilter.addAction(actionShow);
         intentFilter.addAction(actionHide);
         registerReceiver(receiver, intentFilter);
+
+        // Create sync manager and start sync
+
+        syncManager = SyncManager.create();
+        syncManager.startSync();
     }
 
     @Override
@@ -102,6 +111,9 @@ public class OverlayService extends Service {
         cancelNotification();
         stopModules();
         overlayViewManager.hideDebugSystemOverlay();
+
+        // Stop Sync
+        syncManager.stopSync();
         super.onDestroy();
     }
 
