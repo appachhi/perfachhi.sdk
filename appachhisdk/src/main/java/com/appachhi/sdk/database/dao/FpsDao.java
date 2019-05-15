@@ -21,6 +21,9 @@ public interface FpsDao {
     @Query("SELECT * FROM fps WHERE session_id = :sessionId")
     public List<FpsEntity> allFpsForTheSession(String sessionId);
 
+    @Query("SELECT * FROM fps")
+    public List<FpsEntity> allFps();
+
     @Delete()
     public void deleteFps(FpsEntity fpsEntity);
 }

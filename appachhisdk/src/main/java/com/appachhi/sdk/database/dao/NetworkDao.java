@@ -21,6 +21,9 @@ public interface NetworkDao {
     @Query("SELECT * FROM network_usage WHERE session_id = :sessionId")
     public List<NetworkUsageEntity> allNetworkUsagesForTheSession(String sessionId);
 
+    @Query("SELECT * FROM network_usage")
+    public List<NetworkUsageEntity> allNetwork();
+
     @Delete()
     public void deleteNetworkUsage(NetworkUsageEntity cpuUsageEntity);
 }

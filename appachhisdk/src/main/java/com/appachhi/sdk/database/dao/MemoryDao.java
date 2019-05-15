@@ -21,6 +21,9 @@ public interface MemoryDao {
     @Query("SELECT * FROM memory_usage WHERE session_id = :sessionId")
     public List<MemoryEntity> allMemoryUsageForTheSession(String sessionId);
 
+    @Query("SELECT * FROM memory_usage")
+    public List<MemoryEntity> allMemoryUsage();
+
     @Delete()
     public void deleteMemoryUsage(MemoryEntity cpuUsageEntity);
 }

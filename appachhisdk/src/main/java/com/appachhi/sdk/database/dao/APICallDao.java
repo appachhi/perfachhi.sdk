@@ -21,6 +21,9 @@ public interface APICallDao {
     @Query("SELECT * FROM api_call WHERE session_id = :sessionId")
     public List<APICallEntity> allApiCallsForTheSession(String sessionId);
 
+    @Query("SELECT * FROM api_call")
+    public List<APICallEntity> allApiCalls();
+
     @Delete()
     public void deleteApiCalls(APICallEntity apiCallEntity);
 }

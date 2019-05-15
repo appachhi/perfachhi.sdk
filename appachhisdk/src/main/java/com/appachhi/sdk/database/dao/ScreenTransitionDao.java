@@ -18,6 +18,9 @@ public interface ScreenTransitionDao {
     @Query("SELECT * FROM screen_transition WHERE session_id = :sessionId")
     public List<TransitionStatEntity> allScreenTransitionDataForTheSession(String sessionId);
 
+    @Query("SELECT * FROM screen_transition")
+    public List<TransitionStatEntity> allScreenTransition();
+
     @Delete()
     public void deleteScreenTransitionData(TransitionStatEntity transitionStatEntity);
 }

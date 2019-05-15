@@ -15,55 +15,58 @@
 
         <activity
             android:name=".ui.ConfigurationActivity"
+            android:excludeFromRecents="true"
             android:launchMode="singleTop"
-            android:theme="@style/TransparentActivity"
-            android:excludeFromRecents="true"/>
+            android:theme="@style/TransparentActivity" />
 
         <service
             android:name="com.squareup.leakcanary.internal.HeapAnalyzerService"
-            android:process=":leakcanary"
             android:enabled="false"
-            />
+            android:process=":leakcanary" />
         <service
             android:name="com.squareup.leakcanary.DisplayLeakService"
-            android:process=":leakcanary"
             android:enabled="false"
-            />
+            android:process=":leakcanary" />
+
         <provider
             android:name="com.squareup.leakcanary.internal.LeakCanaryFileProvider"
             android:authorities="com.squareup.leakcanary.fileprovider.${applicationId}"
             android:exported="false"
-            android:grantUriPermissions="true"
-            >
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/leak_canary_file_paths"/>
+                android:resource="@xml/leak_canary_file_paths" />
         </provider>
+
         <activity
-            android:theme="@style/leak_canary_LeakCanary.Base"
             android:name="com.squareup.leakcanary.internal.DisplayLeakActivity"
-            android:process=":leakcanary"
             android:enabled="false"
-            android:label="@string/leak_canary_display_activity_label"
             android:icon="@drawable/ic_monitor"
-            tools:replace="android:icon"
-            android:taskAffinity="com.squareup.leakcanary.${applicationId}"
-            >
-        </activity>
-        <activity
-            tools:replace="android:icon,android:roundIcon"
-            android:theme="@style/leak_canary_Theme.Transparent"
-            android:name="com.squareup.leakcanary.internal.RequestStoragePermissionActivity"
+            android:label="@string/leak_canary_display_activity_label"
             android:process=":leakcanary"
             android:taskAffinity="com.squareup.leakcanary.${applicationId}"
+            android:theme="@style/leak_canary_LeakCanary.Base"
+            tools:replace="android:icon"/>
+        <activity
+            android:name="com.squareup.leakcanary.internal.RequestStoragePermissionActivity"
             android:enabled="false"
             android:excludeFromRecents="true"
             android:icon="@drawable/ic_monitor"
+            android:label="@string/leak_canary_storage_permission_activity_label"
+            android:process=":leakcanary"
             android:roundIcon="@drawable/ic_monitor"
-            android:label="@string/leak_canary_storage_permission_activity_label" />
+            android:taskAffinity="com.squareup.leakcanary.${applicationId}"
+            android:theme="@style/leak_canary_Theme.Transparent"
+            tools:replace="android:icon,android:roundIcon" />
+
         <provider
             android:name=".providers.AppachhiInitializer"
             android:authorities="com.appachhi.sdk.initializer.${applicationId}"
-            android:exported="false"/>
+            android:exported="false" />
+        <service
+            android:name=".bugasura.BugaSuraDumpService"
+            android:exported="true"
+            android:enabled="true">
+        </service>
     </application>
 </manifest>
