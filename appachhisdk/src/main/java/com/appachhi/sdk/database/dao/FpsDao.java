@@ -26,6 +26,9 @@ public interface FpsDao {
 
     @Query("UPDATE fps SET  syncStatus = 1 WHERE id IN (:ids)")
     void updateSuccessSyncStatus(List<String> ids);
+  
+    @Query("SELECT * FROM fps")
+    public List<FpsEntity> allFps();
 
     @Delete()
     public void deleteFps(FpsEntity fpsEntity);

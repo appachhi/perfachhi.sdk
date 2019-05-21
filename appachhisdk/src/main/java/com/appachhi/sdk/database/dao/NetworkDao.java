@@ -20,12 +20,15 @@ public interface NetworkDao {
 
     @Query("SELECT * FROM network_usage WHERE session_id = :sessionId")
     public List<NetworkUsageEntity> allNetworkUsagesForTheSession(String sessionId);
-
+  
     @Query("SELECT * FROM network_usage where syncStatus = 0 ORDER BY execution_time ASC limit 200")
     public List<NetworkUsageEntity> oldest200UnSyncedNetworkUsage();
 
     @Query("UPDATE network_usage SET  syncStatus = 1 WHERE id IN (:ids)")
     void updateSuccessSyncStatus(List<String> ids);
+  
+    @Query("SELECT * FROM network_usage")
+    public List<NetworkUsageEntity> allNetwork();
 
     @Delete()
     public void deleteNetworkUsage(NetworkUsageEntity cpuUsageEntity);

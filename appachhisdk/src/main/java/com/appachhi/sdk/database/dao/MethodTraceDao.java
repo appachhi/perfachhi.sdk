@@ -16,12 +16,15 @@ public interface MethodTraceDao {
 
     @Query("SELECT * from method_trace where session_id=:sessionId")
     List<MethodTraceEntity> allMethodTraceForTheSession(String sessionId);
-
+  
     @Query("SELECT * FROM method_trace where syncStatus = 0 ORDER BY execution_time ASC limit 200")
     public List<MethodTraceEntity> oldest200UnSyncedMethodTrace();
 
     @Query("UPDATE method_trace SET  syncStatus = 1 WHERE id IN (:ids)")
     void updateSuccessSyncStatus(List<String> ids);
+
+    @Query("SELECT * from method_trace")
+    List<MethodTraceEntity> allMethodTrace();
 
     @Delete
     void deleteMethodTrace(MethodTraceEntity methodTraceEntity);

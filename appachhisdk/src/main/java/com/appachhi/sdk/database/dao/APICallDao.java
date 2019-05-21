@@ -26,6 +26,9 @@ public interface APICallDao {
 
     @Query("UPDATE api_call SET  syncStatus = 1 WHERE id IN (:ids)")
     void updateSuccessSyncStatus(List<String> ids);
+  
+    @Query("SELECT * FROM api_call")
+    public List<APICallEntity> allApiCalls();
 
     @Delete()
     public void deleteApiCalls(APICallEntity apiCallEntity);

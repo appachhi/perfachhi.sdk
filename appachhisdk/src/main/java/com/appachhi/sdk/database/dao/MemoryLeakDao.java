@@ -25,6 +25,9 @@ public interface MemoryLeakDao {
     @Query("UPDATE memory_leak SET  syncStatus = 1 WHERE id IN (:ids)")
     void updateSuccessSyncStatus(List<String> ids);
 
+    @Query("SELECT * FROM memory_leak")
+    public List<MemoryLeakEntity> allMemoryLeak();
+
     @Delete()
     public void deleteMemoryLeak(MemoryLeakEntity gcEntity);
 }

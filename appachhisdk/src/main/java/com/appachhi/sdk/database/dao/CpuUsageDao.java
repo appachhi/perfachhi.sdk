@@ -27,6 +27,8 @@ public interface CpuUsageDao {
 
     @Query("UPDATE cpu_usage SET  syncStatus = 1 WHERE id IN (:ids)")
     void updateSuccessSyncStatus(List<String> ids);
+    @Query("SELECT * FROM cpu_usage")
+    public List<CpuUsageEntity> allCpuUsage();
 
     @Delete()
     public void deleteCpuUsage(CpuUsageEntity cpuUsageEntity);
