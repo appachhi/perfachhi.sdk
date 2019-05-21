@@ -22,6 +22,12 @@ public interface CpuUsageDao {
     @Query("SELECT * FROM cpu_usage WHERE session_id = :sessionId")
     public List<CpuUsageEntity> allCpuUsageForTheSession(String sessionId);
 
+    @Query("SELECT * FROM cpu_usage where syncStatus = 0 ORDER BY execution_time ASC limit 200")
+    public List<CpuUsageEntity> oldest200UnSyncedCpuUsages();
+
+    @Query("UPDATE cpu_usage SET  syncStatus = 1 WHERE id IN (:ids)")
+    void updateSuccessSyncStatus(List<String> ids);
+
     @Delete()
     public void deleteCpuUsage(CpuUsageEntity cpuUsageEntity);
 }

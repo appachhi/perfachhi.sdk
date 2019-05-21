@@ -23,7 +23,7 @@ public class Session {
     @SerializedName("model")
     private String model;
     @ColumnInfo(name = "start_time")
-    @SerializedName("start_time")
+    @SerializedName("startTime")
     private long startTime;
 
     /**

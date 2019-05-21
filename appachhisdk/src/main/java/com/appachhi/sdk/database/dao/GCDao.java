@@ -21,6 +21,12 @@ public interface GCDao {
     @Query("SELECT * FROM gc WHERE session_id = :sessionId")
     public List<GCEntity> allGCRunForTheSession(String sessionId);
 
+    @Query("SELECT * FROM gc where syncStatus = 0 ORDER BY execution_time ASC limit 200")
+    public List<GCEntity> oldest200UnSyncedGc();
+
+    @Query("UPDATE gc SET  syncStatus = 1 WHERE id IN (:ids)")
+    void updateSuccessSyncStatus(List<String> ids);
+
     @Delete()
     public void deleteGcRuns(GCEntity gcEntity);
 }

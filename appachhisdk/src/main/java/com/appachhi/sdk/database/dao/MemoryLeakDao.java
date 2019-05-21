@@ -19,6 +19,12 @@ public interface MemoryLeakDao {
     @Query("SELECT * FROM memory_leak WHERE session_id = :sessionId")
     public List<MemoryLeakEntity> allMemoryLeakForTheSession(String sessionId);
 
+    @Query("SELECT * FROM memory_leak where syncStatus = 0 ORDER BY execution_time ASC limit 200")
+    public List<MemoryLeakEntity> oldest200UnSyncedMemoryLeak();
+
+    @Query("UPDATE memory_leak SET  syncStatus = 1 WHERE id IN (:ids)")
+    void updateSuccessSyncStatus(List<String> ids);
+
     @Delete()
     public void deleteMemoryLeak(MemoryLeakEntity gcEntity);
 }

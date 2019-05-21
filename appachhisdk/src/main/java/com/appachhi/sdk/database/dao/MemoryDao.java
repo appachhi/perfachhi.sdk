@@ -21,6 +21,12 @@ public interface MemoryDao {
     @Query("SELECT * FROM memory_usage WHERE session_id = :sessionId")
     public List<MemoryEntity> allMemoryUsageForTheSession(String sessionId);
 
+    @Query("SELECT * FROM memory_usage where syncStatus = 0 ORDER BY execution_time ASC limit 200")
+    public List<MemoryEntity> oldest200UnSyncedMemory();
+
+    @Query("UPDATE memory_usage SET  syncStatus = 1 WHERE id IN (:ids)")
+    void updateSuccessSyncStatus(List<String> ids);
+
     @Delete()
     public void deleteMemoryUsage(MemoryEntity cpuUsageEntity);
 }

@@ -6,6 +6,8 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 
+import com.google.gson.annotations.SerializedName;
+
 @Entity(tableName = "network_usage", foreignKeys = @ForeignKey(
         entity = Session.class,
         parentColumns = "id",
@@ -13,8 +15,11 @@ import android.arch.persistence.room.Index;
         indices = {@Index(name = "network_usage_session_index", value = "session_id")})
 public class NetworkUsageEntity extends BaseEntity {
     @ColumnInfo(name = "data_sent")
+    @SerializedName("dataSent")
     private long dataSent;
+
     @ColumnInfo(name = "data_received")
+    @SerializedName("dataReceived")
     private long dataReceived;
 
     @Ignore

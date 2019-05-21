@@ -6,6 +6,8 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 
+import com.google.gson.annotations.SerializedName;
+
 @Entity(tableName = "api_call", foreignKeys = @ForeignKey(
         entity = Session.class,
         parentColumns = "id",
@@ -13,17 +15,30 @@ import android.arch.persistence.room.Index;
         onDelete = ForeignKey.CASCADE),
         indices = {@Index(name = "api_call_session_index", value = "session_id")})
 public class APICallEntity extends BaseEntity {
+    @SerializedName("url")
     private String url;
+
     @ColumnInfo(name = "method_type")
+    @SerializedName("methodType")
     private String methodType;
+
     @ColumnInfo(name = "content_type")
+    @SerializedName("contentType")
     private String contentType;
+
     @ColumnInfo(name = "request_content_length")
+    @SerializedName("requestContentLength")
     private long requestContentLength;
+
     @ColumnInfo(name = "response_code")
+    @SerializedName("responseCode")
     private int responseCode;
+
+    @SerializedName("duration")
     private long duration;
+
     @ColumnInfo(name = "thread_name")
+    @SerializedName("threadName")
     private String threadName;
 
     @Ignore
