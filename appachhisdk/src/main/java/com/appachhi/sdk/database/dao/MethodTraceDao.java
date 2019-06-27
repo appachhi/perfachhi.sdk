@@ -22,4 +22,7 @@ public interface MethodTraceDao {
 
     @Delete
     void deleteMethodTrace(MethodTraceEntity methodTraceEntity);
+
+    @Query("Select * from method_trace")
+    List<MethodTraceEntity> allMethodTrace();
 }

@@ -26,4 +26,7 @@ public interface NetworkDao {
 
     @Delete()
     public void deleteNetworkUsage(NetworkUsageEntity cpuUsageEntity);
+
+    @Query("Select * from network_usage")
+    List<NetworkUsageEntity> allNetwork();
 }

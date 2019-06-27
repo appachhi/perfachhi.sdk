@@ -26,4 +26,7 @@ public interface MemoryDao {
 
     @Delete()
     public void deleteMemoryUsage(MemoryEntity cpuUsageEntity);
+
+    @Query("SELECT * from memory_usage")
+    List<MemoryEntity> allMemoryUsage();
 }

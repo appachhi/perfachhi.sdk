@@ -27,4 +27,7 @@ public interface GCDao {
 
     @Delete()
     public void deleteGcRuns(GCEntity gcEntity);
+
+    @Query("SELECT * from gc")
+    List<GCEntity> allGCRun();
 }
