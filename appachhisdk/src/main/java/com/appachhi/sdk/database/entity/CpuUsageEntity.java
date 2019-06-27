@@ -6,6 +6,8 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 
+import com.google.gson.annotations.SerializedName;
+
 @Entity(tableName = "cpu_usage", foreignKeys = @ForeignKey(
         entity = Session.class,
         parentColumns = "id",
@@ -14,8 +16,10 @@ import android.arch.persistence.room.Index;
         indices = {@Index(name = "cpu_usage_session_index", value = "session_id")})
 public class CpuUsageEntity extends BaseEntity {
     @ColumnInfo(name = "app_cpu_usage")
+    @SerializedName("appCpuUsage")
     private double appCpuUsage;
     @ColumnInfo(name = "device_cpu_usage")
+    @SerializedName("deviceCpuUsage")
     private double deviceCpuUsage;
 
     @Ignore

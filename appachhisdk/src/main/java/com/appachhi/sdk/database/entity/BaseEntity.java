@@ -5,20 +5,35 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 import java.util.UUID;
 
 public abstract class BaseEntity {
     @PrimaryKey
     @NonNull
+    @SerializedName("id")
     private String id;
+
+    @SerializedName("sessionId")
     @ColumnInfo(name = "session_id")
     private String sessionId;
+
     @ColumnInfo(name = "execution_time")
+    @SerializedName("executionTime")
     private long executionTime;
+
     @ColumnInfo(name = "session_time")
+    @SerializedName("sessionTime")
     private long sessionTime;
 
+    /**
+     * Sync Status 0 means unsynced
+     * Sync Status 1 means synced
+     */
+    @ColumnInfo(name = "syncStatus")
+    private transient int syncStatus;
     BaseEntity(String sessionId, long sessionTime) {
         this();
         this.sessionId = sessionId;
@@ -61,5 +76,13 @@ public abstract class BaseEntity {
 
     public void setSessionTime(long sessionTime) {
         this.sessionTime = sessionTime;
+    }
+
+    public int getSyncStatus() {
+        return syncStatus;
+    }
+
+    public void setSyncStatus(int syncStatus) {
+        this.syncStatus = syncStatus;
     }
 }

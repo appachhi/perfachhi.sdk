@@ -18,12 +18,15 @@ public interface MemoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public long insertMemoryUsage(MemoryEntity memoryUsage);
 
-    @Query("SELECT * FROM memory_usage WHERE session_id = :sessionId")
-    public List<MemoryEntity> allMemoryUsageForTheSession(String sessionId);
+    @Query("SELECT * FROM memory_usage where syncStatus = 0 AND session_id in (:sessionIds) limit 100")
+    List<MemoryEntity> allUnSyncedMemoryEntityForSession(List<String> sessionIds);
 
-    @Query("SELECT * FROM memory_usage")
-    public List<MemoryEntity> allMemoryUsage();
+    @Query("UPDATE memory_usage SET  syncStatus = 1 WHERE id IN (:ids)")
+    void updateSuccessSyncStatus(List<String> ids);
 
     @Delete()
     public void deleteMemoryUsage(MemoryEntity cpuUsageEntity);
+
+    @Query("SELECT * from memory_usage")
+    List<MemoryEntity> allMemoryUsage();
 }

@@ -18,9 +18,12 @@ public interface FpsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public long insertFps(FpsEntity fpsEntity);
 
-    @Query("SELECT * FROM fps WHERE session_id = :sessionId")
-    public List<FpsEntity> allFpsForTheSession(String sessionId);
+    @Query("SELECT * FROM fps where syncStatus = 0 AND session_id in (:sessionId) limit 100")
+    List<FpsEntity> allUnSyncedFpsEntityForSession(List<String> sessionId);
 
+    @Query("UPDATE fps SET  syncStatus = 1 WHERE id IN (:ids)")
+    void updateSuccessSyncStatus(List<String> ids);
+  
     @Query("SELECT * FROM fps")
     public List<FpsEntity> allFps();
 

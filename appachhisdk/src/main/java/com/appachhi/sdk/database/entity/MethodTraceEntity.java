@@ -6,6 +6,8 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 
+import com.google.gson.annotations.SerializedName;
+
 @Entity(tableName = "method_trace", foreignKeys = @ForeignKey(
         entity = Session.class,
         parentColumns = "id",
@@ -14,7 +16,10 @@ import android.arch.persistence.room.Index;
         indices = {@Index(name = "method_trace_se[ssion_index", value = "session_id")})
 public class MethodTraceEntity extends BaseEntity {
     @ColumnInfo(name = "name")
+    @SerializedName("traceName")
     private String traceName;
+
+    @SerializedName("duration")
     private long duration;
 
     @Ignore

@@ -18,12 +18,16 @@ public interface GCDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public long insetGcRunInfo(GCEntity gcRun);
 
-    @Query("SELECT * FROM gc WHERE session_id = :sessionId")
-    public List<GCEntity> allGCRunForTheSession(String sessionId);
 
-    @Query("SELECT * FROM gc")
-    public List<GCEntity> allGCRun();
+    @Query("SELECT * FROM gc where syncStatus = 0 AND session_id in (:sessionIds) limit 100")
+    List<GCEntity> allUnSyncedGcEntityForSession(List<String> sessionIds);
+
+    @Query("UPDATE gc SET  syncStatus = 1 WHERE id IN (:ids)")
+    void updateSuccessSyncStatus(List<String> ids);
 
     @Delete()
     public void deleteGcRuns(GCEntity gcEntity);
+
+    @Query("SELECT * from gc")
+    List<GCEntity> allGCRun();
 }

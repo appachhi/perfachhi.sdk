@@ -18,12 +18,15 @@ public interface NetworkDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public long insertNetworkUsage(NetworkUsageEntity cpuUsages);
 
-    @Query("SELECT * FROM network_usage WHERE session_id = :sessionId")
-    public List<NetworkUsageEntity> allNetworkUsagesForTheSession(String sessionId);
+    @Query("SELECT * FROM network_usage where syncStatus = 0 AND session_id in (:sessionId) limit 100")
+    List<NetworkUsageEntity> allUnSyncedNetworkUsageEntityForSession(List<String> sessionId);
 
-    @Query("SELECT * FROM network_usage")
-    public List<NetworkUsageEntity> allNetwork();
+    @Query("UPDATE network_usage SET  syncStatus = 1 WHERE id IN (:ids)")
+    void updateSuccessSyncStatus(List<String> ids);
 
     @Delete()
     public void deleteNetworkUsage(NetworkUsageEntity cpuUsageEntity);
+
+    @Query("Select * from network_usage")
+    List<NetworkUsageEntity> allNetwork();
 }

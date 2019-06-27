@@ -5,6 +5,8 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 
+import com.google.gson.annotations.SerializedName;
+
 @Entity(tableName = "screen_transition", foreignKeys = @ForeignKey(
         entity = Session.class,
         parentColumns = "id",
@@ -12,7 +14,9 @@ import android.arch.persistence.room.Index;
         onDelete = ForeignKey.CASCADE),
         indices = {@Index(name = "screen_transition_session_index", value = "session_id")})
 public class TransitionStatEntity extends BaseEntity {
+    @SerializedName("name")
     private String name;
+    @SerializedName("duration")
     private long duration;
 
     @Ignore

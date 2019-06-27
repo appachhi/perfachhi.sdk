@@ -6,13 +6,18 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 
+import com.google.gson.annotations.SerializedName;
+
 @Entity(tableName = "memory_leak",
         foreignKeys = @ForeignKey(entity = Session.class, parentColumns = "id", childColumns = "session_id"),
         indices = {@Index(name = "memory_leak_session_index", value = "session_id")})
 public class MemoryLeakEntity extends BaseEntity {
     @ColumnInfo(name = "class_name")
+    @SerializedName("className")
     private String className;
+
     @ColumnInfo(name = "leak_trace")
+    @SerializedName("leakTrace")
     private String leakTrace;
 
     @Ignore
@@ -42,5 +47,13 @@ public class MemoryLeakEntity extends BaseEntity {
 
     public void setLeakTrace(String leakTrace) {
         this.leakTrace = leakTrace;
+    }
+
+    @Override
+    public String toString() {
+        return "MemoryLeakEntity{" +
+                "className='" + className + '\'' +
+                ", leakTrace='" + leakTrace + '\'' +
+                '}';
     }
 }

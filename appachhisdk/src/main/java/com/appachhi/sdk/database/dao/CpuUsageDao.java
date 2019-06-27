@@ -19,9 +19,11 @@ public interface CpuUsageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public long insertCpuUsage(CpuUsageEntity cpuUsages);
 
-    @Query("SELECT * FROM cpu_usage WHERE session_id = :sessionId")
-    public List<CpuUsageEntity> allCpuUsageForTheSession(String sessionId);
+    @Query("SELECT * FROM cpu_usage where syncStatus = 0 AND session_id in (:sessionId) limit 100")
+    List<CpuUsageEntity> allUnSyncedCpuEntityForSession(List<String> sessionId);
 
+    @Query("UPDATE cpu_usage SET  syncStatus = 1 WHERE id IN (:ids)")
+    void updateSuccessSyncStatus(List<String> ids);
     @Query("SELECT * FROM cpu_usage")
     public List<CpuUsageEntity> allCpuUsage();
 

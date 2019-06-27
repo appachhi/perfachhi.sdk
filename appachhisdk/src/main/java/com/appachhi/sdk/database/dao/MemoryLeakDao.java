@@ -16,8 +16,11 @@ public interface MemoryLeakDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public long insertMemoryLeak(MemoryLeakEntity gcRun);
 
-    @Query("SELECT * FROM memory_leak WHERE session_id = :sessionId")
-    public List<MemoryLeakEntity> allMemoryLeakForTheSession(String sessionId);
+    @Query("SELECT * FROM memory_leak where syncStatus = 0 AND session_id in (:sessionIds) limit 100")
+    List<MemoryLeakEntity> allUnSyncedMemoryLeakEntityForSession(List<String> sessionIds);
+
+    @Query("UPDATE memory_leak SET  syncStatus = 1 WHERE id IN (:ids)")
+    void updateSuccessSyncStatus(List<String> ids);
 
     @Query("SELECT * FROM memory_leak")
     public List<MemoryLeakEntity> allMemoryLeak();

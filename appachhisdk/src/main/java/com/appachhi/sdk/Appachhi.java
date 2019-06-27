@@ -113,7 +113,7 @@ public class Appachhi {
         dbExecutor = Executors.newSingleThreadExecutor();
 
         // Update the current session
-        sessionManager = new SessionManager(db.sessionDao(), dbExecutor);
+        sessionManager = new SessionManager(this.application, db.sessionDao(), dbExecutor);
         sessionManager.newSession();
 
         methodTraceSavingManager = new MethodTraceSavingManager(db.methodTraceDao(), dbExecutor, sessionManager);
@@ -158,9 +158,10 @@ public class Appachhi {
 
     @NonNull
     @Keep
-    public AppachhiDB getDb(){
+    public AppachhiDB getDb() {
         return db;
     }
+
     private List<FeatureModule> addModules(Application application) {
         List<FeatureModule> featureModules = new LinkedList<>();
         featureModules.add(new MemoryInfoFeatureModule(application, db.memoryDao(), dbExecutor, sessionManager));

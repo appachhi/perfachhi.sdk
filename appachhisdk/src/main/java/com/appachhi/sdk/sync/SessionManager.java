@@ -1,5 +1,6 @@
 package com.appachhi.sdk.sync;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -15,21 +16,23 @@ public class SessionManager {
     private SessionDao sessionDao;
     @NonNull
     private ExecutorService databaseExecutor;
+    private Context context;
 
-    public SessionManager(@NonNull SessionDao sessionDao, @NonNull ExecutorService databaseExecutor) {
+    public SessionManager(Context context, @NonNull SessionDao sessionDao, @NonNull ExecutorService databaseExecutor) {
+        this.context = context;
         this.sessionDao = sessionDao;
         this.databaseExecutor = databaseExecutor;
     }
 
+
     private Runnable createNewSession = new Runnable() {
         @Override
         public void run() {
-            Session session = Session.create();
+            Session session = Session.create(context);
             long result = sessionDao.insertSession(session);
             if (result != -1) {
                 SessionManager.this.currentSession = session;
             }
-
         }
     };
 

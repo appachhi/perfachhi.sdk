@@ -320,8 +320,8 @@ public class BugaSuraDumpService extends IntentService {
                 jsonWriter.beginObject();
                 jsonWriter.name("id").value(session.getId());
                 jsonWriter.name("startTime").value(session.getStartTime());
-                jsonWriter.name("model").value(session.getModel());
-                jsonWriter.name("manufacturer").value(session.getManufacturer());
+                jsonWriter.name("model").value(Build.MODEL);
+                jsonWriter.name("manufacturer").value(Build.BRAND);
                 jsonWriter.endObject();
             }
             jsonWriter.endArray();

@@ -6,6 +6,8 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 
+import com.google.gson.annotations.SerializedName;
+
 @Entity(tableName = "gc", foreignKeys = @ForeignKey(
         entity = Session.class,
         parentColumns = "id",
@@ -16,33 +18,52 @@ public class GCEntity extends BaseEntity {
     private String gcReason;
     // Type of GC
     @ColumnInfo(name = "gc_name")
+    @SerializedName("gcName")
     private String gcName;
+
     @ColumnInfo(name = "object_freesd")
     // Number of object was freed from heap
+    @SerializedName("objectFreed")
     private String objectFreed;
+
     // Size of the object freed from heap
     @ColumnInfo(name = "object_freed_size")
+    @SerializedName("objectFreedSize")
     private String objectFreedSize;
+
     // Number of object was freed from Alloc Space
     @ColumnInfo(name = "alloc_space_object_freed")
+    @SerializedName("allocSpaceObjectFreed")
     private String allocSpaceObjectFreed;
+
     // Size of the object freed from Alloc Space
     @ColumnInfo(name = "alloc_space_object_freedSize")
+    @SerializedName("allocSpaceObjectFreedSize")
     private String allocSpaceObjectFreedSize;
+
     // Percentage of Large Object Freed
     @ColumnInfo(name = "large_object_freed_percentage")
+    @SerializedName("largeObjectFreedPercentage")
     private String largeObjectFreedPercentage;
+
     // Number of large object was freed
     @ColumnInfo(name = "large_object_freed_size")
+    @SerializedName("largeObjectFreedSize")
     private String largeObjectFreedSize;
+
     // Total Number of large object
     @ColumnInfo(name = "large_object_total_size")
+    @SerializedName("largeObjectTotalSize")
     private String largeObjectTotalSize;
+
     // Time for which GC caused the pause in the main thread
     @ColumnInfo(name = "gc_pause_time")
+    @SerializedName("gcPauseTime")
     private String gcPauseTime;
+
     // Duration for GC runtime
     @ColumnInfo(name = "gc_run_time")
+    @SerializedName("gcRunTime")
     private String gcRunTime;
 
     public GCEntity() {
