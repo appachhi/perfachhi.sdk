@@ -113,7 +113,7 @@ public class Appachhi {
         dbExecutor = Executors.newSingleThreadExecutor();
 
         // Update the current session
-        sessionManager = new SessionManager(db.sessionDao(), dbExecutor);
+        sessionManager = new SessionManager(this.application, db.sessionDao(), dbExecutor);
         sessionManager.newSession();
 
         methodTraceSavingManager = new MethodTraceSavingManager(db.methodTraceDao(), dbExecutor, sessionManager);

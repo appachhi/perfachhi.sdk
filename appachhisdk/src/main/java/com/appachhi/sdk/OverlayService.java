@@ -94,7 +94,7 @@ public class OverlayService extends Service {
 
         // Create sync manager and start sync
 
-        syncManager = SyncManager.create();
+        syncManager = SyncManager.create(this.getApplication());
         syncManager.startSync();
     }
 

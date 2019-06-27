@@ -15,11 +15,8 @@ public interface ScreenTransitionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertScreenTranData(TransitionStatEntity transitionStatEntity);
 
-    @Query("SELECT * FROM screen_transition WHERE session_id = :sessionId")
-    List<TransitionStatEntity> allScreenTransitionDataForTheSession(String sessionId);
-
-    @Query("SELECT * FROM screen_transition where syncStatus = 0 ORDER BY execution_time ASC limit 200")
-    List<TransitionStatEntity> oldest200UnSyncedTransitionStat();
+    @Query("SELECT * FROM screen_transition where syncStatus = 0 AND session_id in (:sessionIds)")
+    List<TransitionStatEntity> allUnSyncedScreenTransitionForSession(List<String> sessionIds);
 
     @Query("UPDATE screen_transition SET  syncStatus = 1 WHERE id IN (:ids)")
     void updateSuccessSyncStatus(List<String> ids);

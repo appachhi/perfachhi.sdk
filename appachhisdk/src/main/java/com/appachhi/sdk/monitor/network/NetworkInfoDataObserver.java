@@ -11,6 +11,8 @@ import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.sync.SessionManager;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import static com.appachhi.sdk.database.DatabaseMapper.fromNetworkUsageInfoToNetworkUsageEntity;
@@ -24,11 +26,13 @@ public class NetworkInfoDataObserver implements DataObserver<NetworkInfo> {
     private NetworkDao networkDao;
     private ExecutorService databaseExecutor;
     private SessionManager sessionManager;
+    private Map<String, NetworkInfo> initialSessionNetworkInfo;
 
     NetworkInfoDataObserver(NetworkDao networkDao, ExecutorService dbExecutor, SessionManager sessionManager) {
         this.networkDao = networkDao;
         this.databaseExecutor = dbExecutor;
         this.sessionManager = sessionManager;
+        this.initialSessionNetworkInfo = new HashMap<>();
     }
 
     /**
@@ -44,8 +48,16 @@ public class NetworkInfoDataObserver implements DataObserver<NetworkInfo> {
             public void run() {
                 Session session = sessionManager.getCurrentSession();
                 if (session != null) {
+                    NetworkInfo finalNetworkData;
+                    if (initialSessionNetworkInfo.containsKey(session.getId())) {
+                        NetworkInfo initialNetworkInfo = initialSessionNetworkInfo.get(session.getId());
+                        finalNetworkData = data.subtract(initialNetworkInfo);
+                    } else {
+                        initialSessionNetworkInfo.put(session.getId(), data);
+                        finalNetworkData = data;
+                    }
                     long sessionTimeElapsed = new Date().getTime() - session.getStartTime();
-                    NetworkUsageEntity networkUsageEntity = fromNetworkUsageInfoToNetworkUsageEntity(data, session.getId(),sessionTimeElapsed);
+                    NetworkUsageEntity networkUsageEntity = fromNetworkUsageInfoToNetworkUsageEntity(finalNetworkData, session.getId(), sessionTimeElapsed);
                     long result = networkDao.insertNetworkUsage(networkUsageEntity);
                     if (result > -1) {
                         Log.i(TAG, "Network Usage Data saved");

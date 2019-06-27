@@ -18,14 +18,17 @@ public interface SessionDao {
     @Query("SELECT * FROM session")
     List<Session> allSessions();
 
+    @Query("SELECT * FROM session where syncStatus=0")
+    List<Session> allUnSyncedSessions();
+
+    @Query("SELECT id FROM session where syncStatus=1")
+    List<String> allSyncedSessionIds();
+
     @Delete
     void deleteSession(Session session);
 
     @Query("DELETE from session")
     void deleteAllSession();
-
-    @Query("SELECT * FROM session where syncStatus = 0 ORDER BY start_time ASC limit 200")
-    List<Session> oldest200UnSyncedSessions();
 
     @Query("UPDATE session SET  syncStatus = 1 WHERE id IN (:ids)")
     void updateSuccessSyncStatus(List<String> ids);

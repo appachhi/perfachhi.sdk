@@ -18,11 +18,8 @@ public interface APICallDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public long insertApiCall(APICallEntity apiCallEntity);
 
-    @Query("SELECT * FROM api_call WHERE session_id = :sessionId")
-    public List<APICallEntity> allApiCallsForTheSession(String sessionId);
-
-    @Query("SELECT * FROM api_call where syncStatus = 0 ORDER BY execution_time ASC limit 200")
-    public List<APICallEntity> oldest200UnSyncedNetworkUsage();
+    @Query("SELECT * FROM api_call where syncStatus = 0 AND session_id in (:sessionIds) limit 100")
+    List<APICallEntity> allUnSyncedApiCallEntityForSession(List<String> sessionIds);
 
     @Query("UPDATE api_call SET  syncStatus = 1 WHERE id IN (:ids)")
     void updateSuccessSyncStatus(List<String> ids);
