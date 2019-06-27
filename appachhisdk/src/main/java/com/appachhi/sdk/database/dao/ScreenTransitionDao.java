@@ -21,6 +21,9 @@ public interface ScreenTransitionDao {
     @Query("UPDATE screen_transition SET  syncStatus = 1 WHERE id IN (:ids)")
     void updateSuccessSyncStatus(List<String> ids);
 
+    @Query("SELECT * FROM screen_transition")
+    public List<TransitionStatEntity> allScreenTransition();
+
     @Delete()
     void deleteScreenTransitionData(TransitionStatEntity transitionStatEntity);
 }
