@@ -42,6 +42,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, OkHttpTestActivity.class));
             }
         });
+//        findViewById(R.id.dump_data).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, BugaSuraDumpService.class);
+//                ContextCompat.startForegroundService(MainActivity.this,intent);
+//            }
+//        });
     }
 
     @Trace(name = "MainActvity Resume")

@@ -39,6 +39,6 @@ public class LeakingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ScreenTransitionManager.getInstance().beginTransition(this);
+        ScreenTransitionManager.getInstance().endTransition(this);
     }
 }
