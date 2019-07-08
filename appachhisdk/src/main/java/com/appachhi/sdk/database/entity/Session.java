@@ -109,7 +109,7 @@ public class Session {
             try {
                 PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
                 VERISON_NAME = pInfo.versionName;
-                VERISON_CODE = pInfo.getLongVersionCode();
+                VERISON_CODE = pInfo.versionCode;
                 PACKAGE_NAME = context.getPackageName();
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
