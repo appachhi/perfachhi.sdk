@@ -89,6 +89,10 @@ public class SyncManager {
     private static void loadApiKey(Application application) {
         try {
             ApplicationInfo info = ((Context) application).getPackageManager().getApplicationInfo(application.getPackageName(), PackageManager.GET_META_DATA);
+            if (info.metaData == null) {
+                Log.w(TAG, "Perfachhi api key is missing");
+                return;
+            }
             KEY = info.metaData.getString("perfachhi_api_key", null);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
