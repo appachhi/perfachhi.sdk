@@ -12,6 +12,12 @@
 
         <service android:name=".monitor.memoryleak.AppachhiMemoryLeakService" />
 
+        <activity
+            android:name=".ui.ConfigurationActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop"
+            android:theme="@style/TransparentActivity" />
+
         <provider
             android:name=".providers.AppachhiInitializer"
             android:authorities="com.appachhi.sdk.initializer.${applicationId}"
