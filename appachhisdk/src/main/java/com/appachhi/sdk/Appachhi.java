@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcel;
@@ -31,6 +32,7 @@ import com.appachhi.sdk.monitor.memory.GCInfoFeatureModule;
 import com.appachhi.sdk.monitor.memory.MemoryInfoFeatureModule;
 import com.appachhi.sdk.monitor.memoryleak.MemoryLeakFeatureModule;
 import com.appachhi.sdk.monitor.network.NetworkFeatureModule;
+import com.appachhi.sdk.monitor.screen.ScreenCaptureFeatureModule;
 import com.appachhi.sdk.sync.SessionManager;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -170,6 +172,9 @@ public class Appachhi {
         featureModules.add(new CpuUsageInfoFeatureModule(db.cpuUsageDao(), dbExecutor, sessionManager));
         featureModules.add(new FpsFeatureModule(db.fpsDao(), dbExecutor, sessionManager));
         featureModules.add(new MemoryLeakFeatureModule(application, db.memoryLeakDao(), dbExecutor, sessionManager));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            featureModules.add(new ScreenCaptureFeatureModule(application.getApplicationContext(), sessionManager));
+        }
         featureModules.add(new ScreenTransitionFeatureModule(ScreenTransitionManager.getInstance(), db.screenTransitionDao(), dbExecutor, sessionManager));
         return featureModules;
     }

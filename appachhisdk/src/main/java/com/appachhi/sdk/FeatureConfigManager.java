@@ -1,10 +1,15 @@
 package com.appachhi.sdk;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Build;
+
 import com.appachhi.sdk.instrument.transition.ScreenTransitionFeatureModule;
 import com.appachhi.sdk.monitor.cpu.CpuUsageInfoFeatureModule;
 import com.appachhi.sdk.monitor.fps.FpsFeatureModule;
 import com.appachhi.sdk.monitor.memory.MemoryInfoFeatureModule;
 import com.appachhi.sdk.monitor.network.NetworkFeatureModule;
+import com.appachhi.sdk.monitor.screen.ScreenCaptureFeatureModule;
 
 import java.util.List;
 
@@ -142,4 +147,41 @@ public class FeatureConfigManager {
         return false;
     }
 
+    public boolean isEnableScreenShotEnabled() {
+        for (FeatureModule featureModule : this.featureModules) {
+            if (featureModule instanceof ScreenCaptureFeatureModule) {
+                ScreenCaptureFeatureModule screenCaptureModule = (ScreenCaptureFeatureModule) featureModule;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    return screenCaptureModule.isScreenShotEnabled();
+                }
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public boolean setScreenShotEnable(Activity activity, boolean enabled) {
+        for (FeatureModule featureModule : this.featureModules) {
+            if (featureModule instanceof ScreenCaptureFeatureModule) {
+                ScreenCaptureFeatureModule screenCaptureModule = (ScreenCaptureFeatureModule) featureModule;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    screenCaptureModule.toggleProjection(activity, enabled);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void handleMediaProjectionResult(int resultCode, Intent data) {
+        for (FeatureModule featureModule : this.featureModules) {
+            if (featureModule instanceof ScreenCaptureFeatureModule) {
+                ScreenCaptureFeatureModule screenCaptureModule = (ScreenCaptureFeatureModule) featureModule;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    screenCaptureModule.handleMediaProjectionResult(resultCode, data);
+                }
+            }
+        }
+
+    }
 }

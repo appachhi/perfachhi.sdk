@@ -81,4 +81,8 @@ public abstract class FeatureModule<T> implements DataModule<T>, ViewDataObserve
         }
         return null;
     }
+
+    protected void setPublisher(DataModule<T> publisher) {
+        this.publisher = publisher;
+    }
 }

@@ -30,6 +30,7 @@ public class ConfigurationActivity extends AppCompatActivity {
     private Switch networkUsage;
     private Switch fpsUsageSwitch;
     private Switch memoryLeakSwitch;
+    private Switch screenCaptureSwitch;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -43,6 +44,7 @@ public class ConfigurationActivity extends AppCompatActivity {
         networkUsage = findViewById(R.id.networkUsageSwitch);
         fpsUsageSwitch = findViewById(R.id.fpsUsageSwitch);
         memoryLeakSwitch = findViewById(R.id.memoryLeakSwitch);
+        screenCaptureSwitch = findViewById(R.id.screenCaptureSwitch);
         View emptyArea = findViewById(R.id.emptyArea);
         emptyArea.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +93,12 @@ public class ConfigurationActivity extends AppCompatActivity {
                 Appachhi.getInstance().getFeatureConfigManager().setMemoryLeakOverlayEnabled(isChecked);
             }
         });
+        screenCaptureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Appachhi.getInstance().getFeatureConfigManager().setScreenShotEnable(ConfigurationActivity.this, isChecked);
+            }
+        });
     }
 
     private void initializeConfigurationSwitch() {
@@ -99,6 +107,8 @@ public class ConfigurationActivity extends AppCompatActivity {
         memoryUsageSwitch.setChecked(Appachhi.getInstance().getFeatureConfigManager().isMemoryInfoOverlayEnabled());
         networkUsage.setChecked(Appachhi.getInstance().getFeatureConfigManager().isNetworkOverlayEnabled());
         memoryLeakSwitch.setChecked(Appachhi.getInstance().getFeatureConfigManager().isMemoryLeakOverlayEnabled());
+        memoryLeakSwitch.setChecked(Appachhi.getInstance().getFeatureConfigManager().isMemoryLeakOverlayEnabled());
+        screenCaptureSwitch.setChecked(Appachhi.getInstance().getFeatureConfigManager().isEnableScreenShotEnabled());
     }
 
     @Override
@@ -119,4 +129,9 @@ public class ConfigurationActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Appachhi.getInstance().getFeatureConfigManager().handleMediaProjectionResult(resultCode, data);
+    }
 }
