@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
@@ -14,21 +15,26 @@ import com.appachhi.sdk.database.dao.APICallDao;
 import com.appachhi.sdk.database.dao.CpuUsageDao;
 import com.appachhi.sdk.database.dao.FpsDao;
 import com.appachhi.sdk.database.dao.GCDao;
+import com.appachhi.sdk.database.dao.LogsDao;
 import com.appachhi.sdk.database.dao.MemoryDao;
 import com.appachhi.sdk.database.dao.MemoryLeakDao;
 import com.appachhi.sdk.database.dao.MethodTraceDao;
 import com.appachhi.sdk.database.dao.NetworkDao;
 import com.appachhi.sdk.database.dao.ScreenTransitionDao;
+import com.appachhi.sdk.database.dao.ScreenshotDao;
 import com.appachhi.sdk.database.dao.SessionDao;
 import com.appachhi.sdk.database.entity.APICallEntity;
 import com.appachhi.sdk.database.entity.BaseEntity;
+import com.appachhi.sdk.database.entity.BaseFileEntity;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
 import com.appachhi.sdk.database.entity.FpsEntity;
 import com.appachhi.sdk.database.entity.GCEntity;
+import com.appachhi.sdk.database.entity.LogsEntity;
 import com.appachhi.sdk.database.entity.MemoryEntity;
 import com.appachhi.sdk.database.entity.MemoryLeakEntity;
 import com.appachhi.sdk.database.entity.MethodTraceEntity;
 import com.appachhi.sdk.database.entity.NetworkUsageEntity;
+import com.appachhi.sdk.database.entity.ScreenshotEntity;
 import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.database.entity.TransitionStatEntity;
 import com.google.gson.Gson;
@@ -40,6 +46,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +57,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -156,6 +164,32 @@ public class SyncManager {
 
         // Upload Api Call for all the synced session only
         uploadNetworkCall(allSyncedSessionIds, appachhiDB.apiCallDao());
+
+        // Upload Screenshot for all synced session only
+
+        uploadScreenShot(allSyncedSessionIds, appachhiDB.screenshotDao());
+
+        uploadLogs(allSyncedSessionIds, appachhiDB.logsDao());
+    }
+
+    private void uploadScreenShot(List<String> allSyncedSessionIds, final ScreenshotDao screenshotDao) {
+        List<ScreenshotEntity> screenshotEntities = screenshotDao.allUnSyncedScreenshotEntityForSession(allSyncedSessionIds);
+        uploadFile("screenshot", "screenshot", screenshotEntities, new OnMetricUploadListener() {
+            @Override
+            public void onMetricUpload(List<String> ids) {
+                screenshotDao.updateSuccessSyncStatus(ids);
+            }
+        });
+    }
+
+    private void uploadLogs(List<String> allSyncedSessionIds, final LogsDao logsDao) {
+        List<LogsEntity> screenshotEntities = logsDao.allUnSyncedLogEntityForSession(allSyncedSessionIds);
+        uploadFile("logs", "logs", screenshotEntities, new OnMetricUploadListener() {
+            @Override
+            public void onMetricUpload(List<String> ids) {
+                logsDao.updateSuccessSyncStatus(ids);
+            }
+        });
     }
 
 
@@ -290,14 +324,71 @@ public class SyncManager {
         });
     }
 
+    private void uploadFile(final String path,
+                            final String fileKey,
+                            final List<? extends BaseFileEntity> items,
+                            final OnMetricUploadListener listener) {
+        if (items.isEmpty()) {
+            Log.d(TAG, String.format("No %s to upload", path));
+            return;
+        }
+        Log.d(TAG, "Upload " + path);
+        metricSyncExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                JsonElement element = gson.toJsonTree(items);
+                List<String> filePaths = new ArrayList<>();
+                for (BaseFileEntity item : items) {
+                    filePaths.add(item.getFilePath());
+                }
+                JsonArray array = addDeviceIdProperty(element);
+                String jsonArray = gson.toJson(array);
+                Request request = getFileUploadRequest(path, fileKey, filePaths, jsonArray, items.get(0).getMimeType());
+                try {
+                    Response response = getClient().newCall(request).execute();
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, String.format("%s uploaded", path));
+                        List<String> ids = new ArrayList<>();
+                        for (BaseEntity entity : items) {
+                            ids.add(entity.getId());
+                        }
+                        listener.onMetricUpload(ids);
+                    } else {
+                        Log.d(TAG, String.format("%s upload failed with error : %s", path, response.message()));
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, String.format("Failed to upload %s", path), e);
+                }
+            }
+        });
+    }
+
     private Request getRequest(String path, String contentArray) {
         RequestBody requestBody = RequestBody.create(MediaType.get("application/json"), contentArray);
-        return new Request.Builder().url(String.format("%s/%s", BASE_URL, path))
+        return new Request.Builder()
+                .url(String.format("%s/%s", BASE_URL, path))
                 .post(requestBody)
                 .addHeader("Authorization", String.format("Bearer %s", KEY))
                 .build();
     }
 
+    private Request getFileUploadRequest(String path, String fileKey, List<String> filePaths, String contentArray, String mimeType) {
+
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("data", contentArray);
+        for (String filePath : filePaths) {
+            File file = new File(filePath);
+            RequestBody body = RequestBody.create(MediaType.get(mimeType), file);
+            String fileName = Uri.fromFile(file).getLastPathSegment();
+            builder.addFormDataPart(fileKey, fileName, body);
+        }
+        return new Request.Builder()
+                .addHeader("Authorization", String.format("Bearer %s", KEY))
+                .url(String.format("%s/%s", BASE_URL, path))
+                .post(builder.build())
+                .build();
+    }
 
     /**
      * Uploads all the unsynced session and set the sync status to success

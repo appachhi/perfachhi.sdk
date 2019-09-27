@@ -7,29 +7,32 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 
 import com.appachhi.sdk.FeatureModule;
+import com.appachhi.sdk.database.dao.ScreenshotDao;
 import com.appachhi.sdk.sync.SessionManager;
+
+import java.util.concurrent.ExecutorService;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class ScreenCaptureFeatureModule extends FeatureModule<String> {
-    private ScreenCaptureDataModule dataModule;
     private boolean screenShotEnabled;
 
-    public ScreenCaptureFeatureModule(Context context, SessionManager sessionManager) {
-        super(null, new ScreenCaptureDataObserver());
-        dataModule = new ScreenCaptureDataModule(context, sessionManager, 1000);
-        setPublisher(dataModule);
+    public ScreenCaptureFeatureModule(Context context, SessionManager sessionManager, ScreenshotDao screenshotDao, ExecutorService databaseExecutor) {
+        super(new ScreenCaptureDataModule(context, sessionManager, 1000),
+                new ScreenCaptureDataObserver(sessionManager, screenshotDao, databaseExecutor));
     }
 
     public void handleMediaProjectionResult(int resultCode, Intent result) {
-        dataModule.handleMediaProjectionResult(resultCode, result);
+        ScreenCaptureDataModule publisher = (ScreenCaptureDataModule) getPublisher();
+        publisher.handleMediaProjectionResult(resultCode, result);
     }
 
     public void toggleProjection(Activity activity, boolean enabled) {
+        ScreenCaptureDataModule publisher = (ScreenCaptureDataModule) getPublisher();
         screenShotEnabled = enabled;
         if (screenShotEnabled) {
-            dataModule.createMediaProjection(activity);
+            publisher.createMediaProjection(activity);
         } else {
-            dataModule.stopProjection();
+            publisher.stopProjection();
         }
     }
 

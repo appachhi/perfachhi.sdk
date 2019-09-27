@@ -13,7 +13,7 @@ import com.google.gson.annotations.SerializedName;
         parentColumns = "id",
         childColumns = "session_id",
         onDelete = ForeignKey.CASCADE),
-        indices = {@Index(name = "method_trace_se[ssion_index", value = "session_id")})
+        indices = {@Index(name = "method_trace_session_index", value = "session_id")})
 public class MethodTraceEntity extends BaseEntity {
     @ColumnInfo(name = "name")
     @SerializedName("traceName")

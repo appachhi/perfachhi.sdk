@@ -182,7 +182,7 @@ final public class ScreenTransitionManager {
         screenTransitionStats.remove(screenName);
         // Take a screenshot
         if (Appachhi.DEBUG) {
-            Log.d(TAG, "Take Screenshot");
+            Log.d(TAG, "Take ScreenshotEntity");
         }
         screenshotManager.takeAndSave(activity, screenName);
 

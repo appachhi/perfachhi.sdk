@@ -1,5 +1,6 @@
 package com.appachhi.sdk.database;
 
+import android.net.Uri;
 import android.os.Build;
 
 import com.appachhi.sdk.database.entity.APICallEntity;
@@ -10,6 +11,7 @@ import com.appachhi.sdk.database.entity.MemoryEntity;
 import com.appachhi.sdk.database.entity.MemoryLeakEntity;
 import com.appachhi.sdk.database.entity.MethodTraceEntity;
 import com.appachhi.sdk.database.entity.NetworkUsageEntity;
+import com.appachhi.sdk.database.entity.ScreenshotEntity;
 import com.appachhi.sdk.database.entity.TransitionStatEntity;
 import com.appachhi.sdk.instrument.network.internal.HttpMetric;
 import com.appachhi.sdk.instrument.trace.MethodTrace;
@@ -20,6 +22,8 @@ import com.appachhi.sdk.monitor.memory.MemoryInfo;
 import com.appachhi.sdk.monitor.memoryleak.MemoryLeakInfo;
 import com.appachhi.sdk.monitor.network.NetworkInfo;
 import com.squareup.leakcanary.AnalysisResult;
+
+import java.io.File;
 
 public class DatabaseMapper {
     public static CpuUsageEntity fromCpuUsageInfoToCpuUsageEntity(CpuUsageInfo cpuUsageInfo, String sessionId, long sessionTime) {
@@ -87,6 +91,10 @@ public class DatabaseMapper {
 
     public static MethodTraceEntity fromMethodTraceToMethodTraceEntity(MethodTrace methodTrace, String sessionId, long sessionTimeElapsed) {
         return new MethodTraceEntity(methodTrace.getTraceName(), methodTrace.getDuration(), sessionId, sessionTimeElapsed);
+    }
+
+    public static ScreenshotEntity fromScreensShotFilePath(String filePath, String mimeType, String sessionId, long sessionTimElapsed) {
+        return new ScreenshotEntity(sessionId, sessionTimElapsed, Uri.fromFile(new File(filePath)).getLastPathSegment(), filePath, mimeType);
     }
 
     public static APICallEntity fromInterHttpMetricToApiCallEntity(HttpMetric httpMetric, String sessionId, long sessionTimeElapsed) {

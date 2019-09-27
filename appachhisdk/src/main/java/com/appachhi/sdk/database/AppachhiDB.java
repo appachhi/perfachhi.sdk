@@ -9,20 +9,24 @@ import com.appachhi.sdk.database.dao.APICallDao;
 import com.appachhi.sdk.database.dao.CpuUsageDao;
 import com.appachhi.sdk.database.dao.FpsDao;
 import com.appachhi.sdk.database.dao.GCDao;
+import com.appachhi.sdk.database.dao.LogsDao;
 import com.appachhi.sdk.database.dao.MemoryDao;
 import com.appachhi.sdk.database.dao.MemoryLeakDao;
 import com.appachhi.sdk.database.dao.MethodTraceDao;
 import com.appachhi.sdk.database.dao.NetworkDao;
 import com.appachhi.sdk.database.dao.ScreenTransitionDao;
+import com.appachhi.sdk.database.dao.ScreenshotDao;
 import com.appachhi.sdk.database.dao.SessionDao;
 import com.appachhi.sdk.database.entity.APICallEntity;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
 import com.appachhi.sdk.database.entity.FpsEntity;
 import com.appachhi.sdk.database.entity.GCEntity;
+import com.appachhi.sdk.database.entity.LogsEntity;
 import com.appachhi.sdk.database.entity.MemoryEntity;
 import com.appachhi.sdk.database.entity.MemoryLeakEntity;
 import com.appachhi.sdk.database.entity.MethodTraceEntity;
 import com.appachhi.sdk.database.entity.NetworkUsageEntity;
+import com.appachhi.sdk.database.entity.ScreenshotEntity;
 import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.database.entity.TransitionStatEntity;
 
@@ -36,6 +40,8 @@ import com.appachhi.sdk.database.entity.TransitionStatEntity;
         TransitionStatEntity.class,
         MemoryLeakEntity.class,
         MethodTraceEntity.class,
+        ScreenshotEntity.class,
+        LogsEntity.class,
         APICallEntity.class}, version = 1)
 public abstract class AppachhiDB extends RoomDatabase {
     private static final String DB_NAME = "appachhi";
@@ -59,6 +65,10 @@ public abstract class AppachhiDB extends RoomDatabase {
     public abstract MethodTraceDao methodTraceDao();
 
     public abstract APICallDao apiCallDao();
+
+    public abstract ScreenshotDao screenshotDao();
+
+    public abstract LogsDao logsDao();
 
     public static AppachhiDB create(Context context) {
         return Room.databaseBuilder(context, AppachhiDB.class, DB_NAME)

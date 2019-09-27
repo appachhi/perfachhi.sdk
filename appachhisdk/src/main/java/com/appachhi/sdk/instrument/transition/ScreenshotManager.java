@@ -91,7 +91,7 @@ public class ScreenshotManager {
     /**
      * Saves the {@link Bitmap} as {@link android.graphics.Bitmap.CompressFormat#PNG} in app
      * specific directory.All the operation here are done in worker thread to prevent UI thread being
-     * blocked due to File Write Operation.Screenshot will be saved only if the bitmap is not null
+     * blocked due to File Write Operation.ScreenshotEntity will be saved only if the bitmap is not null
      * <p>
      * File Naming format is ScreeName-SomeNumber.PNG
      *

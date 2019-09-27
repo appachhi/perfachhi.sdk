@@ -173,7 +173,7 @@ public class Appachhi {
         featureModules.add(new FpsFeatureModule(db.fpsDao(), dbExecutor, sessionManager));
         featureModules.add(new MemoryLeakFeatureModule(application, db.memoryLeakDao(), dbExecutor, sessionManager));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            featureModules.add(new ScreenCaptureFeatureModule(application.getApplicationContext(), sessionManager));
+            featureModules.add(new ScreenCaptureFeatureModule(application.getApplicationContext(), sessionManager, db.screenshotDao(), dbExecutor));
         }
         featureModules.add(new ScreenTransitionFeatureModule(ScreenTransitionManager.getInstance(), db.screenTransitionDao(), dbExecutor, sessionManager));
         return featureModules;
