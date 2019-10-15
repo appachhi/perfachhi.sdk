@@ -18,13 +18,13 @@ public interface ScreenshotDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public long insertScreenshot(ScreenshotEntity screenshotEntity);
 
-    @Query("SELECT * FROM ScreenshotEntityBase where syncStatus = 0 AND session_id in (:sessionId) limit 20")
+    @Query("SELECT * FROM screenshot where syncStatus = 0 AND session_id in (:sessionId) limit 20")
     List<ScreenshotEntity> allUnSyncedScreenshotEntityForSession(List<String> sessionId);
 
-    @Query("UPDATE ScreenshotEntityBase SET  syncStatus = 1 WHERE id IN (:ids)")
+    @Query("UPDATE screenshot SET  syncStatus = 1 WHERE id IN (:ids)")
     void updateSuccessSyncStatus(List<String> ids);
 
-    @Query("SELECT * FROM ScreenshotEntityBase")
+    @Query("SELECT * FROM screenshot")
     public List<ScreenshotEntity> allScreenshots();
 
     @Delete()

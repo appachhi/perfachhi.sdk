@@ -12,7 +12,7 @@ import android.arch.persistence.room.Index;
         indices = {@Index(name = "screenshot_session_index", value = "session_id")})
 public class ScreenshotEntity extends BaseFileEntity {
 
-    ScreenshotEntity(String sessionId, long sessionTime, String fileName, String filePath, String mimeType) {
+    public ScreenshotEntity(String sessionId, long sessionTime, String fileName, String filePath, String mimeType) {
         super(sessionId, sessionTime, fileName, filePath, mimeType);
     }
 }

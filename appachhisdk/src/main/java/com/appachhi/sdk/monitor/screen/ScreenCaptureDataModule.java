@@ -70,9 +70,7 @@ public class ScreenCaptureDataModule extends BaseDataModule<String> {
         compressAndSaveLatestImage = new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG,"Running");
                 if (image != null) {
-                    Log.d(TAG,"Image not null");
                     try {
                         compressCopyAndSave(image);
                     } catch (IllegalStateException e) {
@@ -81,8 +79,6 @@ public class ScreenCaptureDataModule extends BaseDataModule<String> {
                         // This exception should be ignored as the image is closed when bitmap is being
                         // copied
                     }
-                }else {
-                    Log.d(TAG,"Image null");
                 }
                 if (handler != null) {
                     handler.postDelayed(this, ScreenCaptureDataModule.this.interval);
@@ -193,6 +189,7 @@ public class ScreenCaptureDataModule extends BaseDataModule<String> {
                 // Compress
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 5, fileOutputStream);
                 lastFilePath = file.getAbsolutePath();
+                notifyObservers();
                 bitmap.recycle();
                 Log.d(TAG, "Compress and saved at " + file.getAbsolutePath());
             } catch (FileNotFoundException e) {

@@ -42,7 +42,7 @@ import com.appachhi.sdk.database.entity.TransitionStatEntity;
         MethodTraceEntity.class,
         ScreenshotEntity.class,
         LogsEntity.class,
-        APICallEntity.class}, version = 1)
+        APICallEntity.class}, version = 1, exportSchema = false)
 public abstract class AppachhiDB extends RoomDatabase {
     private static final String DB_NAME = "appachhi";
 

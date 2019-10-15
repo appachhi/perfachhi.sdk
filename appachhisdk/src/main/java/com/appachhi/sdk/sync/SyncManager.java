@@ -73,7 +73,7 @@ public class SyncManager {
     public static final String TAG = "SyncManager";
     private AppachhiDB appachhiDB;
     private OkHttpClient okHttpClient;
-    private static final String BASE_URL = "https://perfachhi.appspot.com";
+    private static final String BASE_URL = "https://6c5585cc.ngrok.io";
     private static String KEY = null;
     private Gson gson;
     private ScheduledExecutorService syncExecutor;
@@ -432,8 +432,8 @@ public class SyncManager {
     private OkHttpClient getClient() {
         if (okHttpClient == null) {
             okHttpClient = new OkHttpClient.Builder()
-                    .callTimeout(60, TimeUnit.SECONDS)
-                    .connectTimeout(60, TimeUnit.SECONDS)
+                    .callTimeout(600, TimeUnit.SECONDS)
+                    .connectTimeout(600, TimeUnit.SECONDS)
                     .followRedirects(true)
                     .writeTimeout(60, TimeUnit.SECONDS)
                     .build();
