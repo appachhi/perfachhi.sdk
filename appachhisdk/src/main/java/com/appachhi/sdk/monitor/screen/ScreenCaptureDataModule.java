@@ -191,7 +191,6 @@ public class ScreenCaptureDataModule extends BaseDataModule<String> {
                 lastFilePath = file.getAbsolutePath();
                 notifyObservers();
                 bitmap.recycle();
-                Log.d(TAG, "Compress and saved at " + file.getAbsolutePath());
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "Failed to copy the captured image", e);
             }
