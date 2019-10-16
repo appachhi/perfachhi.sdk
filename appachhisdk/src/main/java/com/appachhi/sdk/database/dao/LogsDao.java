@@ -18,8 +18,8 @@ public interface LogsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public long insertLogs(LogsEntity logEntity);
 
-    @Query("SELECT * FROM log where syncStatus = 0 AND session_id in (:sessionId) limit 30")
-    List<LogsEntity> allUnSyncedLogEntityForSession(List<String> sessionId);
+    @Query("SELECT * FROM log where syncStatus = 0 AND session_id in (:sessionId) limit :limit")
+    List<LogsEntity> unSyncedLogEntityForSession(List<String> sessionId, int limit);
 
     @Query("UPDATE log SET  syncStatus = 1 WHERE id IN (:ids)")
     void updateSuccessSyncStatus(List<String> ids);

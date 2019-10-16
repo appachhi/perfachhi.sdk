@@ -1,5 +1,6 @@
 package com.appachhi.sdk.monitor.logs;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -7,80 +8,140 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.appachhi.sdk.BaseDataModule;
-import com.appachhi.sdk.monitor.memory.GCInfo;
+import com.appachhi.sdk.database.entity.Session;
+import com.appachhi.sdk.sync.SessionManager;
 
-import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class LogsDataModule extends BaseDataModule<String> {
+public class LogsDataModule extends BaseDataModule<LogsInfo> {
 
     private static final String TAG = "LogsDataModule";
+    private static final String LOGCAT_NAME = "logcat";
+    private static final String LOGCAT_FILE = "-f";
     // Executor to parse the adb logcat continuously
-    private static Executor executor = Executors.newSingleThreadExecutor();
+    private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+    private Executor logsExecutor = Executors.newSingleThreadExecutor();
 
-    // Main Thread Handler to notify observer on the main thread
+    @Nullable
+    private Process runningProcess;
     @NonNull
-    private Handler mainHandler = new Handler(Looper.getMainLooper());
-    @NonNull
-    private ProcessBuilder logcatProcessBuilder = new ProcessBuilder(LOGCAT_NAME, LOGCAT_FILTER , LOGCAT_FILTER_BY_TAG_AND_PRIORITY);
-    // Current GC Information
+    private
+    SessionManager sessionManager;
     @Nullable
-    private GCInfo data;
-    // Currently running Logcat Process
-    @Nullable
-    private java.lang.Process runningProcess;
-    @Nullable
-    private BufferedReader brq;
-    // Field denoting whether the stream from Logcat Process has been closed or not
-    private boolean isStreamClosed = true;
+    private
+    Session currentlyLoggingSession;
+    private LogsInfo logsInfo;
+    private Context appContext;
+    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", Locale.ENGLISH);
 
-    // Runnable to notify the data changes to the observers
-    private Runnable notifyOnMainThread = new Runnable() {
-        @Override
-        public void run() {
-            notifyObservers();
-        }
-    };
+    LogsDataModule(Context appContext, @NonNull SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+        this.appContext = appContext;
+    }
+
+
     @Nullable
     @Override
-    protected String getData() {
-        return null;
+    protected LogsInfo getData() {
+        return logsInfo;
     }
 
     @Override
     public void start() {
+        mainThreadHandler.postDelayed(scheduleContinuousChecking, 5000);
+        logsExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                startProcess();
+            }
+        });
 
     }
 
     @Override
     public void stop() {
-
+        stopProcess();
+        mainThreadHandler.removeCallbacks(scheduleContinuousChecking);
     }
 
-    /**
-     * Starts the Logcat Process and connects and Stream to a reader
-     */
-    private void startLogcatProcess() {
-        try {
-            Log.d(TAG, String.format("starting Logcat Process with %s", logcatProcessBuilder.command()));
-            runningProcess = logcatProcessBuilder.start();
-            brq = new BufferedReader(new InputStreamReader(runningProcess.getInputStream()), 8192);
-            isStreamClosed = false;
-            Log.d(TAG, "Process Started");
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to startAndBind logcat Process", e);
+    private void startProcess() {
+        Session session = sessionManager.getCurrentSession();
+        if (session != null) {
+            try {
+                Date startTime = new Date();
+                File logFile = createLogFile(session.getId(), startTime);
+                String logsFilePath = logFile.getAbsolutePath();
+                // Clears the logcat and start fresh
+                Runtime.getRuntime().exec("logcat -c").waitFor();
+                final ProcessBuilder logcatProcessBuilder = new ProcessBuilder(
+                        LOGCAT_NAME,
+                        LOGCAT_FILE,
+                        logsFilePath
+                );
+                Log.d(TAG, "Starting logging process " + logcatProcessBuilder.command().toString());
+                runningProcess = logcatProcessBuilder.start();
+                currentlyLoggingSession = session;
+                logsInfo = new LogsInfo(logFile, startTime);
+            } catch (IOException|InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    /**
-     * Stops the started Logcat Process
-     */
-    private void stopLogcatProcess() {
-        Log.d(TAG, "Stopping Logcat Process");
+    private void stopProcess() {
+        // Destroy the logs export process and notify the user of the file
         if (runningProcess != null) {
-            Log.d(TAG, "Logcat Process Stopped");
             runningProcess.destroy();
+            notifyObservers();
+            logsInfo = null;
         }
+    }
+
+    private File createLogFile(String id, Date startTime) {
+        String sb = id +
+                "_" +
+                dateFormat.format(startTime) +
+                ".txt";
+        File logFile = new File(appContext.getExternalFilesDir("logs"), sb);
+        Log.d(TAG, "LOgs file is " + logFile.getAbsolutePath());
+        return logFile;
+    }
+
+    private Runnable scheduleContinuousChecking = new Runnable() {
+        @Override
+        public void run() {
+            if (logsInfo != null) {
+                File currentLogFile = logsInfo.getLogFilePath();
+                // This the logs are not continuously written in same file
+                if (runningProcess != null && currentLogFile != null && currentLogFile.exists()) {
+                    // If tht current log file size greater than 100KB split it into another log
+                    if (currentLogFile.length() > (1024L * 10L)) {
+                        // Restart a new process again, so this will begin writing to an new file
+                        restartProcess();
+                    }
+                }
+            }
+
+            // When the logging is running for a session and developer has requested to change the session
+            // or for some reason the current session is different from currently logging session,
+            // then restart the logging process with the current session
+            Session currentSession = sessionManager.getCurrentSession();
+            if (currentlyLoggingSession != null && currentSession != null && !currentlyLoggingSession.getId().equals(currentSession.getId())) {
+                restartProcess();
+            }
+            mainThreadHandler.postDelayed(this, 5000);
+        }
+    };
+
+    private void restartProcess() {
+        stopProcess();
+        startProcess();
     }
 }

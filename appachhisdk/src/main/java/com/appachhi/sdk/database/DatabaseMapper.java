@@ -7,6 +7,7 @@ import com.appachhi.sdk.database.entity.APICallEntity;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
 import com.appachhi.sdk.database.entity.FpsEntity;
 import com.appachhi.sdk.database.entity.GCEntity;
+import com.appachhi.sdk.database.entity.LogsEntity;
 import com.appachhi.sdk.database.entity.MemoryEntity;
 import com.appachhi.sdk.database.entity.MemoryLeakEntity;
 import com.appachhi.sdk.database.entity.MethodTraceEntity;
@@ -95,6 +96,10 @@ public class DatabaseMapper {
 
     public static ScreenshotEntity fromScreensShotFilePath(String filePath, String mimeType, String sessionId, long sessionTimElapsed) {
         return new ScreenshotEntity(sessionId, sessionTimElapsed, Uri.fromFile(new File(filePath)).getLastPathSegment(), filePath, mimeType);
+    }
+
+    public static LogsEntity fromLogsInfo(File file, String sessionId, long sessionTimeElapsed) {
+        return new LogsEntity(sessionId, sessionTimeElapsed, Uri.fromFile(file).getLastPathSegment(), file.getAbsolutePath());
     }
 
     public static APICallEntity fromInterHttpMetricToApiCallEntity(HttpMetric httpMetric, String sessionId, long sessionTimeElapsed) {

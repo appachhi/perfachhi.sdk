@@ -117,5 +117,4 @@ public class Session {
         }
         return new Session(VERISON_NAME, VERISON_CODE, PACKAGE_NAME);
     }
-
 }

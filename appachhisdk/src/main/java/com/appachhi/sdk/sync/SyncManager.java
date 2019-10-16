@@ -73,7 +73,7 @@ public class SyncManager {
     public static final String TAG = "SyncManager";
     private AppachhiDB appachhiDB;
     private OkHttpClient okHttpClient;
-    private static final String BASE_URL = "https://6c5585cc.ngrok.io";
+    private static final String BASE_URL = "https://f85f9c62.ngrok.io";
     private static String KEY = null;
     private Gson gson;
     private ScheduledExecutorService syncExecutor;
@@ -173,7 +173,7 @@ public class SyncManager {
     }
 
     private void uploadScreenShot(List<String> allSyncedSessionIds, final ScreenshotDao screenshotDao) {
-        List<ScreenshotEntity> screenshotEntities = screenshotDao.allUnSyncedScreenshotEntityForSession(allSyncedSessionIds);
+        List<ScreenshotEntity> screenshotEntities = screenshotDao.unSyncedScreenshotEntityForSession(allSyncedSessionIds, 20);
         uploadFile("screenshot", "screenshot", screenshotEntities, new OnMetricUploadListener() {
             @Override
             public void onMetricUpload(List<String> ids) {
@@ -183,8 +183,8 @@ public class SyncManager {
     }
 
     private void uploadLogs(List<String> allSyncedSessionIds, final LogsDao logsDao) {
-        List<LogsEntity> screenshotEntities = logsDao.allUnSyncedLogEntityForSession(allSyncedSessionIds);
-        uploadFile("logs", "logs", screenshotEntities, new OnMetricUploadListener() {
+        List<LogsEntity> logsEntities = logsDao.unSyncedLogEntityForSession(allSyncedSessionIds, 5);
+        uploadFile("logs", "logs", logsEntities, new OnMetricUploadListener() {
             @Override
             public void onMetricUpload(List<String> ids) {
                 logsDao.updateSuccessSyncStatus(ids);
