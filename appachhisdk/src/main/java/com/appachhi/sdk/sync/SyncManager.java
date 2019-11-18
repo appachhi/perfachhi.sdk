@@ -73,7 +73,7 @@ public class SyncManager {
     public static final String TAG = "SyncManager";
     private AppachhiDB appachhiDB;
     private OkHttpClient okHttpClient;
-    private static final String BASE_URL = "https://f85f9c62.ngrok.io";
+    private static final String BASE_URL = "https://perfachhi.appspot.com";
     private static String KEY = null;
     private Gson gson;
     private ScheduledExecutorService syncExecutor;
