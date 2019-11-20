@@ -4,7 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+
+import androidx.annotation.RequiresApi;
 
 import com.appachhi.sdk.FeatureModule;
 import com.appachhi.sdk.database.dao.ScreenshotDao;

@@ -1,7 +1,8 @@
 package com.appachhi.sdk.instrument.trace;
 
 import android.os.SystemClock;
-import android.support.annotation.Keep;
+
+import androidx.annotation.Keep;
 
 @Keep
 public class MethodTrace {

@@ -2,9 +2,10 @@ package com.appachhi.sdk.instrument.transition;
 
 import android.app.Activity;
 import android.os.SystemClock;
-import android.support.annotation.Keep;
-import android.support.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
 
 import com.appachhi.sdk.Appachhi;
 

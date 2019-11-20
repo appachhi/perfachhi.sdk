@@ -13,11 +13,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Keep;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+
+import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.appachhi.sdk.database.AppachhiDB;
 import com.appachhi.sdk.instrument.network.internal.HttpMetric;
@@ -35,7 +36,6 @@ import com.appachhi.sdk.monitor.memoryleak.MemoryLeakFeatureModule;
 import com.appachhi.sdk.monitor.network.NetworkFeatureModule;
 import com.appachhi.sdk.monitor.screen.ScreenCaptureFeatureModule;
 import com.appachhi.sdk.sync.SessionManager;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -80,9 +80,6 @@ public class Appachhi {
 
     @SuppressWarnings("UnusedReturnValue")
     public static Appachhi init(@NonNull Application application) {
-        if (LeakCanary.isInAnalyzerProcess(application)) {
-            return null;
-        }
         DEBUG = true;
         instance = new Appachhi(application, new Config(true, true));
         return instance;

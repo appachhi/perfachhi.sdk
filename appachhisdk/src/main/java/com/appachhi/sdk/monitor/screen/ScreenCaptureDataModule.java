@@ -14,11 +14,12 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.appachhi.sdk.BaseDataModule;
 import com.appachhi.sdk.database.entity.Session;

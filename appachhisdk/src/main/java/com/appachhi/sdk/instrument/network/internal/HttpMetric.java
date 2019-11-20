@@ -1,6 +1,6 @@
 package com.appachhi.sdk.instrument.network.internal;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.Date;
 

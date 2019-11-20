@@ -9,13 +9,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.content.PermissionChecker;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.PermissionChecker;
 
 import java.util.Collections;
 import java.util.List;

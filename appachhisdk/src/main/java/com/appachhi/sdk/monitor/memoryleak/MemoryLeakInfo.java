@@ -1,28 +1,24 @@
 package com.appachhi.sdk.monitor.memoryleak;
 
-import com.squareup.leakcanary.AnalysisResult;
-import com.squareup.leakcanary.HeapDump;
+
+import shark.LeakTrace;
 
 public class MemoryLeakInfo {
-    private HeapDump heapDump;
-    private AnalysisResult analysisResult;
-    private String leakInfo;
+    private  String className;
+    private LeakTrace leakTrace;
 
-    MemoryLeakInfo(HeapDump heapDump, AnalysisResult analysisResult, String leakInfo) {
-        this.heapDump = heapDump;
-        this.analysisResult = analysisResult;
-        this.leakInfo = leakInfo;
+    MemoryLeakInfo(String className, LeakTrace leakTrace) {
+        this.className = className;
+        this.leakTrace = leakTrace;
+
     }
 
-    public HeapDump getHeapDump() {
-        return heapDump;
+
+    public String getClassName() {
+        return className;
     }
 
-    public AnalysisResult getAnalysisResult() {
-        return analysisResult;
-    }
-
-    public String getLeakInfo() {
-        return leakInfo;
+    public LeakTrace getLeakTrace() {
+        return leakTrace;
     }
 }

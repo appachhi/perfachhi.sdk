@@ -3,8 +3,9 @@ package com.appachhi.sdk.monitor.memory;
 import android.app.ActivityManager;
 import android.os.Build;
 import android.os.Debug;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import org.json.JSONException;
 import org.json.JSONObject;

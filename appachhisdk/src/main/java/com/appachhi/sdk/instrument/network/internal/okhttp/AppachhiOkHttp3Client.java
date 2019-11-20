@@ -1,7 +1,9 @@
 package com.appachhi.sdk.instrument.network.internal.okhttp;
 
-import android.support.annotation.Keep;
+
 import android.util.Log;
+
+import androidx.annotation.Keep;
 
 import com.appachhi.sdk.Appachhi;
 import com.appachhi.sdk.instrument.network.internal.HttpMetric;

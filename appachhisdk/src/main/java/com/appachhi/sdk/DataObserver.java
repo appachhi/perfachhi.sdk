@@ -1,9 +1,7 @@
 package com.appachhi.sdk;
 
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-
-import com.appachhi.sdk.DataModule;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
 
 /**
  * Interface defining a Data Subscriber

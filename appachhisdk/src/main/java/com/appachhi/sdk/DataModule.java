@@ -1,6 +1,6 @@
 package com.appachhi.sdk;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Interface defining a publisher which can publish data which can observed by {@link DataObserver}

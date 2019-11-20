@@ -1,8 +1,9 @@
 package com.appachhi.sdk;
 
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 
 /**
  * Abstract Feature Module Class which combines a {@link DataModule} and a {@link DataObserver}

@@ -1,6 +1,6 @@
 package com.appachhi.sdk;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 
 public abstract class BaseViewDataObserver<T> implements ViewDataObserver<T> {
     @LayoutRes

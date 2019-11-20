@@ -1,7 +1,8 @@
 package com.appachhi.sdk.monitor.memoryleak;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.appachhi.sdk.DataObserver;
 import com.appachhi.sdk.database.dao.MemoryLeakDao;

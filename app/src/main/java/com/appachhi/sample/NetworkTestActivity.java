@@ -3,9 +3,10 @@ package com.appachhi.sample;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.appachhi.sdk.instrument.trace.Trace;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;

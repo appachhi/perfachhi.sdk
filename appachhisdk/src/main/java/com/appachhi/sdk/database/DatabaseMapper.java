@@ -22,7 +22,6 @@ import com.appachhi.sdk.monitor.memory.GCInfo;
 import com.appachhi.sdk.monitor.memory.MemoryInfo;
 import com.appachhi.sdk.monitor.memoryleak.MemoryLeakInfo;
 import com.appachhi.sdk.monitor.network.NetworkInfo;
-import com.squareup.leakcanary.AnalysisResult;
 
 import java.io.File;
 
@@ -83,9 +82,7 @@ public class DatabaseMapper {
     }
 
     public static MemoryLeakEntity fromMemoryLeakInfoTOMemoryLeakEntity(MemoryLeakInfo memoryLeakInfo, String sessionId, long sessionTimeElapsed) {
-        AnalysisResult analysisResult = memoryLeakInfo.getAnalysisResult();
-        return new MemoryLeakEntity(analysisResult.className,
-                analysisResult.leakFound ? analysisResult.leakTrace != null ? analysisResult.leakTrace.toString() : null : null,
+        return new MemoryLeakEntity(memoryLeakInfo.getClassName(),memoryLeakInfo.getLeakTrace().toString(),
                 sessionId,
                 sessionTimeElapsed);
     }

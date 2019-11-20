@@ -2,9 +2,10 @@ package com.appachhi.sample;
 
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.appachhi.sdk.instrument.trace.Trace;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;

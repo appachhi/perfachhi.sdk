@@ -1,7 +1,8 @@
 package com.appachhi.sdk.monitor.fps;
 
-import android.support.annotation.Nullable;
 import android.view.Choreographer;
+
+import androidx.annotation.Nullable;
 
 import com.appachhi.sdk.BaseDataModule;
 

@@ -1,7 +1,8 @@
 package com.appachhi.sdk.instrument.transition;
 
-import android.support.annotation.Nullable;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.appachhi.sdk.Appachhi;
 import com.appachhi.sdk.BaseDataModule;

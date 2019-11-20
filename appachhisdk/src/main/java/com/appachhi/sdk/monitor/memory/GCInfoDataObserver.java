@@ -1,8 +1,9 @@
 package com.appachhi.sdk.monitor.memory;
 
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
 
 import com.appachhi.sdk.DataModule;
 import com.appachhi.sdk.DataObserver;
