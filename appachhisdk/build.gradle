@@ -1,7 +1,7 @@
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.android.library'
 
-group = 'com.github.appachhi.perfachhi.sdk'
+group = 'com.github.appachhi.perfacchi.sdk'
 
 
 android {
