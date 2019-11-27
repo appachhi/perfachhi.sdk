@@ -11,6 +11,7 @@ import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
 
 public class MainActivity extends AppCompatActivity {
 
+    @Trace(name = "MainActivity")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ScreenTransitionManager.getInstance().beginTransition(this);
