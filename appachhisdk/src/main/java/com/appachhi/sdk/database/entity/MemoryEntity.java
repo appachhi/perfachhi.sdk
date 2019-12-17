@@ -1,77 +1,56 @@
 package com.appachhi.sdk.database.entity;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.ForeignKey;
-import androidx.room.Ignore;
-import androidx.room.Index;
-
 import com.google.gson.annotations.SerializedName;
 
-@Entity(tableName = "memory_usage",
-        foreignKeys = @ForeignKey(entity = Session.class, parentColumns = "id", childColumns = "session_id"),
-        indices = {@Index(name = "memory_usage_session_index", value = "session_id")})
+//@Entity(tableName = "memory_usage",
+//        foreignKeys = @ForeignKey(entity = Session.class, parentColumns = "id", childColumns = "session_id"),
+//        indices = {@Index(name = "memory_usage_session_index", value = "session_id")})
 public class MemoryEntity extends BaseEntity {
-    @ColumnInfo(name = "summary_java_heap")
     @SerializedName("javaHeap")
     private int javaHeap;
 
-    @ColumnInfo(name = "native_heap")
     @SerializedName("nativeHeap")
     private int nativeHeap;
 
-    @ColumnInfo(name = "summary_code")
     @SerializedName("code")
     private int code;
 
-    @ColumnInfo(name = "summary_stack")
     @SerializedName("stack")
     private int stack;
 
-    @ColumnInfo(name = "summary_graphics")
     @SerializedName("graphics")
     private int graphics;
 
-    @ColumnInfo(name = "summary_private_other")
     @SerializedName("privateOther")
     private int privateOther;
 
-    @ColumnInfo(name = "summary_system")
     @SerializedName("system")
     private int system;
 
-    @ColumnInfo(name = "summary_total_swap")
     @SerializedName("totalSwap")
     private int totalSwap;
 
-    @ColumnInfo(name = "threshold")
     @SerializedName("threshold")
     private long threshold;
 
-    @ColumnInfo(name = "total_pss")
     @SerializedName("totalPSS")
     private int totalPSS;
 
-    @ColumnInfo(name = "total_private_dirty")
     @SerializedName("totalPrivateDirty")
     private int totalPrivateDirty;
 
-    @ColumnInfo(name = "total_shared_dirty")
     @SerializedName("totalSharedDirty")
     private int totalSharedDirty;
 
-    @ColumnInfo(name = "system_resource_memory")
     @SerializedName("systemResourceMemory")
     private int systemResourceMemory;
 
-    @ColumnInfo(name = "swap_memory")
     @SerializedName("swapMemory")
     private int swapMemory;
 
     public MemoryEntity() {
     }
 
-    @Ignore
     public MemoryEntity(int javaHeap, int nativeHeap, int code, int stack,
                         int graphics, int privateOther, int system, int totalSwap,
                         long threshold, int totalPSS, int totalPrivateDirty,

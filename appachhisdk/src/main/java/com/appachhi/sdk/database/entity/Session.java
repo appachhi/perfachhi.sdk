@@ -4,27 +4,18 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 import java.util.UUID;
 
-@Entity(tableName = "session")
 public class Session {
     private static String VERISON_NAME = null;
     private static long VERISON_CODE = -1L;
     private static String PACKAGE_NAME = null;
-    @PrimaryKey
-    @NonNull
+
     @SerializedName("id")
     private String id;
-    @ColumnInfo(name = "start_time")
     @SerializedName("startTime")
     private long startTime;
 
@@ -32,18 +23,12 @@ public class Session {
      * Sync Status 0 means unsynced
      * Sync Status 1 means synced
      */
-    @ColumnInfo(name = "syncStatus")
     private transient int syncStatus;
 
-    @ColumnInfo(name = "version_code")
     private long versionCode;
-    @ColumnInfo(name = "version_name")
     private String versionName;
-
-    @ColumnInfo(name = "package_name")
     private String packageName;
 
-    @Ignore
     public Session(String versionName, long versionCode, String packageName) {
         this();
         this.versionName = versionName;
@@ -56,12 +41,11 @@ public class Session {
         this.startTime = new Date().getTime();
     }
 
-    @NonNull
     public String getId() {
         return id;
     }
 
-    public void setId(@NonNull String id) {
+    public void setId(String id) {
         this.id = id;
     }
 

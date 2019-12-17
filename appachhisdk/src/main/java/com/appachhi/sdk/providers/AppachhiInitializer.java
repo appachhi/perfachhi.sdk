@@ -30,6 +30,7 @@ public class AppachhiInitializer extends ContentProvider {
 
     @Override
     public void attachInfo(Context context, ProviderInfo info) {
+        Log.d(TAG, "AppachhiInitializer attach");
         if (info == null){
             Log.d(TAG, "AppachhiInitializer ProviderInfo cannot be null");
         }

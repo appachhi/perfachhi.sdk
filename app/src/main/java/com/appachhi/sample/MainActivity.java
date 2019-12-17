@@ -51,6 +51,17 @@ public class MainActivity extends AppCompatActivity {
 //                ContextCompat.startForegroundService(MainActivity.this,intent);
 //            }
 //        });
+
+        findViewById(R.id.frame_drop_test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Trace(name = "MainActvity Resume")

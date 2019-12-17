@@ -1,28 +1,20 @@
 package com.appachhi.sdk.database.entity;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.ForeignKey;
-import androidx.room.Ignore;
-import androidx.room.Index;
 
 import com.google.gson.annotations.SerializedName;
 
-@Entity(tableName = "cpu_usage", foreignKeys = @ForeignKey(
-        entity = Session.class,
-        parentColumns = "id",
-        childColumns = "session_id",
-        onDelete = ForeignKey.CASCADE),
-        indices = {@Index(name = "cpu_usage_session_index", value = "session_id")})
+//@Entity(tableName = "cpu_usage", foreignKeys = @ForeignKey(
+//        entity = Session.class,
+//        parentColumns = "id",
+//        childColumns = "session_id",
+//        onDelete = ForeignKey.CASCADE),
+//        indices = {@Index(name = "cpu_usage_session_index", value = "session_id")})
 public class CpuUsageEntity extends BaseEntity {
-    @ColumnInfo(name = "app_cpu_usage")
     @SerializedName("appCpuUsage")
     private double appCpuUsage;
-    @ColumnInfo(name = "device_cpu_usage")
     @SerializedName("deviceCpuUsage")
     private double deviceCpuUsage;
 
-    @Ignore
     public CpuUsageEntity(double appCpuUsage, double deviceCpuUsage, String sessionId,long sessionTime) {
         super(sessionId,sessionTime);
         this.appCpuUsage = appCpuUsage;

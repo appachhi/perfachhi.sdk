@@ -1,20 +1,16 @@
 package com.appachhi.sdk.database.entity;
 
-import androidx.room.ColumnInfo;
 
 import com.google.gson.annotations.SerializedName;
 
 public class BaseFileEntity extends BaseEntity {
     @SerializedName("fileName")
-    @ColumnInfo(name = "file_name")
     private String fileName;
 
     @SerializedName("filePath")
-    @ColumnInfo(name = "file_path")
     private String filePath;
 
     @SerializedName("mimeType")
-    @ColumnInfo(name = "mime_type")
     private String mimeType;
 
     BaseFileEntity(String sessionId, long sessionTime, String fileName, String filePath, String mimeType) {

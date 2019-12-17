@@ -3,14 +3,9 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!-- To store the heap dumps and leak analysis results. -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application>
         <service android:name=".OverlayService" />
-
-        <service android:name=".monitor.memoryleak.AppachhiMemoryLeakService" />
 
         <activity
             android:name=".ui.ConfigurationActivity"
@@ -20,7 +15,7 @@
 
         <provider
             android:name=".providers.AppachhiInitializer"
-            android:authorities="com.appachhi.sdk.initializer.${applicationId}"
+            android:authorities="${applicationId}.com.appachhi.sdk.initializer"
             android:exported="false" />
         <service
             android:name=".bugasura.BugaSuraDumpService"

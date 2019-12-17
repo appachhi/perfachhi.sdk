@@ -1,28 +1,20 @@
 package com.appachhi.sdk.database.entity;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.ForeignKey;
-import androidx.room.Ignore;
-import androidx.room.Index;
-
 import com.google.gson.annotations.SerializedName;
-
-@Entity(tableName = "method_trace", foreignKeys = @ForeignKey(
-        entity = Session.class,
-        parentColumns = "id",
-        childColumns = "session_id",
-        onDelete = ForeignKey.CASCADE),
-        indices = {@Index(name = "method_trace_session_index", value = "session_id")})
+//
+//@Entity(tableName = "method_trace", foreignKeys = @ForeignKey(
+//        entity = Session.class,
+//        parentColumns = "id",
+//        childColumns = "session_id",
+//        onDelete = ForeignKey.CASCADE),
+//        indices = {@Index(name = "method_trace_session_index", value = "session_id")})
 public class MethodTraceEntity extends BaseEntity {
-    @ColumnInfo(name = "name")
     @SerializedName("traceName")
     private String traceName;
 
     @SerializedName("duration")
     private long duration;
 
-    @Ignore
     public MethodTraceEntity(String traceName, long duration, String sessionId, long sessionTime) {
         super(sessionId, sessionTime);
         this.traceName = traceName;

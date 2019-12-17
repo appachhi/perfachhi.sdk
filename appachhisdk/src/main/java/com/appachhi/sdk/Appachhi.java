@@ -29,6 +29,7 @@ import com.appachhi.sdk.instrument.transition.ScreenTransitionFeatureModule;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
 import com.appachhi.sdk.monitor.cpu.CpuUsageInfoFeatureModule;
 import com.appachhi.sdk.monitor.fps.FpsFeatureModule;
+import com.appachhi.sdk.monitor.framedrop.FrameDropFeatureModule;
 import com.appachhi.sdk.monitor.logs.LogsFeatureModule;
 import com.appachhi.sdk.monitor.memory.GCInfoFeatureModule;
 import com.appachhi.sdk.monitor.memory.MemoryInfoFeatureModule;
@@ -163,6 +164,8 @@ public class Appachhi {
     }
 
     private List<FeatureModule> addModules(Application application) {
+        Log.d("fsdnf","gf");
+
         List<FeatureModule> featureModules = new LinkedList<>();
         featureModules.add(new MemoryInfoFeatureModule(application, db.memoryDao(), dbExecutor, sessionManager));
         featureModules.add(new GCInfoFeatureModule(db.gcDao(), dbExecutor, sessionManager));
@@ -170,6 +173,7 @@ public class Appachhi {
         featureModules.add(new CpuUsageInfoFeatureModule(db.cpuUsageDao(), dbExecutor, sessionManager));
         featureModules.add(new FpsFeatureModule(db.fpsDao(), dbExecutor, sessionManager));
         featureModules.add(new MemoryLeakFeatureModule(application, db.memoryLeakDao(), dbExecutor, sessionManager));
+        featureModules.add(new FrameDropFeatureModule(application, dbExecutor, sessionManager));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             featureModules.add(new ScreenCaptureFeatureModule(application.getApplicationContext(), sessionManager, db.screenshotDao(), dbExecutor));
         }
