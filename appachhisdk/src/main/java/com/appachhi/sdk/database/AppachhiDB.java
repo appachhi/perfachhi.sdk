@@ -3,83 +3,106 @@ package com.appachhi.sdk.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.appachhi.sdk.database.dao.APICallDao;
+import com.appachhi.sdk.database.dao.CpuUsageDao;
+import com.appachhi.sdk.database.dao.FpsDao;
+import com.appachhi.sdk.database.dao.GCDao;
+import com.appachhi.sdk.database.dao.LogsDao;
+import com.appachhi.sdk.database.dao.MemoryDao;
+import com.appachhi.sdk.database.dao.MemoryLeakDao;
+import com.appachhi.sdk.database.dao.MethodTraceDao;
+import com.appachhi.sdk.database.dao.NetworkDao;
+import com.appachhi.sdk.database.dao.ScreenTransitionDao;
+import com.appachhi.sdk.database.dao.ScreenshotDao;
 import com.appachhi.sdk.database.dao.SessionDao;
-import com.appachhi.sdk.database.entity.Session;
 
-import java.util.List;
 
 public class AppachhiDB {
 
-    public AppachhiDB(SQLiteDatabase sqLiteDatabase) {
+    private static AppachhiDB instance;
+    private final SessionDao sessionDao;
+    private final CpuUsageDao cpuUsageDao;
+    private final MemoryDao memoryDao;
+    private final GCDao gcDao;
+    private final ScreenshotDao screenshotDao;
+    private final LogsDao logsDao;
+    private final FpsDao fpsDao;
+    private NetworkDao networkDao;
+    private MemoryLeakDao memoryLeakDao;
+    private APICallDao apiCallDao;
+    private ScreenTransitionDao screenTransitionDao;
+    private MethodTraceDao methodTraceDao;
+
+    private AppachhiDB(SQLiteDatabase sqLiteDatabase) {
+        sessionDao = new SessionDao(sqLiteDatabase);
+        cpuUsageDao = new CpuUsageDao(sqLiteDatabase);
+        memoryDao = new MemoryDao(sqLiteDatabase);
+        gcDao = new GCDao(sqLiteDatabase);
+        screenshotDao = new ScreenshotDao(sqLiteDatabase);
+        logsDao = new LogsDao(sqLiteDatabase);
+        fpsDao = new FpsDao(sqLiteDatabase);
+        networkDao = new NetworkDao(sqLiteDatabase);
+        apiCallDao = new APICallDao(sqLiteDatabase);
+        memoryLeakDao = new MemoryLeakDao(sqLiteDatabase);
+        screenTransitionDao = new ScreenTransitionDao(sqLiteDatabase);
+        methodTraceDao = new MethodTraceDao(sqLiteDatabase);
     }
 
     private static final String DB_NAME = "appachhi";
 
-//    public abstract SessionDao sessionDao();
-//
-//    public abstract CpuUsageDao cpuUsageDao();
-//
-//    public abstract MemoryDao memoryDao();
-//
-//    public abstract GCDao gcDao();
-//
-//    public abstract FpsDao fpsDao();
-//
-//    public abstract NetworkDao networkDao();
-//
-//    public abstract MemoryLeakDao memoryLeakDao();
-//
-//    public abstract ScreenTransitionDao screenTransitionDao();
-//
-//    public abstract MethodTraceDao methodTraceDao();
-//
-//    public abstract APICallDao apiCallDao();
-//
-//    public abstract ScreenshotDao screenshotDao();
-//
-//    public abstract LogsDao logsDao();
+    public SessionDao sessionDao() {
+        return sessionDao;
+    }
 
-    public static AppachhiDB create(Context context) {
-        return new AppachhiDB(new AppachhiSqlOpenHelper(context).getWritableDatabase());
+    public CpuUsageDao cpuUsageDao() {
+        return cpuUsageDao;
+    }
+
+    public MemoryDao memoryDao() {
+        return memoryDao;
+    }
+
+    public GCDao gcDao() {
+        return gcDao;
+    }
+
+    public FpsDao fpsDao() {
+        return fpsDao;
+    }
+
+    public NetworkDao networkDao() {
+        return networkDao;
+    }
+
+    public MemoryLeakDao memoryLeakDao() {
+        return memoryLeakDao;
+    }
+
+    public ScreenTransitionDao screenTransitionDao() {
+        return screenTransitionDao;
+    }
+
+    public MethodTraceDao methodTraceDao() {
+        return methodTraceDao;
+    }
+
+    public APICallDao apiCallDao() {
+        return apiCallDao;
+    }
+
+    public ScreenshotDao screenshotDao() {
+        return screenshotDao;
+    }
+
+    public LogsDao logsDao() {
+        return logsDao;
+    }
+
+    public static AppachhiDB getInstance(Context context) {
+        if (instance == null) {
+            instance = new AppachhiDB(new AppachhiSqlOpenHelper(context).getWritableDatabase());
+        }
+        return instance;
     }
 
 }
-
-class SessionDaoImpl implements SessionDao {
-
-    @Override
-    public long insertSession(Session session) {
-        return 0;
-    }
-
-    @Override
-    public List<Session> allSessions() {
-        return null;
-    }
-
-    @Override
-    public List<Session> allUnSyncedSessions() {
-        return null;
-    }
-
-    @Override
-    public List<String> allSyncedSessionIds() {
-        return null;
-    }
-
-    @Override
-    public void deleteSession(Session session) {
-
-    }
-
-    @Override
-    public void deleteAllSession() {
-
-    }
-
-    @Override
-    public void updateSuccessSyncStatus(List<String> ids) {
-
-    }
-}
-

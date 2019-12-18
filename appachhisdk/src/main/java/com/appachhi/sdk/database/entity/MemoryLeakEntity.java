@@ -48,4 +48,5 @@ public class MemoryLeakEntity extends BaseEntity {
                 ", leakTrace='" + leakTrace + '\'' +
                 '}';
     }
+
 }

@@ -2,8 +2,6 @@ package com.appachhi.sdk.monitor.memoryleak;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.appachhi.sdk.DataObserver;
 import com.appachhi.sdk.database.dao.MemoryLeakDao;
 import com.appachhi.sdk.database.entity.MemoryLeakEntity;
@@ -30,7 +28,7 @@ public class MemoryLeakDataObserver implements DataObserver<List<MemoryLeakInfo>
     }
 
     @Override
-    public void onDataAvailable(@NonNull final List<MemoryLeakInfo> memoryLeakInfos) {
+    public void onDataAvailable( final List<MemoryLeakInfo> memoryLeakInfos) {
         if (memoryLeakInfos.size() > 0) {
             final MemoryLeakInfo data = memoryLeakInfos.get(memoryLeakInfos.size() - 1);
             Runnable runnable = new Runnable() {

@@ -10,11 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
-import androidx.annotation.Keep;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.WorkerThread;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -42,7 +37,7 @@ public class ScreenshotManager {
      *
      * @param isRunningFromReactNative true if running from react native
      */
-    @Keep
+
     public static void setIsRunningFromReactNative(boolean isRunningFromReactNative) {
         ScreenshotManager.isRunningFromReactNative = isRunningFromReactNative;
     }
@@ -53,7 +48,7 @@ public class ScreenshotManager {
      * @param activity   {@link Activity} where screen exist
      * @param screenName Name of the screen
      */
-    void takeAndSave(@NonNull Activity activity, final String screenName) {
+    void takeAndSave( Activity activity, final String screenName) {
         final View view = activity.getWindow().getDecorView().findViewById(android.R.id.content);
         if (isRunningFromReactNative) {
             // Adding delay for react native screenshot
@@ -75,7 +70,7 @@ public class ScreenshotManager {
      * @param view       View for which screenshot is to be taken
      * @param screenName Name of the screen
      */
-    private void takeAndSave(@Nullable final View view, final String screenName) {
+    private void takeAndSave( final View view, final String screenName) {
         if (view != null) {
             view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
@@ -100,8 +95,7 @@ public class ScreenshotManager {
      * @param bitmap             Bitmap to be saved which can be null
      * @param screenName         Screen Name
      */
-    @WorkerThread
-    private void saveScreenshot(Context applicationContext, @Nullable final Bitmap bitmap, String screenName) {
+    private void saveScreenshot(Context applicationContext,  final Bitmap bitmap, String screenName) {
         if (bitmap != null) {
             File folder = applicationContext.getExternalFilesDir("appachhi");
             String fileName = String.format(Locale.ENGLISH, "%s-%d.png", screenName, SystemClock.elapsedRealtime());
@@ -115,7 +109,7 @@ public class ScreenshotManager {
         }
     }
 
-    private void saveScreenshot(@NonNull Bitmap bitmap, File file) {
+    private void saveScreenshot( Bitmap bitmap, File file) {
         FileOutputStream fileOutputStream = null;
         try {
             fileOutputStream = new FileOutputStream(file);

@@ -6,10 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-
 import com.appachhi.sdk.BaseViewDataObserver;
 import com.appachhi.sdk.R;
 
@@ -21,9 +17,9 @@ public class FpsViewDataObserver extends BaseViewDataObserver<Double> {
         super(R.layout.simple_layout);
     }
 
-    @Nullable
+
     @Override
-    public View createView(@NonNull ViewGroup root) {
+    public View createView( ViewGroup root) {
         View view = LayoutInflater.from(root.getContext()).inflate(getLayoutResId(), null);
         dataTextView = view.findViewById(R.id.data);
         dataTextView.setTextColor(Color.WHITE);
@@ -31,13 +27,13 @@ public class FpsViewDataObserver extends BaseViewDataObserver<Double> {
         if (typeTextView != null) {
             typeTextView.setText("FPS");
             typeTextView.setTextColor(Color.BLACK);
-            typeTextView.setBackgroundColor(ContextCompat.getColor(root.getContext(), R.color.color_fps_tag));
+         //   typeTextView.setBackgroundColor(ContextCompat.getColor(root.getContext(), R.color.color_fps_tag));
         }
         return view;
     }
 
     @Override
-    public void onDataAvailable(@NonNull Double data) {
+    public void onDataAvailable( Double data) {
         if (dataTextView != null) {
             dataTextView.setText(String.valueOf(data.intValue()));
         }

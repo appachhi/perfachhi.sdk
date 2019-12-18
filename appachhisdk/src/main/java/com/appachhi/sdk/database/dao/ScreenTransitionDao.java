@@ -1,30 +1,93 @@
 package com.appachhi.sdk.database.dao;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-
+import com.appachhi.sdk.database.entity.Contract;
 import com.appachhi.sdk.database.entity.TransitionStatEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Dao
-public interface ScreenTransitionDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insertScreenTranData(TransitionStatEntity transitionStatEntity);
+import static com.appachhi.sdk.database.entity.Contract.TransitionStatEntry.COLUMN_EXECUTION_TIME;
+import static com.appachhi.sdk.database.entity.Contract.TransitionStatEntry.COLUMN_SESSION_ID;
+import static com.appachhi.sdk.database.entity.Contract.TransitionStatEntry.COLUMN_SYNC_STATUS;
 
-    @Query("SELECT * FROM screen_transition where syncStatus = 0 AND session_id in (:sessionIds)")
-    List<TransitionStatEntity> allUnSyncedScreenTransitionForSession(List<String> sessionIds);
+public class ScreenTransitionDao {
+    private final SQLiteDatabase sqlDB;
 
-    @Query("UPDATE screen_transition SET  syncStatus = 1 WHERE id IN (:ids)")
-    void updateSuccessSyncStatus(List<String> ids);
+    public ScreenTransitionDao(SQLiteDatabase sqlDB) {
+        this.sqlDB = sqlDB;
+    }
 
-    @Query("SELECT * FROM screen_transition")
-    public List<TransitionStatEntity> allScreenTransition();
+    public long insertScreenTranData(TransitionStatEntity transitionStatEntity) {
+        return sqlDB.insertWithOnConflict(
+                Contract.TransitionStatEntry.TABLE_NAME,
+                null,
+                Contract.TransitionStatEntry.toContentValues(transitionStatEntity),
+                SQLiteDatabase.CONFLICT_REPLACE
+        );
+    }
 
-    @Delete()
-    void deleteScreenTransitionData(TransitionStatEntity transitionStatEntity);
+    public List<TransitionStatEntity> allUnSyncedScreenTransitionForSession(List<String> sessionIds) {
+        Cursor cursor = sqlDB.query(
+                Contract.TransitionStatEntry.TABLE_NAME,
+                null,
+                String.format("%s = 0 AND %s IN (%s)", COLUMN_SYNC_STATUS, COLUMN_SESSION_ID, join(sessionIds)),
+                null,
+                null,
+                null,
+                COLUMN_EXECUTION_TIME,
+                null
+        );
+
+        return mapCursorToTransitionStat(cursor);
+    }
+
+    public void updateSuccessSyncStatus(List<String> ids) {
+        sqlDB.update(
+                Contract.TransitionStatEntry.TABLE_NAME,
+                Contract.TransitionStatEntry.updateSyncStatusValue(),
+                String.format("%s IN (%s)", Contract.TransitionStatEntry._ID, join(ids)),
+                null
+        );
+    }
+
+    public List<TransitionStatEntity> allScreenTransition() {
+        Cursor cursor = sqlDB.query(
+                Contract.TransitionStatEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                COLUMN_EXECUTION_TIME,
+                null
+        );
+        return mapCursorToTransitionStat(cursor);
+    }
+
+    private List<TransitionStatEntity> mapCursorToTransitionStat(Cursor cursor) {
+        List<TransitionStatEntity> transitionStatEntities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            transitionStatEntities.add(Contract.TransitionStatEntry.fromCursor(cursor));
+        }
+        cursor.close();
+        return transitionStatEntities;
+    }
+
+    private static String join(List<String> input) {
+        if (input == null || input.size() <= 0) return "";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < input.size(); i++) {
+            sb.append(input.get(i));
+            // if not the last item
+            if (i != input.size() - 1) {
+                sb.append(",");
+            }
+
+        }
+        return sb.toString();
+
+    }
 }

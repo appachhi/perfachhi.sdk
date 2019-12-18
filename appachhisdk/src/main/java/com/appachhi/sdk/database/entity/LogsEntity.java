@@ -12,4 +12,5 @@ public class LogsEntity extends BaseFileEntity {
         super(sessionId, sessionTime, fileName, filePath, "text/plain");
     }
 
+
 }

@@ -11,15 +11,11 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import com.appachhi.sdk.BaseDataModule;
 import com.appachhi.sdk.database.entity.Session;
@@ -40,7 +36,7 @@ import static android.hardware.display.DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLI
 /**
  * Module capturing screen shot at regular interval and saving it to the app specific directory
  */
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
 public class ScreenCaptureDataModule extends BaseDataModule<String> {
     private static final String TAG = "ScreenCaptureDataModule";
     private static final String SCREEN_CAP = "screen_capture";
@@ -88,7 +84,7 @@ public class ScreenCaptureDataModule extends BaseDataModule<String> {
         };
     }
 
-    @Nullable
+
     @Override
     protected String getData() {
         return lastFilePath;

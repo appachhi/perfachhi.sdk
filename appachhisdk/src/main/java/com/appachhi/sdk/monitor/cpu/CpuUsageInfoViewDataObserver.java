@@ -6,10 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-
 import com.appachhi.sdk.BaseViewDataObserver;
 import com.appachhi.sdk.R;
 
@@ -22,9 +18,9 @@ public class CpuUsageInfoViewDataObserver extends BaseViewDataObserver<CpuUsageI
         super(R.layout.simple_layout);
     }
 
-    @Nullable
+
     @Override
-    public View createView(@NonNull ViewGroup root) {
+    public View createView( ViewGroup root) {
         View view = LayoutInflater.from(root.getContext()).inflate(getLayoutResId(), null);
         dataTextView = view.findViewById(R.id.data);
         dataTextView.setTextColor(Color.WHITE);
@@ -32,13 +28,13 @@ public class CpuUsageInfoViewDataObserver extends BaseViewDataObserver<CpuUsageI
         if (typeTextView != null) {
             typeTextView.setText("CPU");
             typeTextView.setTextColor(Color.BLACK);
-            typeTextView.setBackgroundColor(ContextCompat.getColor(root.getContext(), R.color.color_cpu_tag));
+          //  typeTextView.setBackgroundColor(ContextCompat.getColor(root.getContext(), R.color.color_cpu_tag));
         }
         return view;
     }
 
     @Override
-    public void onDataAvailable(@NonNull CpuUsageInfo data) {
+    public void onDataAvailable( CpuUsageInfo data) {
         if (dataTextView != null) {
             dataTextView.setText(String.format(Locale.ENGLISH,
                     "%1.2f%% / %1.2f%%", data.getMyPid(), data.getTotal()));

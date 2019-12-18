@@ -5,13 +5,11 @@ import com.appachhi.plugin.instrumentation.network.NetworkObjectInstrumentationF
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 public interface InstrumentationConfig {
-    @Nullable
+
     List<AnnotatedMethodInstrumentationFactory> getAnnotatedMethodInstrumentationFactories(String classDesc);
 
-    @Nullable
+
     NetworkObjectInstrumentationFactory getNetworkObjectInstrumentationFactory(String className, String methodName, String methodDesc);
 
     ClassLoader getClassLoader();

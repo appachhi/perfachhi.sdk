@@ -39,4 +39,5 @@ public class CpuUsageEntity extends BaseEntity {
     public void setDeviceCpuUsage(double deviceCpuUsage) {
         this.deviceCpuUsage = deviceCpuUsage;
     }
+
 }

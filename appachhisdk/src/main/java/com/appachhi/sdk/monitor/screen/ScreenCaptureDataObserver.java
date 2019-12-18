@@ -2,8 +2,6 @@ package com.appachhi.sdk.monitor.screen;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.appachhi.sdk.DataObserver;
 import com.appachhi.sdk.database.DatabaseMapper;
 import com.appachhi.sdk.database.dao.ScreenshotDao;
@@ -27,7 +25,7 @@ public class ScreenCaptureDataObserver implements DataObserver<String> {
     }
 
     @Override
-    public void onDataAvailable(@NonNull final String filePath) {
+    public void onDataAvailable( final String filePath) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

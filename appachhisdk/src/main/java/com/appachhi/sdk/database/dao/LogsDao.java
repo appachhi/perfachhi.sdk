@@ -1,33 +1,95 @@
 package com.appachhi.sdk.database.dao;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-
+import com.appachhi.sdk.database.entity.Contract;
 import com.appachhi.sdk.database.entity.LogsEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Dao
-public interface LogsDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public long[] insertLogss(LogsEntity... logEntities);
+import static com.appachhi.sdk.database.entity.Contract.FPSEntry.COLUMN_EXECUTION_TIME;
+import static com.appachhi.sdk.database.entity.Contract.FPSEntry.COLUMN_SESSION_ID;
+import static com.appachhi.sdk.database.entity.Contract.FPSEntry.COLUMN_SYNC_STATUS;
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public long insertLogs(LogsEntity logEntity);
+public class LogsDao {
 
-    @Query("SELECT * FROM log where syncStatus = 0 AND session_id in (:sessionId) limit :limit")
-    List<LogsEntity> unSyncedLogEntityForSession(List<String> sessionId, int limit);
+    private final SQLiteDatabase sqlDB;
 
-    @Query("UPDATE log SET  syncStatus = 1 WHERE id IN (:ids)")
-    void updateSuccessSyncStatus(List<String> ids);
+    public LogsDao(SQLiteDatabase sqlDB) {
+        this.sqlDB = sqlDB;
+    }
 
-    @Query("SELECT * FROM log")
-    public List<LogsEntity> allLogs();
+    public long insertLogs(LogsEntity logEntity) {
+        return sqlDB.insertWithOnConflict(
+                Contract.LogsEntry.TABLE_NAME,
+                null,
+                Contract.LogsEntry.toContentValues(logEntity),
+                SQLiteDatabase.CONFLICT_REPLACE
+        );
+    }
 
-    @Delete()
-    public void deleteLogs(LogsEntity logEntity);
+    public List<LogsEntity> unSyncedLogEntityForSession(List<String> sessionId, int limit) {
+        Cursor cursor = sqlDB.query(
+                Contract.FPSEntry.TABLE_NAME,
+                null,
+                String.format("%s = 0 AND %s IN (%s)", COLUMN_SYNC_STATUS, COLUMN_SESSION_ID, join(sessionId)),
+                null,
+                null,
+                null,
+                COLUMN_EXECUTION_TIME,
+                "" + limit
+        );
+
+        return mapCursorToLog(cursor);
+    }
+
+    public void updateSuccessSyncStatus(List<String> ids) {
+        sqlDB.update(
+                Contract.FPSEntry.TABLE_NAME,
+                Contract.FPSEntry.updateSyncStatusValue(),
+                String.format("%s IN (%s)", Contract.FPSEntry._ID, join(ids)),
+                null
+        );
+    }
+
+    public List<LogsEntity> allLogs() {
+        Cursor cursor = sqlDB.query(
+                Contract.FPSEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                COLUMN_EXECUTION_TIME,
+                null
+        );
+
+        return mapCursorToLog(cursor);
+    }
+
+    private List<LogsEntity> mapCursorToLog(Cursor cursor) {
+        List<LogsEntity> logsEntities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            logsEntities.add(Contract.LogsEntry.fromCursor(cursor));
+        }
+        cursor.close();
+        return logsEntities;
+    }
+
+    private static String join(List<String> input) {
+        if (input == null || input.size() <= 0) return "";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < input.size(); i++) {
+            sb.append(input.get(i));
+            // if not the last item
+            if (i != input.size() - 1) {
+                sb.append(",");
+            }
+
+        }
+        return sb.toString();
+
+    }
 }

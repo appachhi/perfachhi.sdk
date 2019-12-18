@@ -65,7 +65,7 @@ public final class TransitionStat {
     }
 
     /**
-     * Create  a new instance of {@link TransitionStat} for a given id and startTime.
+     * Create  a new getInstance of {@link TransitionStat} for a given id and startTime.
      *
      * @param id        Id of the transition
      * @param startTime Start Time of the transition
@@ -76,7 +76,7 @@ public final class TransitionStat {
     }
 
     /**
-     * Create  a new instance of {@link TransitionStat} for a given id. The startAndBind time is taken by System Clock which is
+     * Create  a new getInstance of {@link TransitionStat} for a given id. The startAndBind time is taken by System Clock which is
      * upto Nano Seconds Precision
      *
      * @param id Id of the transition

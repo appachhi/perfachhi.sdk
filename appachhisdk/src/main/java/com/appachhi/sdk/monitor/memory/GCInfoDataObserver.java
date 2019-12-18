@@ -2,9 +2,6 @@ package com.appachhi.sdk.monitor.memory;
 
 import android.util.Log;
 
-import androidx.annotation.MainThread;
-import androidx.annotation.NonNull;
-
 import com.appachhi.sdk.DataModule;
 import com.appachhi.sdk.DataObserver;
 import com.appachhi.sdk.database.dao.GCDao;
@@ -38,9 +35,9 @@ public class GCInfoDataObserver implements DataObserver<GCInfo> {
      *
      * @param data Data Published by {@link DataModule}
      */
-    @MainThread
+
     @Override
-    public void onDataAvailable(@NonNull final GCInfo data) {
+    public void onDataAvailable( final GCInfo data) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

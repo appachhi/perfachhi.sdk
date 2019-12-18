@@ -38,4 +38,5 @@ public class NetworkUsageEntity extends BaseEntity {
     public void setDataReceived(long dataReceived) {
         this.dataReceived = dataReceived;
     }
+
 }

@@ -38,4 +38,5 @@ public class TransitionStatEntity extends BaseEntity {
     public void setDuration(long duration) {
         this.duration = duration;
     }
+
 }

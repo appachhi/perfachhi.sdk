@@ -5,9 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.appachhi.sdk.BaseDataModule;
 import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.sync.SessionManager;
@@ -30,25 +27,25 @@ public class LogsDataModule extends BaseDataModule<LogsInfo> {
     private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
     private Executor logsExecutor = Executors.newSingleThreadExecutor();
 
-    @Nullable
+
     private Process runningProcess;
-    @NonNull
+
     private
     SessionManager sessionManager;
-    @Nullable
+
     private
     Session currentlyLoggingSession;
     private LogsInfo logsInfo;
     private Context appContext;
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", Locale.ENGLISH);
 
-    LogsDataModule(Context appContext, @NonNull SessionManager sessionManager) {
+    LogsDataModule(Context appContext,  SessionManager sessionManager) {
         this.sessionManager = sessionManager;
         this.appContext = appContext;
     }
 
 
-    @Nullable
+
     @Override
     protected LogsInfo getData() {
         return logsInfo;

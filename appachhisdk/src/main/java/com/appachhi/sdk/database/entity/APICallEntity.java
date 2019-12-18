@@ -1,6 +1,7 @@
 package com.appachhi.sdk.database.entity;
 
 import com.google.gson.annotations.SerializedName;
+
 //
 //@Entity(tableName = "api_call", foreignKeys = @ForeignKey(
 //        entity = Session.class,
@@ -32,8 +33,8 @@ public class APICallEntity extends BaseEntity {
 
     public APICallEntity(String url, String methodType, String contentType,
                          long requestContentLength, int responseCode,
-                         long duration, String threadName, String sessionId,long sessionTime) {
-        super(sessionId,sessionTime);
+                         long duration, String threadName, String sessionId, long sessionTime) {
+        super(sessionId, sessionTime);
         this.url = url;
         this.methodType = methodType;
         this.contentType = contentType;
@@ -101,4 +102,5 @@ public class APICallEntity extends BaseEntity {
     public void setThreadName(String threadName) {
         this.threadName = threadName;
     }
+
 }

@@ -2,8 +2,6 @@ package com.appachhi.sdk.monitor.fps;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.appachhi.sdk.DataObserver;
 import com.appachhi.sdk.database.dao.FpsDao;
 import com.appachhi.sdk.database.entity.FpsEntity;
@@ -30,7 +28,7 @@ public class FpsDataObserver implements DataObserver<Double> {
     }
 
     @Override
-    public void onDataAvailable(@NonNull final Double data) {
+    public void onDataAvailable( final Double data) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

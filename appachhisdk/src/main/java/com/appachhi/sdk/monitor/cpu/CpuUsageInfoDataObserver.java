@@ -2,8 +2,6 @@ package com.appachhi.sdk.monitor.cpu;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.appachhi.sdk.DataObserver;
 import com.appachhi.sdk.database.dao.CpuUsageDao;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
@@ -31,11 +29,11 @@ class CpuUsageInfoDataObserver implements DataObserver<CpuUsageInfo> {
     }
 
     @Override
-    public void onDataAvailable(@NonNull CpuUsageInfo data) {
+    public void onDataAvailable(CpuUsageInfo data) {
         saveToDb(data);
     }
 
-    private void saveToDb(@NonNull final CpuUsageInfo data) {
+    private void saveToDb(final CpuUsageInfo data) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

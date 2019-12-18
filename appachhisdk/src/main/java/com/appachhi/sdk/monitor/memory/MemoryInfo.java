@@ -5,8 +5,6 @@ import android.os.Build;
 import android.os.Debug;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -81,7 +79,7 @@ public class MemoryInfo {
      *
      * @return Memory occupied in KB
      */
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
     public int getCodeMemory() {
         return Integer.parseInt(memoryInfo.getMemoryStat(SUMMARY_CODE));
     }
@@ -92,7 +90,7 @@ public class MemoryInfo {
      *
      * @return Memory occupied in KB
      */
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
     public int getStackMemory() {
         return Integer.parseInt(memoryInfo.getMemoryStat(SUMMARY_STACK));
     }
@@ -104,7 +102,7 @@ public class MemoryInfo {
      *
      * @return Memory occupied in KB
      */
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
     public int getGraphicsMemory() {
         return Integer.parseInt(memoryInfo.getMemoryStat(SUMMARY_GRAPHICS));
     }
@@ -114,17 +112,17 @@ public class MemoryInfo {
      *
      * @return Memory occupied in KB
      */
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
     public int getOtherMemory() {
         return Integer.parseInt(memoryInfo.getMemoryStat(SUMMARY_PVT_OTHER));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
     public int getSystemResourceMemory() {
         return Integer.parseInt(memoryInfo.getMemoryStat(SUMMARY_SYSTEM));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
     public int getSwapMemory() {
         return Integer.parseInt(memoryInfo.getMemoryStat(SUMMARY_TOTAL_SWAP));
     }

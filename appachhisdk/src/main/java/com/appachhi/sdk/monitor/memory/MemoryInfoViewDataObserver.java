@@ -6,10 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-
 import com.appachhi.sdk.BaseViewDataObserver;
 import com.appachhi.sdk.R;
 
@@ -23,9 +19,9 @@ public class MemoryInfoViewDataObserver extends BaseViewDataObserver<MemoryInfo>
         super(R.layout.simple_layout);
     }
 
-    @Nullable
+
     @Override
-    public View createView(@NonNull ViewGroup root) {
+    public View createView( ViewGroup root) {
         View view = LayoutInflater.from(root.getContext()).inflate(getLayoutResId(), null);
         dataTextView = view.findViewById(R.id.data);
         dataTextView.setTextColor(Color.WHITE);
@@ -33,13 +29,13 @@ public class MemoryInfoViewDataObserver extends BaseViewDataObserver<MemoryInfo>
         if (typeTextView != null) {
             typeTextView.setText("Mem");
             typeTextView.setTextColor(Color.BLACK);
-            typeTextView.setBackgroundColor(ContextCompat.getColor(root.getContext(), R.color.color_memory_tag));
+          //  typeTextView.setBackgroundColor(ContextCompat.getColor(root.getContext(), R.color.color_memory_tag));
         }
         return view;
     }
 
     @Override
-    public void onDataAvailable(@NonNull MemoryInfo data) {
+    public void onDataAvailable( MemoryInfo data) {
         if (dataTextView != null) {
             dataTextView.setText(String.format(Locale.ENGLISH,
                     "%d MB / %d MB",

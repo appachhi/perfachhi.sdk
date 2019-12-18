@@ -2,8 +2,6 @@ package com.appachhi.sdk.instrument.transition;
 
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import com.appachhi.sdk.Appachhi;
 import com.appachhi.sdk.BaseDataModule;
 
@@ -28,7 +26,7 @@ public class ScreenTransitionDataModule extends BaseDataModule<TransitionStat> {
         this.screenTransitionManager.registerListener(onTransitionListener);
     }
 
-    @Nullable
+
     @Override
     protected TransitionStat getData() {
         return transitionStat;

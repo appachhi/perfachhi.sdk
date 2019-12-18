@@ -39,4 +39,6 @@ public class MethodTraceEntity extends BaseEntity {
     public void setDuration(long duration) {
         this.duration = duration;
     }
+
+
 }

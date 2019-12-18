@@ -12,4 +12,5 @@ public class ScreenshotEntity extends BaseFileEntity {
     public ScreenshotEntity(String sessionId, long sessionTime, String fileName, String filePath, String mimeType) {
         super(sessionId, sessionTime, fileName, filePath, mimeType);
     }
+
 }

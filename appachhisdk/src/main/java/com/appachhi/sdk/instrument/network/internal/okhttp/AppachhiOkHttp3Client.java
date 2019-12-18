@@ -3,8 +3,6 @@ package com.appachhi.sdk.instrument.network.internal.okhttp;
 
 import android.util.Log;
 
-import androidx.annotation.Keep;
-
 import com.appachhi.sdk.Appachhi;
 import com.appachhi.sdk.instrument.network.internal.HttpMetric;
 
@@ -22,7 +20,7 @@ import okhttp3.ResponseBody;
 public class AppachhiOkHttp3Client {
     public static final String TAG = "AppachhiOKHttp3Client";
 
-    @Keep
+
     public static Response execute(Call call) throws IOException {
         HttpMetric httpMetric = Appachhi.newHttpTrace();
         long startTime = httpMetric.start();
@@ -56,7 +54,7 @@ public class AppachhiOkHttp3Client {
         }
     }
 
-    @Keep
+
     public static void enqueue(Call call, Callback callback) {
         Log.d(TAG, "enqueue: Before");
         HttpMetric httpMetric = Appachhi.newHttpTrace();

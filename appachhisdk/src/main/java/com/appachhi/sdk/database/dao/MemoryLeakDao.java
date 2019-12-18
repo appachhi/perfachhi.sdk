@@ -1,31 +1,98 @@
 package com.appachhi.sdk.database.dao;
 
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
+import com.appachhi.sdk.database.entity.Contract;
 import com.appachhi.sdk.database.entity.MemoryLeakEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Dao
-public interface MemoryLeakDao {
+import static com.appachhi.sdk.database.entity.Contract.MemoryLeakEntry.COLUMN_EXECUTION_TIME;
+import static com.appachhi.sdk.database.entity.Contract.MemoryLeakEntry.COLUMN_SESSION_ID;
+import static com.appachhi.sdk.database.entity.Contract.MemoryLeakEntry.COLUMN_SYNC_STATUS;
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public long insertMemoryLeak(MemoryLeakEntity gcRun);
 
-    @Query("SELECT * FROM memory_leak where syncStatus = 0 AND session_id in (:sessionIds) limit 100")
-    List<MemoryLeakEntity> allUnSyncedMemoryLeakEntityForSession(List<String> sessionIds);
+public class MemoryLeakDao {
+    private final SQLiteDatabase sqlDB;
 
-    @Query("UPDATE memory_leak SET  syncStatus = 1 WHERE id IN (:ids)")
-    void updateSuccessSyncStatus(List<String> ids);
+    public MemoryLeakDao(SQLiteDatabase sqlDB) {
+        this.sqlDB = sqlDB;
+    }
 
-    @Query("SELECT * FROM memory_leak")
-    public List<MemoryLeakEntity> allMemoryLeak();
+    public long insertMemoryLeak(MemoryLeakEntity memoryLeakEntity) {
+        return sqlDB.insertWithOnConflict(
+                Contract.MemoryLeakEntry.TABLE_NAME,
+                null,
+                Contract.MemoryLeakEntry.toContentValues(memoryLeakEntity),
+                SQLiteDatabase.CONFLICT_REPLACE
+        );
+    }
 
-    @Delete()
-    public void deleteMemoryLeak(MemoryLeakEntity gcEntity);
+    public List<MemoryLeakEntity> allUnSyncedMemoryLeakEntityForSession(List<String> sessionIds) {
+        Cursor cursor = sqlDB.query(
+                Contract.MemoryLeakEntry.TABLE_NAME,
+                null,
+                String.format("%s = 0 AND %s IN (%s)", COLUMN_SYNC_STATUS, COLUMN_SESSION_ID, join(sessionIds)),
+                null,
+                null,
+                null,
+                COLUMN_EXECUTION_TIME,
+                null
+        );
+
+        return mapCursorToMemoryLeak(cursor);
+    }
+
+    public void updateSuccessSyncStatus(List<String> ids) {
+        sqlDB.update(
+                Contract.MemoryLeakEntry.TABLE_NAME,
+                Contract.MemoryLeakEntry.updateSyncStatusValue(),
+                String.format("%s IN (%s)", Contract.MemoryLeakEntry._ID, join(ids)),
+                null
+        );
+    }
+
+    public List<MemoryLeakEntity> allMemoryLeak() {
+        Cursor cursor = sqlDB.query(
+                Contract.MemoryLeakEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                COLUMN_EXECUTION_TIME,
+                null
+        );
+        return mapCursorToMemoryLeak(cursor);
+    }
+    
+
+    private List<MemoryLeakEntity> mapCursorToMemoryLeak(Cursor cursor) {
+        List<MemoryLeakEntity> memoryLeakEntities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            memoryLeakEntities.add(Contract.MemoryLeakEntry.fromCursor(cursor));
+        }
+        cursor.close();
+        return memoryLeakEntities;
+    }
+
+    private static String join(List<String> input) {
+        if (input == null || input.size() <= 0) return "";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < input.size(); i++) {
+            sb.append(input.get(i));
+            // if not the last item
+            if (i != input.size() - 1) {
+                sb.append(",");
+            }
+
+        }
+        return sb.toString();
+
+    }
+
+
 }

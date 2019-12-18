@@ -13,10 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 public class InstrumentationConfigImpl implements InstrumentationConfig {
     private final List<AnnotatedMethodInstrumentationConfig> annotationInstrumentationConfigs;
@@ -36,7 +33,7 @@ public class InstrumentationConfigImpl implements InstrumentationConfig {
 
     }
 
-    @Nullable
+
     public NetworkObjectInstrumentationFactory getNetworkObjectInstrumentationFactory(final String className, final String methodName, final String methodDesc) {
         Type classType = Type.getObjectType(className);
         if (classType.getSort() != 10) {
@@ -72,7 +69,7 @@ public class InstrumentationConfigImpl implements InstrumentationConfig {
         }
     }
 
-    @Nullable
+
     public List<AnnotatedMethodInstrumentationFactory> getAnnotatedMethodInstrumentationFactories(final String classDesc) {
         ArrayList<AnnotatedMethodInstrumentationFactory> list = null;
 

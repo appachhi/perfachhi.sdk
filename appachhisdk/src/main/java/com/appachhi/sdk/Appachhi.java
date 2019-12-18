@@ -2,11 +2,8 @@ package com.appachhi.sdk;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,11 +11,6 @@ import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
-
-import androidx.annotation.Keep;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.appachhi.sdk.database.AppachhiDB;
 import com.appachhi.sdk.instrument.network.internal.HttpMetric;
@@ -53,63 +45,63 @@ public class Appachhi {
 
     private static Appachhi instance;
 
-    @NonNull
+
     private List<FeatureModule> featureModules;
-    @NonNull
+
     private OverlayViewManager overlayViewManager;
-    @Nullable
+
     private OverlayService overlayService;
-    @NonNull
+
     private Config config;
-    @NonNull
+
     private FeatureConfigManager featureConfigManager;
-    @NonNull
+
     private Application application;
     private boolean unBindRequestReceived;
-    @NonNull
+
     private AppachhiDB db;
-    @NonNull
+
     private ExecutorService dbExecutor;
-    @NonNull
+
     private SessionManager sessionManager;
-    @NonNull
+
     private MethodTraceSavingManager methodTraceSavingManager;
-    @NonNull
+
     private HttpMetricSavingManager httpMetricSavingManager;
     @SuppressWarnings("FieldCanBeLocal")
     private ActivityCallbacks activityCallbacks;
 
     @SuppressWarnings("UnusedReturnValue")
-    public static Appachhi init(@NonNull Application application) {
+    public static Appachhi init(Application application) {
         DEBUG = true;
         instance = new Appachhi(application, new Config(true, true));
         return instance;
     }
 
-    @Keep
+
     public static Appachhi getInstance() {
         if (instance == null) {
-            throw new IllegalStateException("Cannot request Appachhi instance before calling init()");
+            throw new IllegalStateException("Cannot request Appachhi getInstance before calling init()");
         }
         return instance;
     }
 
-    @Keep
+
     public static MethodTrace newTrace(String traceName) {
         return new MethodTrace(traceName, Appachhi.getInstance().getMethodTraceSavingManager());
     }
 
-    @Keep
+
     public static HttpMetric newHttpTrace() {
         return new HttpMetric(Appachhi.getInstance().getHttpMetricSavingManager());
     }
 
-    private Appachhi(@NonNull Application application, @NonNull Config config) {
+    private Appachhi(Application application, Config config) {
         this.application = application;
         this.config = config;
 
         // Creates DB
-        db = AppachhiDB.create(application);
+        db = AppachhiDB.getInstance(application);
         // Creates DatabaseExecutor
         dbExecutor = Executors.newSingleThreadExecutor();
 
@@ -135,36 +127,33 @@ public class Appachhi {
         application.registerActivityLifecycleCallbacks(activityCallbacks);
     }
 
-    @NonNull
-    @Keep
+
     public SessionManager getSessionManager() {
         return sessionManager;
     }
 
-    @NonNull
+
     private MethodTraceSavingManager getMethodTraceSavingManager() {
         return methodTraceSavingManager;
     }
 
-    @NonNull
+
     private HttpMetricSavingManager getHttpMetricSavingManager() {
         return httpMetricSavingManager;
     }
 
-    @NonNull
-    @Keep
+
     public FeatureConfigManager getFeatureConfigManager() {
         return featureConfigManager;
     }
 
-    @NonNull
-    @Keep
+
     public AppachhiDB getDb() {
         return db;
     }
 
     private List<FeatureModule> addModules(Application application) {
-        Log.d("fsdnf","gf");
+        Log.d("fsdnf", "gf");
 
         List<FeatureModule> featureModules = new LinkedList<>();
         featureModules.add(new MemoryInfoFeatureModule(application, db.memoryDao(), dbExecutor, sessionManager));
@@ -335,7 +324,7 @@ public class Appachhi {
         if (!bound) {
             throw new RuntimeException("Could not bind the OverlayService");
         }
-        LocalBroadcastManager.getInstance(application).registerReceiver(receiver, new IntentFilter(ACTION_UNBIND));
+        EventBus.getInstance().register(receiver);
     }
 
     private final ServiceConnection serviceConnection = new ServiceConnection() {
@@ -344,7 +333,7 @@ public class Appachhi {
             if (Appachhi.DEBUG) {
                 Log.d(TAG, "onServiceConnected");
             }
-            // We've bound to OverlayService, cast the IBinder and get OverlayService instance
+            // We've bound to OverlayService, cast the IBinder and get OverlayService getInstance
             OverlayService.OverlayServiceBinder binder = (OverlayService.OverlayServiceBinder) serviceBinder;
             overlayService = binder.getService();
             overlayService.setOverlayModules(featureModules);
@@ -359,10 +348,10 @@ public class Appachhi {
         public void onServiceDisconnected(ComponentName name) {
         }
     };
-    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+    private final EventBus.Listener receiver = new EventBus.Listener() {
         @Override
-        public void onReceive(Context context, Intent intent) {
-            if (ACTION_UNBIND.equals(intent.getAction())) {
+        public void onChange(String action) {
+            if (ACTION_UNBIND.equals(action)) {
                 if (Appachhi.DEBUG) {
                     Log.d(TAG, "Serivce Unbind Broadcast");
                 }
@@ -383,7 +372,7 @@ public class Appachhi {
             application.unbindService(serviceConnection);
             overlayService = null;
         }
-        LocalBroadcastManager.getInstance(application).unregisterReceiver(receiver);
+        EventBus.getInstance().unRegister(receiver);
     }
 
     public static class Config implements Parcelable {

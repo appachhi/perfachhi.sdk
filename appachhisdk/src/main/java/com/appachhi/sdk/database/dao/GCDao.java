@@ -1,34 +1,95 @@
 package com.appachhi.sdk.database.dao;
 
-
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.appachhi.sdk.database.entity.GCEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Dao
-public interface GCDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public long[] insertGCRunInfo(GCEntity... gcRuns);
+import static com.appachhi.sdk.database.entity.Contract.GCEntry;
+import static com.appachhi.sdk.database.entity.Contract.GCEntry.COLUMN_EXECUTION_TIME;
+import static com.appachhi.sdk.database.entity.Contract.GCEntry.COLUMN_SESSION_ID;
+import static com.appachhi.sdk.database.entity.Contract.GCEntry.COLUMN_SYNC_STATUS;
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public long insetGcRunInfo(GCEntity gcRun);
+public class GCDao {
+    private final SQLiteDatabase sqlDB;
+
+    public GCDao(SQLiteDatabase sqlDB) {
+        this.sqlDB = sqlDB;
+    }
+
+    public long insetGcRunInfo(GCEntity gcRun) {
+        return sqlDB.insertWithOnConflict(
+                GCEntry.TABLE_NAME,
+                null,
+                GCEntry.toContentValues(gcRun),
+                SQLiteDatabase.CONFLICT_REPLACE
+        );
+    }
+
+    public List<GCEntity> allUnSyncedGcEntityForSession(List<String> sessionIds) {
+        Cursor cursor = sqlDB.query(
+                GCEntry.TABLE_NAME,
+                null,
+                String.format("%s = 0 AND %s IN (%s)", COLUMN_SYNC_STATUS, COLUMN_SESSION_ID, join(sessionIds)),
+                null,
+                null,
+                null,
+                COLUMN_EXECUTION_TIME,
+                "100"
+        );
+
+        return mapCursorToGC(cursor);
+    }
+
+    public void updateSuccessSyncStatus(List<String> ids) {
+        sqlDB.update(
+                GCEntry.TABLE_NAME,
+                GCEntry.updateSyncStatusValue(),
+                String.format("%s IN (%s)", GCEntry._ID, join(ids)),
+                null
+        );
+    }
+
+    List<GCEntity> allGCRun() {
+        Cursor cursor = sqlDB.query(
+                GCEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                COLUMN_EXECUTION_TIME,
+                null
+        );
+
+        return mapCursorToGC(cursor);
+    }
 
 
-    @Query("SELECT * FROM gc where syncStatus = 0 AND session_id in (:sessionIds) limit 100")
-    List<GCEntity> allUnSyncedGcEntityForSession(List<String> sessionIds);
+    private List<GCEntity> mapCursorToGC(Cursor cursor) {
+        List<GCEntity> gcEntities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            gcEntities.add(GCEntry.fromCursor(cursor));
+        }
+        cursor.close();
+        return gcEntities;
+    }
 
-    @Query("UPDATE gc SET  syncStatus = 1 WHERE id IN (:ids)")
-    void updateSuccessSyncStatus(List<String> ids);
+    private static String join(List<String> input) {
+        if (input == null || input.size() <= 0) return "";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < input.size(); i++) {
+            sb.append(input.get(i));
+            // if not the last item
+            if (i != input.size() - 1) {
+                sb.append(",");
+            }
 
-    @Delete()
-    public void deleteGcRuns(GCEntity gcEntity);
+        }
+        return sb.toString();
 
-    @Query("SELECT * from gc")
-    List<GCEntity> allGCRun();
+    }
 }

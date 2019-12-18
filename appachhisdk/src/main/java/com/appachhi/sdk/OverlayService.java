@@ -1,5 +1,6 @@
 package com.appachhi.sdk;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,11 +13,6 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.appachhi.sdk.sync.SyncManager;
 import com.appachhi.sdk.ui.ConfigurationActivity;
@@ -48,7 +44,12 @@ public class OverlayService extends Service {
     public static void startAndBind(Context context, Appachhi.Config config) {
         Intent intent = createIntent(context);
         intent.putExtra(CONFIG_KEY, config);
-        ContextCompat.startForegroundService(context, intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
+
     }
 
     public static void showOverlay(Context context) {
@@ -129,11 +130,11 @@ public class OverlayService extends Service {
             Log.d(TAG, "onTaskRemoved");
         }
         stopSelf();
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcastSync(new Intent(Appachhi.ACTION_UNBIND));
+        EventBus.getInstance().post(Appachhi.ACTION_UNBIND);
     }
 
 
-    public void setOverlayViewManager(@NonNull OverlayViewManager overlayViewManager) {
+    public void setOverlayViewManager(OverlayViewManager overlayViewManager) {
         if (Appachhi.DEBUG) {
             Log.d(TAG, "setOverlayViewManager");
         }
@@ -152,7 +153,7 @@ public class OverlayService extends Service {
         }
     }
 
-    public void setOverlayModules(@NonNull List<FeatureModule> overlayModules) {
+    public void setOverlayModules(List<FeatureModule> overlayModules) {
         if (Appachhi.DEBUG) {
             Log.d(TAG, "setOverlayModules");
         }
@@ -228,8 +229,10 @@ public class OverlayService extends Service {
 
 
     private void showNotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_monitor)
+        Notification.Builder builder = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
+                new Notification.Builder(this, NOTIFICATION_CHANNEL_ID) :
+                new Notification.Builder(this);
+        builder.setSmallIcon(R.drawable.ic_monitor)
                 .setOngoing(true)
                 .setContentTitle(getString(R.string.appachhi_monitor_notification_title))
                 .setContentText(getString(R.string.appachhi_monitor_notification_body))

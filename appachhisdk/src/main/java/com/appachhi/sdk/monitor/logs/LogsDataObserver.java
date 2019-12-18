@@ -2,8 +2,6 @@ package com.appachhi.sdk.monitor.logs;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.appachhi.sdk.DataObserver;
 import com.appachhi.sdk.database.DatabaseMapper;
 import com.appachhi.sdk.database.dao.LogsDao;
@@ -27,7 +25,7 @@ public class LogsDataObserver implements DataObserver<LogsInfo> {
     }
 
     @Override
-    public void onDataAvailable(@NonNull final LogsInfo logsInfo) {
+    public void onDataAvailable( final LogsInfo logsInfo) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

@@ -5,8 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
 
-import androidx.annotation.Nullable;
-
 import com.appachhi.sdk.BaseDataModule;
 
 /**
@@ -24,7 +22,7 @@ class NetworkInfoDataModule extends BaseDataModule<NetworkInfo> implements Runna
     private Handler handler = new Handler(Looper.getMainLooper());
 
     // Current Netwok information
-    @Nullable
+
     private NetworkInfo data;
     // Polling interval for the network information
     private int interval;
@@ -33,7 +31,7 @@ class NetworkInfoDataModule extends BaseDataModule<NetworkInfo> implements Runna
         this.interval = interval;
     }
 
-    @Nullable
+
     @Override
     protected NetworkInfo getData() {
         return data;

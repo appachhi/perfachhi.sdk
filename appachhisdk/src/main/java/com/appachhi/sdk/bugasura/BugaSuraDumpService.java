@@ -1,7 +1,6 @@
 package com.appachhi.sdk.bugasura;
 
 import android.app.IntentService;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
@@ -9,10 +8,6 @@ import android.os.Build;
 import android.util.JsonWriter;
 import android.util.Log;
 
-import androidx.core.app.NotificationCompat;
-
-import com.appachhi.sdk.Appachhi;
-import com.appachhi.sdk.database.AppachhiDB;
 import com.appachhi.sdk.database.entity.APICallEntity;
 import com.appachhi.sdk.database.entity.BaseEntity;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
@@ -46,20 +41,20 @@ public class BugaSuraDumpService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         notificationManager = (NotificationManager) getApplication().getSystemService(NOTIFICATION_SERVICE);
-        startForeground(NOTIFICATION_ID, createNotification());
-        AppachhiDB appachhiDB = Appachhi.getInstance().getDb();
-        List<Session> sessions = appachhiDB.sessionDao().allSessions();
-        List<CpuUsageEntity> cpuUsageEntities = appachhiDB.cpuUsageDao().allCpuUsage();
-        List<FpsEntity> fpsEntities = appachhiDB.fpsDao().allFps();
-        List<APICallEntity> apiCallEntities = appachhiDB.apiCallDao().allApiCalls();
-        List<GCEntity> gcEntities = appachhiDB.gcDao().allGCRun();
-        List<MemoryEntity> memoryEntities = appachhiDB.memoryDao().allMemoryUsage();
-        List<MemoryLeakEntity> memoryLeakEntities = appachhiDB.memoryLeakDao().allMemoryLeak();
-        List<MethodTraceEntity> methodTraceEntities = appachhiDB.methodTraceDao().allMethodTrace();
-        List<NetworkUsageEntity> networkUsageEntities = appachhiDB.networkDao().allNetwork();
-        List<TransitionStatEntity> transitionStatEntities = appachhiDB.screenTransitionDao().allScreenTransition();
-        dumpJson(sessions, cpuUsageEntities, fpsEntities, apiCallEntities, gcEntities, memoryEntities,
-                memoryLeakEntities, methodTraceEntities, networkUsageEntities, transitionStatEntities);
+//        startForeground(NOTIFICATION_ID, createNotification());
+//        AppachhiDB appachhiDB = Appachhi.getInstance().getDb();
+//        List<Session> sessions = appachhiDB.sessionDao().allSessions();
+//        List<CpuUsageEntity> cpuUsageEntities = appachhiDB.cpuUsageDao().allCpuUsage();
+//        List<FpsEntity> fpsEntities = appachhiDB.fpsDao().allFps();
+//        List<APICallEntity> apiCallEntities = appachhiDB.apiCallDao().allApiCalls();
+//        List<GCEntity> gcEntities = appachhiDB.gcDao().allGCRun();
+//        List<MemoryEntity> memoryEntities = appachhiDB.memoryDao().allMemoryUsage();
+//        List<MemoryLeakEntity> memoryLeakEntities = appachhiDB.memoryLeakDao().allMemoryLeak();
+//        List<MethodTraceEntity> methodTraceEntities = appachhiDB.methodTraceDao().allMethodTrace();
+//        List<NetworkUsageEntity> networkUsageEntities = appachhiDB.networkDao().allNetwork();
+//        List<TransitionStatEntity> transitionStatEntities = appachhiDB.screenTransitionDao().allScreenTransition();
+//        dumpJson(sessions, cpuUsageEntities, fpsEntities, apiCallEntities, gcEntities, memoryEntities,
+//                memoryLeakEntities, methodTraceEntities, networkUsageEntities, transitionStatEntities);
         Log.d(TAG, "Dump Service called");
         stopForeground(true);
         notifyComplete();
@@ -74,14 +69,14 @@ public class BugaSuraDumpService extends IntentService {
         sendBroadcast(intent);
     }
 
-    private Notification createNotification() {
-        Log.d(TAG, "createNotification");
-        createNotificationChannelIfNecessary();
-        return new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                .setContentTitle("Dump")
-                .setContentText("Saving")
-                .build();
-    }
+//    private Notification createNotification() {
+//        Log.d(TAG, "createNotification");
+//        createNotificationChannelIfNecessary();
+//        return new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+//                .setContentTitle("Dump")
+//                .setContentText("Saving")
+//                .build();
+//    }
 
     private void createNotificationChannelIfNecessary() {
         Log.d(TAG, "createNotificationChannelIfNecessary");

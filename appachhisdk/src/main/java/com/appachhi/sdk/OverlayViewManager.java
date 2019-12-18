@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
@@ -14,9 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-
-import androidx.annotation.NonNull;
-import androidx.core.content.PermissionChecker;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,13 +37,13 @@ class OverlayViewManager {
 
     private boolean overlayPermissionRequested;
 
-    OverlayViewManager(@NonNull Context context, Appachhi.Config config) {
+    OverlayViewManager(Context context, Appachhi.Config config) {
         this.context = context;
         this.config = config;
         this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
     }
 
-    void setFeatureModules(@NonNull List<FeatureModule> overlayModules) {
+    void setFeatureModules(List<FeatureModule> overlayModules) {
         this.featureModules = overlayModules;
     }
 
@@ -162,7 +160,7 @@ class OverlayViewManager {
         }
     }
 
-    private static void requestDrawOnSystemLayerPermission(@NonNull Context context) {
+    private static void requestDrawOnSystemLayerPermission(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // request permission
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
@@ -172,7 +170,7 @@ class OverlayViewManager {
         }
     }
 
-    static boolean canDrawOnSystemLayer(@NonNull Context context, int systemWindowType) {
+    static boolean canDrawOnSystemLayer(Context context, int systemWindowType) {
         if (isSystemLayer(systemWindowType)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                 return Settings.canDrawOverlays(context);
@@ -189,9 +187,8 @@ class OverlayViewManager {
         return true;
     }
 
-    private static boolean hasSystemAlertPermission(@NonNull Context context) {
-        return PermissionChecker.checkSelfPermission(context, Manifest.permission.SYSTEM_ALERT_WINDOW)
-                == PermissionChecker.PERMISSION_GRANTED;
+    private static boolean hasSystemAlertPermission(Context context) {
+        return context.checkCallingOrSelfPermission(Manifest.permission.SYSTEM_ALERT_WINDOW) == PackageManager.PERMISSION_GRANTED;
     }
 
     private static boolean isSystemLayer(int windowType) {

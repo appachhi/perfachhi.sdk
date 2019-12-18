@@ -7,8 +7,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
 
-import androidx.annotation.Nullable;
-
 import com.appachhi.sdk.BaseDataModule;
 
 /**
@@ -20,7 +18,7 @@ class MemoryInfoDataModule extends BaseDataModule<MemoryInfo> implements Runnabl
     // Interval for polling memory information
     private long interval;
     private ActivityManager am;
-    @Nullable
+
     private MemoryInfo data;
 
     MemoryInfoDataModule(Context context, long interval) {
@@ -28,7 +26,7 @@ class MemoryInfoDataModule extends BaseDataModule<MemoryInfo> implements Runnabl
         am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
     }
 
-    @Nullable
+
     @Override
     protected MemoryInfo getData() {
         return data;

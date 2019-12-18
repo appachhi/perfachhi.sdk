@@ -1,6 +1,6 @@
 package com.appachhi.sdk;
 
-import androidx.annotation.NonNull;
+
 
 /**
  * Interface defining a publisher which can publish data which can observed by {@link DataObserver}
@@ -12,9 +12,9 @@ public interface DataModule<T> {
 
     void stop();
 
-    void addObserver(@NonNull DataObserver<T> dataObserver);
+    void addObserver( DataObserver<T> dataObserver);
 
-    void removeObserver(@NonNull DataObserver<T> dataObserver);
+    void removeObserver( DataObserver<T> dataObserver);
 
     void notifyObservers();
 }

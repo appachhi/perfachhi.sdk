@@ -2,8 +2,6 @@ package com.appachhi.sdk.instrument.transition;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.appachhi.sdk.DataObserver;
 import com.appachhi.sdk.database.dao.ScreenTransitionDao;
 import com.appachhi.sdk.database.entity.Session;
@@ -29,7 +27,7 @@ public class ScreenTransitionDataObserver implements DataObserver<TransitionStat
     }
 
     @Override
-    public void onDataAvailable(@NonNull final TransitionStat data) {
+    public void onDataAvailable( final TransitionStat data) {
         try {
             Runnable runnable = new Runnable() {
                 @Override

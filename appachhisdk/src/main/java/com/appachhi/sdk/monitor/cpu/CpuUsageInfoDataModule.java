@@ -6,8 +6,6 @@ import android.os.Looper;
 import android.os.Process;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import com.appachhi.sdk.BaseDataModule;
 
 import java.io.BufferedReader;
@@ -85,7 +83,7 @@ class CpuUsageInfoDataModule extends BaseDataModule<CpuUsageInfo> {
         }
     };
 
-    @Nullable
+
     @Override
     protected CpuUsageInfo getData() {
         return cpuUsage.get();

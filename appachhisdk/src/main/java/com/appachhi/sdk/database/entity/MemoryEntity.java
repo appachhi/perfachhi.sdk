@@ -184,4 +184,6 @@ public class MemoryEntity extends BaseEntity {
     public void setSwapMemory(int swapMemory) {
         this.swapMemory = swapMemory;
     }
+
+
 }

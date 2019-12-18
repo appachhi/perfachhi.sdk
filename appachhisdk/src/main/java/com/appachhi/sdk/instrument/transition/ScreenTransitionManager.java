@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.os.SystemClock;
 import android.util.Log;
 
-import androidx.annotation.Keep;
-import androidx.annotation.NonNull;
-
 import com.appachhi.sdk.Appachhi;
 
 import java.util.WeakHashMap;
@@ -27,7 +24,7 @@ final public class ScreenTransitionManager {
         this.screenshotManager = screenshotManager;
     }
 
-    @Keep
+
     public static ScreenTransitionManager getInstance() {
         synchronized (ScreenTransitionManager.class) {
             if (instance == null) {
@@ -46,8 +43,8 @@ final public class ScreenTransitionManager {
      *
      * @param activity A Non Null {@link Activity}
      */
-    @Keep
-    public void beginTransition(@NonNull Activity activity) {
+
+    public void beginTransition( Activity activity) {
         if (Appachhi.DEBUG) {
             Log.d(TAG, "beginTransition");
         }
@@ -64,8 +61,8 @@ final public class ScreenTransitionManager {
      *
      * @param screenName Name of the screen for which transition tracing is to started
      */
-    @Keep
-    public void beginTransition(@NonNull Activity activity, @NonNull String screenName) {
+
+    public void beginTransition( Activity activity,  String screenName) {
         Log.d(TAG, "beginTransition");
         boolean doesScreenNameAlreadyExist = screenTransitionStats.containsKey(screenName);
         if (!doesScreenNameAlreadyExist) {
@@ -86,12 +83,12 @@ final public class ScreenTransitionManager {
      * Stop tracing the screen transition and flushes the information onto the console.Only call this version of
      * endTransition if and only you called {@link #beginTransition(Activity)}  else call
      * {@link #endTransition(Activity, String)}. This is done to prevent incorrect information be flushed out in case of
-     * using difference instance of same activity
+     * using difference getInstance of same activity
      *
      * @param activity {@link Activity} for which transition need to be stopped
      */
-    @Keep
-    public void endTransition(@NonNull Activity activity) {
+
+    public void endTransition( Activity activity) {
         if (Appachhi.DEBUG) {
             Log.d(TAG, "endTransition");
         }
@@ -103,14 +100,14 @@ final public class ScreenTransitionManager {
      * Stop tracing the screen transition and flushes the information onto the console.Only call this version of
      * endTransition if and only you called {@link #beginTransition(Activity, String)}  else call
      * {@link #endTransition(Activity)}. This is done to prevent incorrect information be flushed out in case of
-     * using difference instance of same activity
+     * using difference getInstance of same activity
      *
      * @param activity   {@link Activity} for which transition need to be stopped
      * @param screenName Name of the screen which was used during beginTransition
      */
 
-    @Keep
-    public void endTransition(@NonNull Activity activity, @NonNull String screenName) {
+
+    public void endTransition( Activity activity,  String screenName) {
         if (Appachhi.DEBUG) {
             Log.d(TAG, "endTransition");
         }
@@ -134,8 +131,8 @@ final public class ScreenTransitionManager {
      *
      * @param onTransitionListener {@link OnTransitionListener}
      */
-    @Keep
-    synchronized void registerListener(@NonNull OnTransitionListener onTransitionListener) {
+
+    synchronized void registerListener( OnTransitionListener onTransitionListener) {
         if (Appachhi.DEBUG) {
             //noinspection ConstantConditions
             Log.d(TAG, String.format("registerListener %s", onTransitionListener!=null));
@@ -148,8 +145,8 @@ final public class ScreenTransitionManager {
      *
      * @param onTransitionListener {@link OnTransitionListener}
      */
-    @Keep
-    synchronized void unRegister(@NonNull OnTransitionListener onTransitionListener) {
+
+    synchronized void unRegister( OnTransitionListener onTransitionListener) {
         if (Appachhi.DEBUG) {
             Log.d(TAG, "unRegister");
         }
@@ -164,8 +161,8 @@ final public class ScreenTransitionManager {
      * @param screenName     Screen Name for which transition is to stopped
      * @param transitionStat Transition information
      */
-    private void endTransitionWhenStatsExist(@NonNull Activity activity, @NonNull String screenName,
-                                             @NonNull TransitionStat transitionStat) {
+    private void endTransitionWhenStatsExist( Activity activity,  String screenName,
+                                              TransitionStat transitionStat) {
         Log.d(TAG, "endTransitionWhenStatsExist");
         TransitionStat updatedStat = transitionStat.copy(SystemClock.elapsedRealtime());
 
@@ -195,8 +192,8 @@ final public class ScreenTransitionManager {
      * @param activity {@link Activity}
      * @return Name of the screen
      */
-    @NonNull
-    private String getScreenNameFromActivity(@NonNull Activity activity) {
+
+    private String getScreenNameFromActivity( Activity activity) {
         return activity.getComponentName().getClassName();
     }
 

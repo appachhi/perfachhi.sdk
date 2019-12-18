@@ -1,33 +1,94 @@
 package com.appachhi.sdk.database.dao;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-
+import com.appachhi.sdk.database.entity.Contract;
 import com.appachhi.sdk.database.entity.MemoryEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Dao
-public interface MemoryDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public long[] insertMemoryUsages(MemoryEntity... memoryUsages);
+import static com.appachhi.sdk.database.entity.Contract.CpuUsageEntry.COLUMN_EXECUTION_TIME;
+import static com.appachhi.sdk.database.entity.Contract.CpuUsageEntry.COLUMN_SESSION_ID;
+import static com.appachhi.sdk.database.entity.Contract.CpuUsageEntry.COLUMN_SYNC_STATUS;
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public long insertMemoryUsage(MemoryEntity memoryUsage);
+public class MemoryDao {
+    private final SQLiteDatabase sqlDB;
 
-    @Query("SELECT * FROM memory_usage where syncStatus = 0 AND session_id in (:sessionIds) limit 100")
-    List<MemoryEntity> allUnSyncedMemoryEntityForSession(List<String> sessionIds);
+    public MemoryDao(SQLiteDatabase sqlDB) {
+        this.sqlDB = sqlDB;
+    }
 
-    @Query("UPDATE memory_usage SET  syncStatus = 1 WHERE id IN (:ids)")
-    void updateSuccessSyncStatus(List<String> ids);
+    public long insertMemoryUsage(MemoryEntity memoryUsage){
+        return sqlDB.insertWithOnConflict(
+                Contract.MemoryEntry.TABLE_NAME,
+                null,
+                Contract.MemoryEntry.toContentValues(memoryUsage),
+                SQLiteDatabase.CONFLICT_REPLACE
+        );
+    }
 
-    @Delete()
-    public void deleteMemoryUsage(MemoryEntity cpuUsageEntity);
+    public List<MemoryEntity> allUnSyncedMemoryEntityForSession(List<String> sessionIds){
+        Cursor cursor = sqlDB.query(
+                Contract.MemoryEntry.TABLE_NAME,
+                null,
+                String.format("%s = 0 AND %s IN (%s)", COLUMN_SYNC_STATUS, COLUMN_SESSION_ID, join(sessionIds)),
+                null,
+                null,
+                null,
+                COLUMN_EXECUTION_TIME,
+                "100"
+        );
 
-    @Query("SELECT * from memory_usage")
-    List<MemoryEntity> allMemoryUsage();
+        return mapCursorToMemoryUsage(cursor);
+    }
+
+    public void updateSuccessSyncStatus(List<String> ids){
+        sqlDB.update(
+                Contract.MemoryEntry.TABLE_NAME,
+                Contract.MemoryEntry.updateSyncStatusValue(),
+                String.format("%s IN (%s)", Contract.CpuUsageEntry._ID, join(ids)),
+                null
+        );
+    }
+
+    List<MemoryEntity> allMemoryUsage(){
+        Cursor cursor = sqlDB.query(
+                Contract.CpuUsageEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                COLUMN_EXECUTION_TIME,
+                null
+        );
+
+        return mapCursorToMemoryUsage(cursor);
+    }
+
+    private List<MemoryEntity> mapCursorToMemoryUsage(Cursor cursor) {
+        List<MemoryEntity> memoryEntities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            memoryEntities.add(Contract.MemoryEntry.fromCursor(cursor));
+        }
+        cursor.close();
+        return memoryEntities;
+    }
+
+    private static String join(List<String> input) {
+        if (input == null || input.size() <= 0) return "";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < input.size(); i++) {
+            sb.append(input.get(i));
+            // if not the last item
+            if (i != input.size() - 1) {
+                sb.append(",");
+            }
+
+        }
+        return sb.toString();
+
+    }
 }

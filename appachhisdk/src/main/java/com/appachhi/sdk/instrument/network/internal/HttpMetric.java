@@ -1,14 +1,14 @@
 package com.appachhi.sdk.instrument.network.internal;
 
-import androidx.annotation.NonNull;
+
 
 import java.util.Date;
 
 public class HttpMetric {
     private static final String TAG = "HttpMetric";
-    @NonNull
+
     private String url;
-    @NonNull
+
     private String methodType;
     private String contentType;
     private long requestContentLength;
@@ -55,15 +55,15 @@ public class HttpMetric {
         return endTime - startTime;
     }
 
-    public void setContentType(@NonNull String contentType) {
+    public void setContentType( String contentType) {
         this.contentType = contentType;
     }
 
-    public void setMethodType(@NonNull String methodType) {
+    public void setMethodType( String methodType) {
         this.methodType = methodType;
     }
 
-    public void setUrl(@NonNull String url) {
+    public void setUrl( String url) {
         this.url = url;
     }
 
@@ -88,17 +88,17 @@ public class HttpMetric {
         this.threadName = threadName;
     }
 
-    @NonNull
+
     public String getUrl() {
         return url;
     }
 
-    @NonNull
+
     public String getMethodType() {
         return methodType;
     }
 
-    @NonNull
+
     public String getContentType() {
         return contentType;
     }

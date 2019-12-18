@@ -1,7 +1,7 @@
 package com.appachhi.sdk;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public abstract class BaseDataModule<T> implements DataModule<T> {
      * @param dataObserver {@link DataObserver} to be added
      */
     @Override
-    public void addObserver(@NonNull DataObserver<T> dataObserver) {
+    public void addObserver( DataObserver<T> dataObserver) {
         if (!dataObservers.contains(dataObserver)) {
             dataObservers.add(dataObserver);
         }
@@ -33,7 +33,7 @@ public abstract class BaseDataModule<T> implements DataModule<T> {
      * @param dataObserver {@link DataObserver} to be removed
      */
     @Override
-    public void removeObserver(@NonNull DataObserver<T> dataObserver) {
+    public void removeObserver( DataObserver<T> dataObserver) {
         dataObservers.remove(dataObserver);
     }
 
@@ -55,6 +55,6 @@ public abstract class BaseDataModule<T> implements DataModule<T> {
      *
      * @return data which to be published
      */
-    @Nullable
+
     protected abstract T getData();
 }

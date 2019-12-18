@@ -1,22 +1,21 @@
 package com.appachhi.sdk.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.appachhi.sdk.Appachhi;
 import com.appachhi.sdk.OverlayService;
 import com.appachhi.sdk.R;
 
-public class ConfigurationActivity extends AppCompatActivity {
+public class ConfigurationActivity extends Activity {
     public static PendingIntent getPendingIntent(Context context) {
         return PendingIntent.getActivity(context,
                 12,
@@ -35,7 +34,7 @@ public class ConfigurationActivity extends AppCompatActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.left_slide_in, 0);
         setContentView(R.layout.activity_configuration);
@@ -50,7 +49,9 @@ public class ConfigurationActivity extends AppCompatActivity {
         emptyArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                supportFinishAfterTransition();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    finishAfterTransition();
+                }
             }
         });
         initializeConfigurationSwitch();
@@ -131,7 +132,7 @@ public class ConfigurationActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Appachhi.getInstance().getFeatureConfigManager().handleMediaProjectionResult(resultCode, data);
     }

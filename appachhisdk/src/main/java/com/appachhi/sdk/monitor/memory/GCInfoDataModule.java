@@ -4,9 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.appachhi.sdk.BaseDataModule;
 import com.appachhi.sdk.DataObserver;
 
@@ -46,17 +43,17 @@ public class GCInfoDataModule extends BaseDataModule<GCInfo> implements Runnable
     private static Executor executor = Executors.newSingleThreadExecutor();
 
     // Main Thread Handler to notify observer on the main thread
-    @NonNull
+
     private Handler mainHandler = new Handler(Looper.getMainLooper());
-    @NonNull
+
     private ProcessBuilder logcatProcessBuilder = new ProcessBuilder(LOGCAT_NAME, LOGCAT_FILTER , LOGCAT_FILTER_BY_TAG_AND_PRIORITY);
     // Current GC Information
-    @Nullable
+
     private GCInfo data;
     // Currently running Logcat Process
-    @Nullable
+
     private java.lang.Process runningProcess;
-    @Nullable
+
     private BufferedReader brq;
     // Field denoting whether the stream from Logcat Process has been closed or not
     private boolean isStreamClosed = true;
@@ -69,7 +66,7 @@ public class GCInfoDataModule extends BaseDataModule<GCInfo> implements Runnable
         }
     };
 
-    @Nullable
+
     @Override
     protected GCInfo getData() {
         return data;
@@ -152,8 +149,8 @@ public class GCInfoDataModule extends BaseDataModule<GCInfo> implements Runnable
      * @return GCInfo Parsed GC Information when successfully parse and null if the the logcat text
      * could not be parsed
      */
-    @Nullable
-    private static GCInfo parseLogToGCInfo(@NonNull String line) {
+
+    private static GCInfo parseLogToGCInfo( String line) {
         // Line is Empty
         if (line.isEmpty()) return null;
 

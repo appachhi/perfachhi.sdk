@@ -1,29 +1,93 @@
 package com.appachhi.sdk.database.dao;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-
+import com.appachhi.sdk.database.entity.Contract;
 import com.appachhi.sdk.database.entity.MethodTraceEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Dao
-public interface MethodTraceDao {
-    @Insert
-    long addTrace(MethodTraceEntity methodTraceEntity);
+import static com.appachhi.sdk.database.entity.Contract.MethodTraceEntry.COLUMN_EXECUTION_TIME;
+import static com.appachhi.sdk.database.entity.Contract.MethodTraceEntry.COLUMN_SESSION_ID;
+import static com.appachhi.sdk.database.entity.Contract.MethodTraceEntry.COLUMN_SYNC_STATUS;
 
-    @Query("SELECT * FROM method_trace where syncStatus = 0 AND session_id IN (:sessionIds) limit 100")
-    List<MethodTraceEntity> allUnSyncedMethodTraceEntityForSession(List<String> sessionIds);
+public class MethodTraceDao {
+    private final SQLiteDatabase sqlDB;
 
-    @Query("UPDATE method_trace SET  syncStatus = 1 WHERE id IN (:ids)")
-    void updateSuccessSyncStatus(List<String> ids);
+    public MethodTraceDao(SQLiteDatabase sqlDB) {
+        this.sqlDB = sqlDB;
+    }
 
-    @Delete
-    void deleteMethodTrace(MethodTraceEntity methodTraceEntity);
+    public long addTrace(MethodTraceEntity methodTraceEntity){
+        return sqlDB.insertWithOnConflict(
+                Contract.MethodTraceEntry.TABLE_NAME,
+                null,
+                Contract.MethodTraceEntry.toContentValues(methodTraceEntity),
+                SQLiteDatabase.CONFLICT_REPLACE
+        );
+    }
 
-    @Query("Select * from method_trace")
-    List<MethodTraceEntity> allMethodTrace();
+    public List<MethodTraceEntity> allUnSyncedMethodTraceEntityForSession(List<String> sessionIds){
+        Cursor cursor = sqlDB.query(
+                Contract.MethodTraceEntry.TABLE_NAME,
+                null,
+                String.format("%s = 0 AND %s IN (%s)", COLUMN_SYNC_STATUS, COLUMN_SESSION_ID, join(sessionIds)),
+                null,
+                null,
+                null,
+                COLUMN_EXECUTION_TIME,
+                null
+        );
+        return mapCursorToMethodTrace(cursor);
+    }
+
+    public void updateSuccessSyncStatus(List<String> ids){
+        sqlDB.update(
+                Contract.MethodTraceEntry.TABLE_NAME,
+                Contract.MethodTraceEntry.updateSyncStatusValue(),
+                String.format("%s IN (%s)", Contract.MethodTraceEntry._ID, join(ids)),
+                null
+        );
+    }
+
+
+    List<MethodTraceEntity> allMethodTrace(){
+        Cursor cursor = sqlDB.query(
+                Contract.MethodTraceEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                COLUMN_EXECUTION_TIME,
+                null
+        );
+        return mapCursorToMethodTrace(cursor);
+    }
+
+    private List<MethodTraceEntity> mapCursorToMethodTrace(Cursor cursor) {
+        List<MethodTraceEntity> methodTraceEntities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            methodTraceEntities.add(Contract.MethodTraceEntry.fromCursor(cursor));
+        }
+        cursor.close();
+        return methodTraceEntities;
+    }
+
+    private static String join(List<String> input) {
+        if (input == null || input.size() <= 0) return "";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < input.size(); i++) {
+            sb.append(input.get(i));
+            // if not the last item
+            if (i != input.size() - 1) {
+                sb.append(",");
+            }
+
+        }
+        return sb.toString();
+
+    }
 }

@@ -2,15 +2,11 @@ package com.appachhi.sdk.monitor.memoryleak;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.SystemClock;
 import android.util.Log;
-
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 
 import com.appachhi.sdk.BaseDataModule;
 import com.appachhi.sdk.R;
@@ -59,7 +55,7 @@ public class MemoryLeakDataModule extends BaseDataModule<List<MemoryLeakInfo>> i
         LeakCanary.INSTANCE.setConfig(newConfig);
     }
 
-    @Nullable
+
     @Override
     protected List<MemoryLeakInfo> getData() {
         return allMemoryLeakInfo;
@@ -94,18 +90,18 @@ public class MemoryLeakDataModule extends BaseDataModule<List<MemoryLeakInfo>> i
     private static void showNotification(Context context, CharSequence message) {
 
         int notificationId = (int) (SystemClock.uptimeMillis() / 1000);
-        createNotificationChannel(context);
-        Notification notification = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
-                .setContentTitle("Memory Leaked")
-                .setContentText(message)
-                .setAutoCancel(true)
-                .setSmallIcon(R.drawable.ic_monitor)
-                .setWhen(System.currentTimeMillis())
-                .setOnlyAlertOnce(true)
-                .build();
-
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(notificationId, notification);
+ //       createNotificationChannel(context);
+//        Notification notification = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+//                .setContentTitle("Memory Leaked")
+//                .setContentText(message)
+//                .setAutoCancel(true)
+//                .setSmallIcon(R.drawable.ic_monitor)
+//                .setWhen(System.currentTimeMillis())
+//                .setOnlyAlertOnce(true)
+//                .build();
+//
+//        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//        notificationManager.notify(notificationId, notification);
     }
 
     private static void createNotificationChannel(Context context) {

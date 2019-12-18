@@ -1,8 +1,5 @@
 package com.appachhi.sdk;
 
-import androidx.annotation.MainThread;
-import androidx.annotation.NonNull;
-
 /**
  * Interface defining a Data Subscriber
  *
@@ -16,6 +13,5 @@ public interface DataObserver<T> {
      *
      * @param data Data Published by {@link DataModule}
      */
-    @MainThread
-    void onDataAvailable(@NonNull T data);
+    void onDataAvailable( T data);
 }

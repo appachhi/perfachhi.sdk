@@ -2,9 +2,6 @@ package com.appachhi.sdk.monitor.memory;
 
 import android.util.Log;
 
-import androidx.annotation.MainThread;
-import androidx.annotation.NonNull;
-
 import com.appachhi.sdk.DataObserver;
 import com.appachhi.sdk.database.dao.MemoryDao;
 import com.appachhi.sdk.database.entity.MemoryEntity;
@@ -34,9 +31,9 @@ public class MemoryInfoDataObserver implements DataObserver<MemoryInfo> {
         this.sessionManager = sessionManager;
     }
 
-    @MainThread
+
     @Override
-    public void onDataAvailable(@NonNull final MemoryInfo data) {
+    public void onDataAvailable( final MemoryInfo data) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

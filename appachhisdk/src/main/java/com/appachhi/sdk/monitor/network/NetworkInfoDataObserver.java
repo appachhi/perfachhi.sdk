@@ -2,9 +2,6 @@ package com.appachhi.sdk.monitor.network;
 
 import android.util.Log;
 
-import androidx.annotation.MainThread;
-import androidx.annotation.NonNull;
-
 import com.appachhi.sdk.DataObserver;
 import com.appachhi.sdk.database.dao.NetworkDao;
 import com.appachhi.sdk.database.entity.NetworkUsageEntity;
@@ -41,9 +38,9 @@ public class NetworkInfoDataObserver implements DataObserver<NetworkInfo> {
      *
      * @param data published
      */
-    @MainThread
+
     @Override
-    public void onDataAvailable(@NonNull final NetworkInfo data) {
+    public void onDataAvailable( final NetworkInfo data) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

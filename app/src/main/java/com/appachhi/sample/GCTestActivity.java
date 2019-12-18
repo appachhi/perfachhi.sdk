@@ -3,7 +3,6 @@ package com.appachhi.sample;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.appachhi.sdk.Appachhi;
@@ -14,7 +13,7 @@ import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
 public class GCTestActivity extends AppCompatActivity {
     @Trace(name = "GCTEST")
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate( Bundle savedInstanceState) {
         MethodTrace methodTrace = Appachhi.newTrace("GCTEST");
 
         ScreenTransitionManager.getInstance().beginTransition(this);

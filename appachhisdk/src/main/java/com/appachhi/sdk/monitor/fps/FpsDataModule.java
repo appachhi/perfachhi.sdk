@@ -2,8 +2,6 @@ package com.appachhi.sdk.monitor.fps;
 
 import android.view.Choreographer;
 
-import androidx.annotation.Nullable;
-
 import com.appachhi.sdk.BaseDataModule;
 
 import java.util.concurrent.TimeUnit;
@@ -20,7 +18,7 @@ public class FpsDataModule extends BaseDataModule<Double> implements Choreograph
         choreographer = Choreographer.getInstance();
     }
 
-    @Nullable
+
     @Override
     protected Double getData() {
         return fps;

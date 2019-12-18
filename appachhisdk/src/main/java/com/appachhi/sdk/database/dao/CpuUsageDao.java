@@ -1,33 +1,97 @@
 package com.appachhi.sdk.database.dao;
 
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
+import com.appachhi.sdk.database.entity.Contract;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Dao()
-public interface CpuUsageDao {
+import static com.appachhi.sdk.database.entity.Contract.CpuUsageEntry;
+import static com.appachhi.sdk.database.entity.Contract.CpuUsageEntry.COLUMN_EXECUTION_TIME;
+import static com.appachhi.sdk.database.entity.Contract.CpuUsageEntry.COLUMN_SESSION_ID;
+import static com.appachhi.sdk.database.entity.Contract.CpuUsageEntry.COLUMN_SYNC_STATUS;
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public long[] insertCpuUsages(CpuUsageEntity... cpuUsages);
+public class CpuUsageDao {
+    private final SQLiteDatabase sqlDB;
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public long insertCpuUsage(CpuUsageEntity cpuUsages);
+    public CpuUsageDao(SQLiteDatabase sqlDB) {
+        this.sqlDB = sqlDB;
+    }
 
-    @Query("SELECT * FROM cpu_usage where syncStatus = 0 AND session_id in (:sessionId) limit 100")
-    List<CpuUsageEntity> allUnSyncedCpuEntityForSession(List<String> sessionId);
+    public long insertCpuUsage(CpuUsageEntity cpuUsage) {
+        return sqlDB.insertWithOnConflict(
+                CpuUsageEntry.TABLE_NAME,
+                null,
+                CpuUsageEntry.toContentValues(cpuUsage),
+                SQLiteDatabase.CONFLICT_REPLACE
+        );
+    }
 
-    @Query("UPDATE cpu_usage SET  syncStatus = 1 WHERE id IN (:ids)")
-    void updateSuccessSyncStatus(List<String> ids);
-    @Query("SELECT * FROM cpu_usage")
-    public List<CpuUsageEntity> allCpuUsage();
+    public List<CpuUsageEntity> allUnSyncedCpuEntityForSession(List<String> sessionId) {
+        Cursor cursor = sqlDB.query(
+                CpuUsageEntry.TABLE_NAME,
+                null,
+                String.format("%s = 0 AND %s IN (%s)", COLUMN_SYNC_STATUS, COLUMN_SESSION_ID, join(sessionId)),
+                null,
+                null,
+                null,
+                COLUMN_EXECUTION_TIME,
+                "100"
+        );
 
-    @Delete()
-    public void deleteCpuUsage(CpuUsageEntity cpuUsageEntity);
+        return mapCursorToCpuUsage(cursor);
+    }
+
+    public void updateSuccessSyncStatus(List<String> ids){
+        sqlDB.update(
+                Contract.CpuUsageEntry.TABLE_NAME,
+                Contract.CpuUsageEntry.updateSyncStatusValue(),
+                String.format("%s IN (%s)", CpuUsageEntry._ID, join(ids)),
+                null
+        );
+    }
+
+
+    public List<CpuUsageEntity> allCpuUsage(){
+        Cursor cursor = sqlDB.query(
+                CpuUsageEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                COLUMN_EXECUTION_TIME,
+                null
+        );
+
+        return mapCursorToCpuUsage(cursor);
+    }
+
+    private List<CpuUsageEntity> mapCursorToCpuUsage(Cursor cursor) {
+        List<CpuUsageEntity> cpuUsageEntities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            cpuUsageEntities.add(CpuUsageEntry.fromCursor(cursor));
+        }
+        cursor.close();
+        return cpuUsageEntities;
+    }
+
+    private static String join(List<String> input) {
+        if (input == null || input.size() <= 0) return "";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < input.size(); i++) {
+            sb.append(input.get(i));
+            // if not the last item
+            if (i != input.size() - 1) {
+                sb.append(",");
+            }
+
+        }
+        return sb.toString();
+
+    }
 }

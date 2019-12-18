@@ -3,7 +3,7 @@ package com.appachhi.sdk;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
+
 
 /**
  * Abstract Feature Module Class which combines a {@link DataModule} and a {@link DataObserver}
@@ -48,12 +48,12 @@ public abstract class FeatureModule<T> implements DataModule<T>, ViewDataObserve
     }
 
     @Override
-    public void addObserver(@NonNull DataObserver<T> dataObserver) {
+    public void addObserver( DataObserver<T> dataObserver) {
         publisher.addObserver(dataObserver);
     }
 
     @Override
-    public void removeObserver(@NonNull DataObserver<T> dataObserver) {
+    public void removeObserver( DataObserver<T> dataObserver) {
         publisher.removeObserver(dataObserver);
     }
 
@@ -71,12 +71,12 @@ public abstract class FeatureModule<T> implements DataModule<T>, ViewDataObserve
     }
 
     @Override
-    public void onDataAvailable(@NonNull T data) {
+    public void onDataAvailable( T data) {
         subscriber.onDataAvailable(data);
     }
 
     @Override
-    public View createView(@NonNull ViewGroup root) {
+    public View createView( ViewGroup root) {
         if (viewDataObserver != null && isOverlayEnabled()) {
             return viewDataObserver.createView(root);
         }
