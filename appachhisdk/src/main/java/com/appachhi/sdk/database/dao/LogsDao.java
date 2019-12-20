@@ -9,9 +9,9 @@ import com.appachhi.sdk.database.entity.LogsEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.appachhi.sdk.database.entity.Contract.FPSEntry.COLUMN_EXECUTION_TIME;
-import static com.appachhi.sdk.database.entity.Contract.FPSEntry.COLUMN_SESSION_ID;
-import static com.appachhi.sdk.database.entity.Contract.FPSEntry.COLUMN_SYNC_STATUS;
+import static com.appachhi.sdk.database.entity.Contract.LogsEntry.COLUMN_EXECUTION_TIME;
+import static com.appachhi.sdk.database.entity.Contract.LogsEntry.COLUMN_SESSION_ID;
+import static com.appachhi.sdk.database.entity.Contract.LogsEntry.COLUMN_SYNC_STATUS;
 
 public class LogsDao {
 
@@ -32,7 +32,7 @@ public class LogsDao {
 
     public List<LogsEntity> unSyncedLogEntityForSession(List<String> sessionId, int limit) {
         Cursor cursor = sqlDB.query(
-                Contract.FPSEntry.TABLE_NAME,
+                Contract.LogsEntry.TABLE_NAME,
                 null,
                 String.format("%s = 0 AND %s IN (%s)", COLUMN_SYNC_STATUS, COLUMN_SESSION_ID, join(sessionId)),
                 null,
@@ -47,16 +47,16 @@ public class LogsDao {
 
     public void updateSuccessSyncStatus(List<String> ids) {
         sqlDB.update(
-                Contract.FPSEntry.TABLE_NAME,
-                Contract.FPSEntry.updateSyncStatusValue(),
-                String.format("%s IN (%s)", Contract.FPSEntry._ID, join(ids)),
+                Contract.LogsEntry.TABLE_NAME,
+                Contract.LogsEntry.updateSyncStatusValue(),
+                String.format("%s IN (%s)", Contract.LogsEntry._ID, join(ids)),
                 null
         );
     }
 
     public List<LogsEntity> allLogs() {
         Cursor cursor = sqlDB.query(
-                Contract.FPSEntry.TABLE_NAME,
+                Contract.LogsEntry.TABLE_NAME,
                 null,
                 null,
                 null,
@@ -78,11 +78,14 @@ public class LogsDao {
         return logsEntities;
     }
 
+
     private static String join(List<String> input) {
         if (input == null || input.size() <= 0) return "";
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < input.size(); i++) {
+            sb.append("'");
             sb.append(input.get(i));
+            sb.append("'");
             // if not the last item
             if (i != input.size() - 1) {
                 sb.append(",");

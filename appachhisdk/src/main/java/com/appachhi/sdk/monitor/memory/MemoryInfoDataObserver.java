@@ -1,7 +1,5 @@
 package com.appachhi.sdk.monitor.memory;
 
-import android.util.Log;
-
 import com.appachhi.sdk.DataObserver;
 import com.appachhi.sdk.database.dao.MemoryDao;
 import com.appachhi.sdk.database.entity.MemoryEntity;
@@ -42,9 +40,6 @@ public class MemoryInfoDataObserver implements DataObserver<MemoryInfo> {
                     long sessionTimeElapsed = new Date().getTime() - session.getStartTime();
                     MemoryEntity memoryEntity = fromMemoryInfoToMemoryEntity(data, session.getId(),sessionTimeElapsed);
                     long result = memoryDao.insertMemoryUsage(memoryEntity);
-                    if (result > -1) {
-                        Log.i(TAG, "Memory Usage Data saved");
-                    }
                 }
             }
         };

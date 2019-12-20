@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data android:name="perfachhi_api_key" android:value="0636f292dffe8b1cf6d9807fc0d2cfce"/>
+        <meta-data android:name="perfachhi_api_key" android:value="29b82dc9df93b820efb2a8f067e43fc9"/>
         <activity android:name=".NetworkTestActivity"></activity>
         <activity android:name=".OkHttpTestActivity">
         </activity>

@@ -16,7 +16,7 @@ public class SessionManager {
     private ExecutorService databaseExecutor;
     private Context context;
 
-    public SessionManager(Context context,  SessionDao sessionDao,  ExecutorService databaseExecutor) {
+    public SessionManager(Context context, SessionDao sessionDao, ExecutorService databaseExecutor) {
         this.context = context;
         this.sessionDao = sessionDao;
         this.databaseExecutor = databaseExecutor;
@@ -26,11 +26,7 @@ public class SessionManager {
     private Runnable createNewSession = new Runnable() {
         @Override
         public void run() {
-            Session session = Session.create(context);
-            long result = sessionDao.insertSession(session);
-            if (result != -1) {
-                SessionManager.this.currentSession = session;
-            }
+           sessionDao.insertSession(currentSession);
         }
     };
 
@@ -39,7 +35,8 @@ public class SessionManager {
         return currentSession;
     }
 
-    public void newSession() {
+    public synchronized void newSession() {
+        currentSession = Session.create(context);
         databaseExecutor.submit(createNewSession);
     }
 }

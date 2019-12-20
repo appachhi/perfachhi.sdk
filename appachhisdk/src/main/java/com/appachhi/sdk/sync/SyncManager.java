@@ -75,7 +75,7 @@ public class SyncManager {
     public static final String TAG = "SyncManager";
     private AppachhiDB appachhiDB;
     private OkHttpClient okHttpClient;
-    private static final String BASE_URL = "https://perfachhi.appspot.com";
+    private static final String BASE_URL = "https://645fcc60.ngrok.io";
     private static String KEY = null;
     private Gson gson;
     private ScheduledExecutorService syncExecutor;
@@ -315,6 +315,7 @@ public class SyncManager {
             return;
         }
         Log.d(TAG, "Upload " + path);
+        System.out.println("Session time" + items.get(0).getSessionTime());
         metricSyncExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -418,7 +419,6 @@ public class SyncManager {
             Log.d(TAG, "No session to upload");
             return;
         }
-
         JsonArray jsonArray = addDeviceIdProperty(gson.toJsonTree(sessions));
         Request request = getRequest("session", gson.toJson(jsonArray));
         try {

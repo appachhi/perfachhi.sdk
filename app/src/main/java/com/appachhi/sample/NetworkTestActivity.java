@@ -1,12 +1,11 @@
 package com.appachhi.sample;
 
+import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.appachhi.sdk.instrument.trace.Trace;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
@@ -16,7 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class NetworkTestActivity extends AppCompatActivity {
+public class NetworkTestActivity extends Activity {
 
 
     @Override

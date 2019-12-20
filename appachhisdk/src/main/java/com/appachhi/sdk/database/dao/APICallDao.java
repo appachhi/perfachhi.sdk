@@ -39,7 +39,7 @@ public class APICallDao {
                 null,
                 null,
                 COLUMN_EXECUTION_TIME,
-                "100"
+                "200"
         );
         return mapCursorToAPIEntity(cursor);
     }
@@ -76,11 +76,14 @@ public class APICallDao {
         return apiCallEntities;
     }
 
+
     private static String join(List<String> input) {
         if (input == null || input.size() <= 0) return "";
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < input.size(); i++) {
+            sb.append("'");
             sb.append(input.get(i));
+            sb.append("'");
             // if not the last item
             if (i != input.size() - 1) {
                 sb.append(",");

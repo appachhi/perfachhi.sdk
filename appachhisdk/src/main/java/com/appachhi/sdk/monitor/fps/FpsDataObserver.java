@@ -1,7 +1,5 @@
 package com.appachhi.sdk.monitor.fps;
 
-import android.util.Log;
-
 import com.appachhi.sdk.DataObserver;
 import com.appachhi.sdk.database.dao.FpsDao;
 import com.appachhi.sdk.database.entity.FpsEntity;
@@ -37,9 +35,6 @@ public class FpsDataObserver implements DataObserver<Double> {
                     long sessionTimeElapsed = new Date().getTime() - session.getStartTime();
                     FpsEntity fpsEntity = fromDoubleToFpsEntity(data, session.getId(),sessionTimeElapsed);
                     long result = fpsDao.insertFps(fpsEntity);
-                    if (result > -1) {
-                        Log.i(TAG, "Fps Data saved");
-                    }
                 }
             }
         };

@@ -54,7 +54,7 @@ public class Contract {
 
         public static final String COLUMN_SESSION_ID = "sessionId";
         public static final String COLUMN_EXECUTION_TIME = "executionTime";
-        public static final String COLUMN_SESSION_TIME = "sessionTime";
+        static final String COLUMN_SESSION_TIME = "sessionTime";
         public static final String COLUMN_SYNC_STATUS = "syncStatus";
 
         public static ContentValues toContentValues(CpuUsageEntity cpuUsageEntity) {
@@ -62,6 +62,7 @@ public class Contract {
             values.put(_ID, cpuUsageEntity.getId());
             values.put(COLUMN_APP_CPU_USAGE, cpuUsageEntity.getAppCpuUsage());
             values.put(COLUMN_DEVICE_CPU_USAGE, cpuUsageEntity.getDeviceCpuUsage());
+
             values.put(COLUMN_SESSION_ID, cpuUsageEntity.getSessionId());
             values.put(COLUMN_EXECUTION_TIME, cpuUsageEntity.getExecutionTime());
             values.put(COLUMN_SESSION_TIME, cpuUsageEntity.getSessionTime());
@@ -79,6 +80,7 @@ public class Contract {
             CpuUsageEntity cpuUsageEntity = new CpuUsageEntity();
             cpuUsageEntity.setAppCpuUsage(cursor.getDouble(cursor.getColumnIndex(COLUMN_APP_CPU_USAGE)));
             cpuUsageEntity.setDeviceCpuUsage(cursor.getDouble(cursor.getColumnIndex(COLUMN_DEVICE_CPU_USAGE)));
+
             cpuUsageEntity.setSessionId(cursor.getString(cursor.getColumnIndex(COLUMN_SESSION_ID)));
             cpuUsageEntity.setExecutionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_EXECUTION_TIME)));
             cpuUsageEntity.setSessionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_SESSION_TIME)));
@@ -110,7 +112,7 @@ public class Contract {
         public static final String COLUMN_SESSION_ID = "sessionId";
         public static final String COLUMN_EXECUTION_TIME = "executionTime";
         public static final String COLUMN_SESSION_TIME = "sessionTime";
-        public static final String COLUMN_SYNC_STATUS = "sessionTime";
+        public static final String COLUMN_SYNC_STATUS = "syncStatus";
 
 
         public static ContentValues toContentValues(MemoryEntity memoryEntity) {
@@ -130,6 +132,8 @@ public class Contract {
             values.put(COLUMN_TOTAL_SHARED_DIRTY, memoryEntity.getTotalSharedDirty());
             values.put(COLUMN_SYSTEM_RESOURCE, memoryEntity.getSystemResourceMemory());
             values.put(COLUMN_SWAP_RESOURCE, memoryEntity.getSwapMemory());
+
+
             values.put(COLUMN_SESSION_ID, memoryEntity.getSessionId());
             values.put(COLUMN_EXECUTION_TIME, memoryEntity.getExecutionTime());
             values.put(COLUMN_SESSION_TIME, memoryEntity.getSessionTime());
@@ -178,12 +182,13 @@ public class Contract {
         public static final String COLUMN_SESSION_ID = "sessionId";
         public static final String COLUMN_EXECUTION_TIME = "executionTime";
         static final String COLUMN_SESSION_TIME = "sessionTime";
-        public static final String COLUMN_SYNC_STATUS = "sessionTime";
+        public static final String COLUMN_SYNC_STATUS = "syncStatus";
 
         public static ContentValues toContentValues(FpsEntity fpsEntity) {
             ContentValues values = new ContentValues();
             values.put(_ID, fpsEntity.getId());
             values.put(COLUMN_FPS, fpsEntity.getFps());
+
             values.put(COLUMN_SESSION_ID, fpsEntity.getSessionId());
             values.put(COLUMN_EXECUTION_TIME, fpsEntity.getExecutionTime());
             values.put(COLUMN_SESSION_TIME, fpsEntity.getSessionTime());
@@ -200,6 +205,7 @@ public class Contract {
         public static FpsEntity fromCursor(Cursor cursor) {
             FpsEntity fpsEntity = new FpsEntity();
             fpsEntity.setFps(cursor.getInt(cursor.getColumnIndex(COLUMN_FPS)));
+
             fpsEntity.setSessionId(cursor.getString(cursor.getColumnIndex(COLUMN_SESSION_ID)));
             fpsEntity.setExecutionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_EXECUTION_TIME)));
             fpsEntity.setSessionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_SESSION_TIME)));
@@ -228,7 +234,7 @@ public class Contract {
         public static final String COLUMN_SESSION_ID = "sessionId";
         public static final String COLUMN_EXECUTION_TIME = "executionTime";
         static final String COLUMN_SESSION_TIME = "sessionTime";
-        public static final String COLUMN_SYNC_STATUS = "sessionTime";
+        public static final String COLUMN_SYNC_STATUS = "syncStatus";
 
         public static ContentValues toContentValues(GCEntity gcEntity) {
             ContentValues values = new ContentValues();
@@ -243,6 +249,7 @@ public class Contract {
             values.put(COLUMN_LARGE_OBJECT_TOTAL_SIZE, gcEntity.getLargeObjectTotalSize());
             values.put(COLUMN_GC_PAUSE_TIME, gcEntity.getGcPauseTime());
             values.put(COLUMN_GC_RUN_TIME, gcEntity.getGcRunTime());
+
             values.put(COLUMN_SESSION_ID, gcEntity.getSessionId());
             values.put(COLUMN_EXECUTION_TIME, gcEntity.getExecutionTime());
             values.put(COLUMN_SESSION_TIME, gcEntity.getSessionTime());
@@ -290,7 +297,7 @@ public class Contract {
         public static final String COLUMN_SESSION_ID = "sessionId";
         public static final String COLUMN_EXECUTION_TIME = "executionTime";
         static final String COLUMN_SESSION_TIME = "sessionTime";
-        public static final String COLUMN_SYNC_STATUS = "sessionTime";
+        public static final String COLUMN_SYNC_STATUS = "syncStatus";
 
         public static ContentValues toContentValues(LogsEntity logsEntity) {
             ContentValues values = new ContentValues();
@@ -337,7 +344,7 @@ public class Contract {
         public static final String COLUMN_SESSION_ID = "sessionId";
         public static final String COLUMN_EXECUTION_TIME = "executionTime";
         static final String COLUMN_SESSION_TIME = "sessionTime";
-        public static final String COLUMN_SYNC_STATUS = "sessionTime";
+        public static final String COLUMN_SYNC_STATUS = "syncStatus";
 
 
         public static ContentValues toContentValues(ScreenshotEntity screenshotEntity) {
@@ -384,7 +391,7 @@ public class Contract {
         public static final String COLUMN_SESSION_ID = "sessionId";
         public static final String COLUMN_EXECUTION_TIME = "executionTime";
         static final String COLUMN_SESSION_TIME = "sessionTime";
-        public static final String COLUMN_SYNC_STATUS = "sessionTime";
+        public static final String COLUMN_SYNC_STATUS = "syncStatus";
 
 
         public static ContentValues toContentValues(NetworkUsageEntity networkUsageEntity) {
@@ -392,7 +399,6 @@ public class Contract {
             values.put(_ID, networkUsageEntity.getId());
             values.put(COLUMN_DATA_SENT, networkUsageEntity.getDataSent());
             values.put(COLUMN_DATA_RECEIVED, networkUsageEntity.getDataReceived());
-
 
             values.put(COLUMN_SESSION_ID, networkUsageEntity.getSessionId());
             values.put(COLUMN_EXECUTION_TIME, networkUsageEntity.getExecutionTime());
@@ -411,6 +417,7 @@ public class Contract {
             NetworkUsageEntity networkUsageEntity = new NetworkUsageEntity();
             networkUsageEntity.setDataReceived(cursor.getLong(cursor.getColumnIndex(COLUMN_DATA_RECEIVED)));
             networkUsageEntity.setDataSent(cursor.getLong(cursor.getColumnIndex(COLUMN_DATA_SENT)));
+
             networkUsageEntity.setSessionId(cursor.getString(cursor.getColumnIndex(COLUMN_SESSION_ID)));
             networkUsageEntity.setExecutionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_EXECUTION_TIME)));
             networkUsageEntity.setSessionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_SESSION_TIME)));
@@ -432,14 +439,13 @@ public class Contract {
         public static final String COLUMN_SESSION_ID = "sessionId";
         public static final String COLUMN_EXECUTION_TIME = "executionTime";
         static final String COLUMN_SESSION_TIME = "sessionTime";
-        public static final String COLUMN_SYNC_STATUS = "sessionTime";
+        public static final String COLUMN_SYNC_STATUS = "syncStatus";
 
         public static ContentValues toContentValues(MemoryLeakEntity memoryLeakEntity) {
             ContentValues values = new ContentValues();
             values.put(_ID, memoryLeakEntity.getId());
             values.put(COLUMN_CLASS_NAME, memoryLeakEntity.getClassName());
             values.put(COLUMN_LEAK_TRACE, memoryLeakEntity.getLeakTrace());
-
 
             values.put(COLUMN_SESSION_ID, memoryLeakEntity.getSessionId());
             values.put(COLUMN_EXECUTION_TIME, memoryLeakEntity.getExecutionTime());
@@ -458,6 +464,7 @@ public class Contract {
             MemoryLeakEntity memoryLeakEntity = new MemoryLeakEntity();
             memoryLeakEntity.setClassName(cursor.getString(cursor.getColumnIndex(COLUMN_CLASS_NAME)));
             memoryLeakEntity.setLeakTrace(cursor.getString(cursor.getColumnIndex(COLUMN_LEAK_TRACE)));
+
             memoryLeakEntity.setSessionId(cursor.getString(cursor.getColumnIndex(COLUMN_SESSION_ID)));
             memoryLeakEntity.setExecutionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_EXECUTION_TIME)));
             memoryLeakEntity.setSessionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_SESSION_TIME)));
@@ -496,7 +503,6 @@ public class Contract {
             values.put(COLUMN_RESPONSE_CODE, apiCallEntity.getResponseCode());
             values.put(COLUMN_DURATION, apiCallEntity.getDuration());
             values.put(COLUMN_THREAD_NAME, apiCallEntity.getThreadName());
-
 
             values.put(COLUMN_SESSION_ID, apiCallEntity.getSessionId());
             values.put(COLUMN_EXECUTION_TIME, apiCallEntity.getExecutionTime());
@@ -541,14 +547,13 @@ public class Contract {
         public static final String COLUMN_SESSION_ID = "sessionId";
         public static final String COLUMN_EXECUTION_TIME = "executionTime";
         static final String COLUMN_SESSION_TIME = "sessionTime";
-        public static final String COLUMN_SYNC_STATUS = "sessionTime";
+        public static final String COLUMN_SYNC_STATUS = "syncStatus";
 
         public static ContentValues toContentValues(TransitionStatEntity transitionStatEntity) {
             ContentValues values = new ContentValues();
             values.put(_ID, transitionStatEntity.getId());
             values.put(COLUMN_NAME, transitionStatEntity.getName());
             values.put(COLUMN_DURATION, transitionStatEntity.getDuration());
-
 
             values.put(COLUMN_SESSION_ID, transitionStatEntity.getSessionId());
             values.put(COLUMN_EXECUTION_TIME, transitionStatEntity.getExecutionTime());
@@ -590,14 +595,13 @@ public class Contract {
         public static final String COLUMN_SESSION_ID = "sessionId";
         public static final String COLUMN_EXECUTION_TIME = "executionTime";
         public static final String COLUMN_SESSION_TIME = "sessionTime";
-        public static final String COLUMN_SYNC_STATUS = "sessionTime";
+        public static final String COLUMN_SYNC_STATUS = "syncStatus";
 
         public static ContentValues toContentValues(MethodTraceEntity methodTraceEntity) {
             ContentValues values = new ContentValues();
             values.put(_ID, methodTraceEntity.getId());
             values.put(COLUMN_TRACE_NAME, methodTraceEntity.getTraceName());
             values.put(COLUMN_DURATION, methodTraceEntity.getDuration());
-
 
             values.put(COLUMN_SESSION_ID, methodTraceEntity.getSessionId());
             values.put(COLUMN_EXECUTION_TIME, methodTraceEntity.getExecutionTime());
@@ -637,12 +641,13 @@ public class Contract {
         public static final String COLUMN_SESSION_ID = "sessionId";
         public static final String COLUMN_EXECUTION_TIME = "executionTime";
         public static final String COLUMN_SESSION_TIME = "sessionTime";
-        public static final String COLUMN_SYNC_STATUS = "sessionTime";
+        public static final String COLUMN_SYNC_STATUS = "syncStatus";
 
         public static ContentValues toContentValues(FrameDropEntity frameDropEntity) {
             ContentValues values = new ContentValues();
             values.put(_ID, frameDropEntity.getId());
             values.put(COLUMN_DROPPED, frameDropEntity.getDropped());
+
             values.put(COLUMN_SESSION_ID, frameDropEntity.getSessionId());
             values.put(COLUMN_EXECUTION_TIME, frameDropEntity.getExecutionTime());
             values.put(COLUMN_SESSION_TIME, frameDropEntity.getSessionTime());
@@ -659,6 +664,7 @@ public class Contract {
         public static FrameDropEntity fromCursor(Cursor cursor) {
             FrameDropEntity frameDropEntity = new FrameDropEntity();
             frameDropEntity.setDropped(cursor.getInt(cursor.getColumnIndex(COLUMN_DROPPED)));
+
             frameDropEntity.setSessionId(cursor.getString(cursor.getColumnIndex(COLUMN_SESSION_ID)));
             frameDropEntity.setExecutionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_EXECUTION_TIME)));
             frameDropEntity.setSessionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_SESSION_TIME)));

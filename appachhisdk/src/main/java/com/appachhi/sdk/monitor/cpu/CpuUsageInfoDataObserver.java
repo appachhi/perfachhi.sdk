@@ -1,7 +1,5 @@
 package com.appachhi.sdk.monitor.cpu;
 
-import android.util.Log;
-
 import com.appachhi.sdk.DataObserver;
 import com.appachhi.sdk.database.dao.CpuUsageDao;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
@@ -42,9 +40,6 @@ class CpuUsageInfoDataObserver implements DataObserver<CpuUsageInfo> {
                     long sessionTimeElapsed = new Date().getTime() - session.getStartTime();
                     CpuUsageEntity cpuUsageEntity = fromCpuUsageInfoToCpuUsageEntity(data, session.getId(), sessionTimeElapsed);
                     long result = cpuUsageDao.insertCpuUsage(cpuUsageEntity);
-                    if (result > -1) {
-                        Log.i(TAG, "CPU Usage Data saved");
-                    }
                 }
             }
         };

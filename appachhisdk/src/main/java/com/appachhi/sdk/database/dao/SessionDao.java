@@ -64,7 +64,7 @@ public class SessionDao {
         Cursor cursor = sqlDB.query(
                 SessionEntry.TABLE_NAME,
                 new String[]{SessionEntry._ID},
-                "syncStatus = 0",
+                "syncStatus = 1",
                 null,
                 null,
                 null,
@@ -85,14 +85,15 @@ public class SessionDao {
                 String.format("%s IN (%s)", SessionEntry._ID, join(ids)),
                 null
         );
-
     }
 
     private static String join(List<String> input) {
         if (input == null || input.size() <= 0) return "";
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < input.size(); i++) {
+            sb.append("'");
             sb.append(input.get(i));
+            sb.append("'");
             // if not the last item
             if (i != input.size() - 1) {
                 sb.append(",");

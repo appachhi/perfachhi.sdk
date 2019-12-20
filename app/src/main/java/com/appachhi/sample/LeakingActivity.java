@@ -1,14 +1,13 @@
 package com.appachhi.sample;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.appachhi.sdk.instrument.trace.Trace;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
-public class LeakingActivity extends AppCompatActivity {
+public class LeakingActivity extends Activity {
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         ScreenTransitionManager.getInstance().beginTransition(this);

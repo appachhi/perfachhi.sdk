@@ -1,7 +1,5 @@
 package com.appachhi.sdk.monitor.network;
 
-import android.util.Log;
-
 import com.appachhi.sdk.DataObserver;
 import com.appachhi.sdk.database.dao.NetworkDao;
 import com.appachhi.sdk.database.entity.NetworkUsageEntity;
@@ -57,9 +55,6 @@ public class NetworkInfoDataObserver implements DataObserver<NetworkInfo> {
                     long sessionTimeElapsed = new Date().getTime() - session.getStartTime();
                     NetworkUsageEntity networkUsageEntity = fromNetworkUsageInfoToNetworkUsageEntity(finalNetworkData, session.getId(), sessionTimeElapsed);
                     long result = networkDao.insertNetworkUsage(networkUsageEntity);
-                    if (result > -1) {
-                        Log.i(TAG, "Network Usage Data saved");
-                    }
                 }
             }
         };
