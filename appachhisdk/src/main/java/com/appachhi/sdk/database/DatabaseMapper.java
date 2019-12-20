@@ -6,6 +6,7 @@ import android.os.Build;
 import com.appachhi.sdk.database.entity.APICallEntity;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
 import com.appachhi.sdk.database.entity.FpsEntity;
+import com.appachhi.sdk.database.entity.FrameDropEntity;
 import com.appachhi.sdk.database.entity.GCEntity;
 import com.appachhi.sdk.database.entity.LogsEntity;
 import com.appachhi.sdk.database.entity.MemoryEntity;
@@ -73,6 +74,10 @@ public class DatabaseMapper {
         return new FpsEntity(fps, sessionId, sessionTimeElapsed);
     }
 
+    public static FrameDropEntity fromLongToFrameDropEntity(long dropped, String sessionId, long sessionTimeElapsed) {
+        return new FrameDropEntity(dropped, sessionId, sessionTimeElapsed);
+    }
+
     public static NetworkUsageEntity fromNetworkUsageInfoToNetworkUsageEntity(NetworkInfo networkInfo, String sessionId, long sessionTimeElapsed) {
         return new NetworkUsageEntity(networkInfo.getByteSend(), networkInfo.getByteReceived(), sessionId, sessionTimeElapsed);
     }
@@ -82,7 +87,7 @@ public class DatabaseMapper {
     }
 
     public static MemoryLeakEntity fromMemoryLeakInfoTOMemoryLeakEntity(MemoryLeakInfo memoryLeakInfo, String sessionId, long sessionTimeElapsed) {
-        return new MemoryLeakEntity(memoryLeakInfo.getClassName(),memoryLeakInfo.getLeakTrace().toString(),
+        return new MemoryLeakEntity(memoryLeakInfo.getClassName(), memoryLeakInfo.getLeakTrace().toString(),
                 sessionId,
                 sessionTimeElapsed);
     }

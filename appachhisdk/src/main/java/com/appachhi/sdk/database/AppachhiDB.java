@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.appachhi.sdk.database.dao.APICallDao;
 import com.appachhi.sdk.database.dao.CpuUsageDao;
 import com.appachhi.sdk.database.dao.FpsDao;
+import com.appachhi.sdk.database.dao.FrameDropDao;
 import com.appachhi.sdk.database.dao.GCDao;
 import com.appachhi.sdk.database.dao.LogsDao;
 import com.appachhi.sdk.database.dao.MemoryDao;
@@ -32,6 +33,7 @@ public class AppachhiDB {
     private APICallDao apiCallDao;
     private ScreenTransitionDao screenTransitionDao;
     private MethodTraceDao methodTraceDao;
+    private FrameDropDao frameDropDao;
 
     private AppachhiDB(SQLiteDatabase sqLiteDatabase) {
         sessionDao = new SessionDao(sqLiteDatabase);
@@ -46,6 +48,7 @@ public class AppachhiDB {
         memoryLeakDao = new MemoryLeakDao(sqLiteDatabase);
         screenTransitionDao = new ScreenTransitionDao(sqLiteDatabase);
         methodTraceDao = new MethodTraceDao(sqLiteDatabase);
+        frameDropDao = new FrameDropDao(sqLiteDatabase);
     }
 
     private static final String DB_NAME = "appachhi";
@@ -96,6 +99,10 @@ public class AppachhiDB {
 
     public LogsDao logsDao() {
         return logsDao;
+    }
+
+    public FrameDropDao frameDropDao() {
+        return frameDropDao;
     }
 
     public static AppachhiDB getInstance(Context context) {

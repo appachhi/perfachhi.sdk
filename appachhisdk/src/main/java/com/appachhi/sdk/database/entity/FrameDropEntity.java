@@ -1,16 +1,25 @@
 package com.appachhi.sdk.database.entity;
 
-import android.provider.BaseColumns;
+import com.google.gson.annotations.SerializedName;
 
 public class FrameDropEntity extends BaseEntity {
+    @SerializedName("dropped")
+    private int dropped;
+
+    public FrameDropEntity(double dropped, String sessionId, long sessionTime) {
+        super(sessionId, sessionTime);
+        this.dropped = (int) dropped;
+    }
+
+    public FrameDropEntity() {
+    }
 
 
-    public static class Entry implements BaseColumns {
-        public final static String TABLE_NAME = "frame_drops";
-        public static final String COLUMN_DROPPED = "dropped";
-        public static final String COLUMN_SESSION_ID = "sessionId";
-        public static final String COLUMN_EXECUTION_TIME = "executionTime";
-        public static final String COLUMN_SESSION_TIME = "sessionTime";
-        public static final String COLUMN_SYNC_STATUS = "sessionTime";
+    public int getDropped() {
+        return dropped;
+    }
+
+    public void setDropped(int dropped) {
+        this.dropped = dropped;
     }
 }

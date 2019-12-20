@@ -8,7 +8,7 @@ Following functionalities are supported
 - [Memory Usage](#memory-usage)
 - [GC Run Information](#gc-run)
 - [Network Usage](#network-usage)
-- [FPS](#fps)
+- [FPS](#dropped)
 - [Memory Leak Information](#memory-leak)
 - [Screen Transition Details](#screen-transition)
 - [Method Tracing](#method-tracing)
@@ -62,7 +62,7 @@ Following information are extracted as part of Network Usage :-
 
 ## FPS
 --
-Frame per second is a very important metric in Android. Ideally an good app should be able to render 60 time per seccond.If It goes below 60 fps, the UI will feel janky. SDK computes this automatically once it is integrated with the app. The values can be anything between 0 to 60.
+Frame per second is a very important metric in Android. Ideally an good app should be able to render 60 time per seccond.If It goes below 60 dropped, the UI will feel janky. SDK computes this automatically once it is integrated with the app. The values can be anything between 0 to 60.
 
 ## Memory Leak
 ---

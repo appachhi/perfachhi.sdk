@@ -3,9 +3,10 @@ package com.appachhi.sdk.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class AppachhiSqlOpenHelper extends SQLiteOpenHelper {
-    public AppachhiSqlOpenHelper(Context context) {
+    AppachhiSqlOpenHelper(Context context) {
         super(context, "appachhi", null, 1);
     }
 
@@ -17,7 +18,8 @@ public class AppachhiSqlOpenHelper extends SQLiteOpenHelper {
                 "  synStatus INT," +
                 "  versionCode INT," +
                 "  versionName TEXT," +
-                "  packageName TEXT" +
+                "  packageName TEXT," +
+                "  syncStatus INT" +
                 ")";
 
         String createAPIEntryTable = "CREATE TABLE IF NOT EXISTS api_calls (" +
@@ -152,7 +154,7 @@ public class AppachhiSqlOpenHelper extends SQLiteOpenHelper {
                 "sessionTime INT," +
                 "syncStatus INT" +
                 ")";
-        String createNetworkUsageTable = "CREATE TABLE IF NOT EXISTS transition_stats (" +
+        String createNetworkUsageTable = "CREATE TABLE IF NOT EXISTS network_usages (" +
                 "_ID TEXT PRIMARY KEY NOT NULL," +
                 "dataReceived INT," +
                 "dataSent INT," +
@@ -161,19 +163,33 @@ public class AppachhiSqlOpenHelper extends SQLiteOpenHelper {
                 "sessionTime INT," +
                 "syncStatus INT" +
                 ")";
+
         db.execSQL(createSessionTable);
+        Log.d("Helper","Session Table Created");
         db.execSQL(createAPIEntryTable);
+        Log.d("Helper","API Table Created");
         db.execSQL(createCpuUsageTable);
+        Log.d("Helper","CpuUsage Table Created");
         db.execSQL(createFpsTable);
+        Log.d("Helper","Fps Table Created");
         db.execSQL(createFrameDropTable);
+        Log.d("Helper","FrameDrop Table Created");
         db.execSQL(createGcTable);
+        Log.d("Helper","GC Table Created");
         db.execSQL(createLogsTable);
+        Log.d("Helper","Logs Table Created");
         db.execSQL(createScreenshotTable);
+        Log.d("Helper","Screenshot Table Created");
         db.execSQL(createMemoryLeakTable);
+        Log.d("Helper","MemoryLeak Table Created");
         db.execSQL(createMemoryUsageTabel);
+        Log.d("Helper","Memory Usage Table Created");
         db.execSQL(createMethodTraceTable);
+        Log.d("Helper","Method Trace Table Created");
         db.execSQL(createTransitionTable);
+        Log.d("Helper","Transition Table Created");
         db.execSQL(createNetworkUsageTable);
+        Log.d("Helper","Network Table Created");
     }
 
     @Override

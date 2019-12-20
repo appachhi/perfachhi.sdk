@@ -629,4 +629,45 @@ public class Contract {
             return cursor.getString(cursor.getColumnIndex(_ID));
         }
     }
+
+
+    public static class FrameDropEntry implements BaseColumns {
+        public final static String TABLE_NAME = "frame_drops";
+        public static final String COLUMN_DROPPED = "dropped";
+        public static final String COLUMN_SESSION_ID = "sessionId";
+        public static final String COLUMN_EXECUTION_TIME = "executionTime";
+        public static final String COLUMN_SESSION_TIME = "sessionTime";
+        public static final String COLUMN_SYNC_STATUS = "sessionTime";
+
+        public static ContentValues toContentValues(FrameDropEntity frameDropEntity) {
+            ContentValues values = new ContentValues();
+            values.put(_ID, frameDropEntity.getId());
+            values.put(COLUMN_DROPPED, frameDropEntity.getDropped());
+            values.put(COLUMN_SESSION_ID, frameDropEntity.getSessionId());
+            values.put(COLUMN_EXECUTION_TIME, frameDropEntity.getExecutionTime());
+            values.put(COLUMN_SESSION_TIME, frameDropEntity.getSessionTime());
+            values.put(COLUMN_SYNC_STATUS, frameDropEntity.getSyncStatus());
+            return values;
+        }
+
+        public static ContentValues updateSyncStatusValue() {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(COLUMN_SYNC_STATUS, 1);
+            return contentValues;
+        }
+
+        public static FrameDropEntity fromCursor(Cursor cursor) {
+            FrameDropEntity frameDropEntity = new FrameDropEntity();
+            frameDropEntity.setDropped(cursor.getInt(cursor.getColumnIndex(COLUMN_DROPPED)));
+            frameDropEntity.setSessionId(cursor.getString(cursor.getColumnIndex(COLUMN_SESSION_ID)));
+            frameDropEntity.setExecutionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_EXECUTION_TIME)));
+            frameDropEntity.setSessionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_SESSION_TIME)));
+            frameDropEntity.setSyncStatus(cursor.getInt(cursor.getColumnIndex(COLUMN_SYNC_STATUS)));
+            return frameDropEntity;
+        }
+
+        public static String fromCursorToId(Cursor cursor) {
+            return cursor.getString(cursor.getColumnIndex(_ID));
+        }
+    }
 }

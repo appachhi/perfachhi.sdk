@@ -1,7 +1,6 @@
 package com.appachhi.sdk.monitor.framedrop;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.Choreographer;
 import android.view.Display;
 import android.view.WindowManager;
@@ -13,12 +12,12 @@ public class FrameDropDataModule extends BaseDataModule<Long> implements Choreog
     private long frameDropped;
     private long frameIntervalNanos;
     private int skippedFrameNotifyLimit;
-    private long lastFrameTimeNanos;
+    private long lastFrameRendered;
 
     FrameDropDataModule(Context context, int skippedFrameNotifyLimit) {
         choreographer = Choreographer.getInstance();
         Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        frameIntervalNanos = (long) (100000000 / display.getRefreshRate());
+        frameIntervalNanos = (long) (1 / display.getRefreshRate() * 1000000000);
         this.skippedFrameNotifyLimit = skippedFrameNotifyLimit;
 
     }
@@ -41,20 +40,19 @@ public class FrameDropDataModule extends BaseDataModule<Long> implements Choreog
 
     @Override
     public void doFrame(long frameTimeNanos) {
-        if (lastFrameTimeNanos == 0L) {
-            lastFrameTimeNanos = frameTimeNanos;
-        }
-        final long startNanos = System.nanoTime();
-        final long jitterNanos = startNanos - lastFrameTimeNanos;
-        if (jitterNanos >= frameIntervalNanos) {
-            final long skippedFrames = jitterNanos / frameIntervalNanos;
-            if (skippedFrames >= skippedFrameNotifyLimit) {
-                frameDropped = skippedFrames;
-                Log.d("Choreographer", String.format("Skipped %d frames!", skippedFrames));
-                notifyObservers();
+        final long now = System.nanoTime();
+        if (lastFrameRendered != 0L) {
+            final long differentBetweenLastFrameRenderAndNow = System.nanoTime() - lastFrameRendered;
+            if (differentBetweenLastFrameRenderAndNow >= frameIntervalNanos) {
+                final long skippedFrames = differentBetweenLastFrameRenderAndNow / frameIntervalNanos;
+                if (skippedFrames >= skippedFrameNotifyLimit) {
+                    frameDropped = skippedFrames;
+                    notifyObservers();
+                }
             }
-        }
 
+        }
+        lastFrameRendered = frameTimeNanos;
         choreographer.postFrameCallback(this);
     }
 

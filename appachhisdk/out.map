@@ -1469,7 +1469,7 @@ com.appachhi.sdk.database.entity.CpuUsageEntity -> com.appachhi.sdk.database.ent
     1:1:double getAppCpuUsage():36:36 -> f
     1:1:double getDeviceCpuUsage():44:44 -> g
 com.appachhi.sdk.database.entity.FpsEntity -> com.appachhi.sdk.database.entity.FpsEntity:
-    int fps -> f
+    int dropped -> f
     1:1:void <init>():26:26 -> <init>
     2:4:void com.appachhi.sdk.database.entity.BaseEntity.<init>(java.lang.String,long):38:40 -> <init>
     2:4:void <init>(double,java.lang.String,long):22 -> <init>
@@ -2091,10 +2091,10 @@ com.appachhi.sdk.monitor.cpu.CpuUsageInfoViewDataObserver -> com.appachhi.sdk.mo
     6:8:android.view.View createView(android.view.ViewGroup):32:34 -> a
     9:11:void onDataAvailable(com.appachhi.sdk.monitor.cpu.CpuUsageInfo):41:43 -> a
     12:12:void onDataAvailable(com.appachhi.sdk.monitor.cpu.CpuUsageInfo):42:42 -> a
-com.appachhi.sdk.monitor.fps.FpsDataModule -> com.appachhi.sdk.monitor.fps.FpsDataModule:
+com.appachhi.sdk.monitor.dropped.FpsDataModule -> com.appachhi.sdk.monitor.dropped.FpsDataModule:
     long startFrameTimeMillis -> b
     int interval -> d
-    double fps -> f
+    double dropped -> f
     int numFramesRendered -> c
     android.view.Choreographer choreographer -> e
     1:3:void <init>(int):17:19 -> <init>
@@ -2110,7 +2110,7 @@ com.appachhi.sdk.monitor.fps.FpsDataModule -> com.appachhi.sdk.monitor.fps.FpsDa
     10:10:void doFrame(long):57:57 -> doFrame
     1:1:void start():30:30 -> start
     1:1:void stop():35:35 -> stop
-com.appachhi.sdk.monitor.fps.FpsDataObserver -> com.appachhi.sdk.monitor.fps.FpsDataObserver:
+com.appachhi.sdk.monitor.dropped.FpsDataObserver -> com.appachhi.sdk.monitor.dropped.FpsDataObserver:
     com.appachhi.sdk.sync.SessionManager sessionManager -> c
     com.appachhi.sdk.database.dao.FpsDao fpsDao -> a
     java.util.concurrent.ExecutorService databaseExecutor -> b
@@ -2118,27 +2118,27 @@ com.appachhi.sdk.monitor.fps.FpsDataObserver -> com.appachhi.sdk.monitor.fps.Fps
     1:1:void onDataAvailable(java.lang.Object):17:17 -> a
     2:2:void onDataAvailable(java.lang.Double):33:33 -> a
     3:3:void onDataAvailable(java.lang.Double):47:47 -> a
-com.appachhi.sdk.monitor.fps.FpsDataObserver$1 -> a.a.a.c.b.a:
+com.appachhi.sdk.monitor.dropped.FpsDataObserver$1 -> a.a.a.c.b.a:
     java.lang.Double val$data -> a
-    com.appachhi.sdk.monitor.fps.FpsDataObserver this$0 -> b
-    1:1:void <init>(com.appachhi.sdk.monitor.fps.FpsDataObserver,java.lang.Double):33:33 -> <init>
+    com.appachhi.sdk.monitor.dropped.FpsDataObserver this$0 -> b
+    1:1:void <init>(com.appachhi.sdk.monitor.dropped.FpsDataObserver,java.lang.Double):33:33 -> <init>
     1:1:void run():36:36 -> run
-    2:2:com.appachhi.sdk.sync.SessionManager com.appachhi.sdk.monitor.fps.FpsDataObserver.access$000(com.appachhi.sdk.monitor.fps.FpsDataObserver):17:17 -> run
+    2:2:com.appachhi.sdk.sync.SessionManager com.appachhi.sdk.monitor.dropped.FpsDataObserver.access$000(com.appachhi.sdk.monitor.dropped.FpsDataObserver):17:17 -> run
     2:2:void run():36 -> run
     3:3:void run():36:36 -> run
     4:5:void run():38:39 -> run
     6:6:com.appachhi.sdk.database.entity.FpsEntity com.appachhi.sdk.database.DatabaseMapper.fromDoubleToFpsEntity(double,java.lang.String,long):69:69 -> run
     6:6:void run():39 -> run
     7:7:void run():40:40 -> run
-    8:8:com.appachhi.sdk.database.dao.FpsDao com.appachhi.sdk.monitor.fps.FpsDataObserver.access$100(com.appachhi.sdk.monitor.fps.FpsDataObserver):17:17 -> run
+    8:8:com.appachhi.sdk.database.dao.FpsDao com.appachhi.sdk.monitor.dropped.FpsDataObserver.access$100(com.appachhi.sdk.monitor.dropped.FpsDataObserver):17:17 -> run
     8:8:void run():40 -> run
     9:9:void run():40:40 -> run
     10:10:void run():42:42 -> run
-com.appachhi.sdk.monitor.fps.FpsFeatureModule -> com.appachhi.sdk.monitor.fps.FpsFeatureModule:
+com.appachhi.sdk.monitor.dropped.FpsFeatureModule -> com.appachhi.sdk.monitor.dropped.FpsFeatureModule:
     1:1:void <init>(com.appachhi.sdk.database.dao.FpsDao,java.util.concurrent.ExecutorService,com.appachhi.sdk.sync.SessionManager):13:13 -> <init>
     2:3:void com.appachhi.sdk.FeatureModule.<init>(com.appachhi.sdk.DataModule,com.appachhi.sdk.ViewDataObserver,com.appachhi.sdk.DataObserver):27:28 -> <init>
     2:3:void <init>(com.appachhi.sdk.database.dao.FpsDao,java.util.concurrent.ExecutorService,com.appachhi.sdk.sync.SessionManager):13 -> <init>
-com.appachhi.sdk.monitor.fps.FpsViewDataObserver -> com.appachhi.sdk.monitor.fps.FpsViewDataObserver:
+com.appachhi.sdk.monitor.dropped.FpsViewDataObserver -> com.appachhi.sdk.monitor.dropped.FpsViewDataObserver:
     android.widget.TextView typeTextView -> c
     android.widget.TextView dataTextView -> b
     1:1:void <init>():20:20 -> <init>

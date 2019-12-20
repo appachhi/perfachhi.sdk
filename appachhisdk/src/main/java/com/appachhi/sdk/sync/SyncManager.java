@@ -14,6 +14,7 @@ import com.appachhi.sdk.database.AppachhiDB;
 import com.appachhi.sdk.database.dao.APICallDao;
 import com.appachhi.sdk.database.dao.CpuUsageDao;
 import com.appachhi.sdk.database.dao.FpsDao;
+import com.appachhi.sdk.database.dao.FrameDropDao;
 import com.appachhi.sdk.database.dao.GCDao;
 import com.appachhi.sdk.database.dao.LogsDao;
 import com.appachhi.sdk.database.dao.MemoryDao;
@@ -28,6 +29,7 @@ import com.appachhi.sdk.database.entity.BaseEntity;
 import com.appachhi.sdk.database.entity.BaseFileEntity;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
 import com.appachhi.sdk.database.entity.FpsEntity;
+import com.appachhi.sdk.database.entity.FrameDropEntity;
 import com.appachhi.sdk.database.entity.GCEntity;
 import com.appachhi.sdk.database.entity.LogsEntity;
 import com.appachhi.sdk.database.entity.MemoryEntity;
@@ -162,6 +164,11 @@ public class SyncManager {
         // Upload Network Usage for all the synced session only
         uploadNetworkUsage(allSyncedSessionIds, appachhiDB.networkDao());
 
+
+        // Upload Frame Drop for all the synced session only
+        uploadFrameDrop(allSyncedSessionIds, appachhiDB.frameDropDao());
+
+
         // Upload Api Call for all the synced session only
         uploadNetworkCall(allSyncedSessionIds, appachhiDB.apiCallDao());
 
@@ -199,6 +206,16 @@ public class SyncManager {
             @Override
             public void onMetricUpload(List<String> ids) {
                 apiCallDao.updateSuccessSyncStatus(ids);
+            }
+        });
+    }
+
+    private void uploadFrameDrop(List<String> allSyncedSessionIds, final FrameDropDao frameDropDao) {
+        List<FrameDropEntity> fpsEntities = frameDropDao.allUnSyncedFpsEntityForSession(allSyncedSessionIds);
+        uploadMetric("frame_drop", fpsEntities, new OnMetricUploadListener() {
+            @Override
+            public void onMetricUpload(List<String> ids) {
+                frameDropDao.updateSuccessSyncStatus(ids);
             }
         });
     }
