@@ -120,7 +120,7 @@ public class LogsDataModule extends BaseDataModule<LogsInfo> {
                 // This the logs are not continuously written in same file
                 if (runningProcess != null && currentLogFile != null && currentLogFile.exists()) {
                     // If tht current log file size greater than 100KB split it into another log
-                    if (currentLogFile.length() > (1024L * 10L)) {
+                    if (currentLogFile.length() > (1024L * 2L)) {
                         // Restart a new process again, so this will begin writing to an new file
                         restartProcess();
                     }

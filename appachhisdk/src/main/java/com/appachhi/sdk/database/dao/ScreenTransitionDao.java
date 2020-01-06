@@ -30,7 +30,6 @@ public class ScreenTransitionDao {
     }
 
     public List<TransitionStatEntity> allUnSyncedScreenTransitionForSession(List<String> sessionIds) {
-        System.out.println("ST "+ String.format("%s = 0 AND %s IN (%s)", COLUMN_SYNC_STATUS, COLUMN_SESSION_ID, join(sessionIds)));
         Cursor cursor = sqlDB.query(
                 Contract.TransitionStatEntry.TABLE_NAME,
                 null,

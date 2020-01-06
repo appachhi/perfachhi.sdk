@@ -75,7 +75,7 @@ public class SyncManager {
     public static final String TAG = "SyncManager";
     private AppachhiDB appachhiDB;
     private OkHttpClient okHttpClient;
-    private static final String BASE_URL = "https://645fcc60.ngrok.io";
+    private static final String BASE_URL = "https://57612d87.ngrok.io";
     private static String KEY = null;
     private Gson gson;
     private ScheduledExecutorService syncExecutor;
@@ -315,7 +315,6 @@ public class SyncManager {
             return;
         }
         Log.d(TAG, "Upload " + path);
-        System.out.println("Session time" + items.get(0).getSessionTime());
         metricSyncExecutor.execute(new Runnable() {
             @Override
             public void run() {
