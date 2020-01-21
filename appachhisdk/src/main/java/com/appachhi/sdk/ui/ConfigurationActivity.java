@@ -9,7 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Switch;
+import android.widget.ToggleButton;
 
 import com.appachhi.sdk.Appachhi;
 import com.appachhi.sdk.OverlayService;
@@ -24,13 +24,13 @@ public class ConfigurationActivity extends Activity {
     }
 
 
-    private Switch screenTransitionSwitch;
-    private Switch cpuUsageSwitch;
-    private Switch memoryUsageSwitch;
-    private Switch networkUsage;
-    private Switch fpsUsageSwitch;
-    private Switch memoryLeakSwitch;
-    private Switch screenCaptureSwitch;
+    private ToggleButton screenTransitionSwitch;
+    private ToggleButton cpuUsageSwitch;
+    private ToggleButton memoryUsageSwitch;
+    private ToggleButton networkUsage;
+    private ToggleButton fpsUsageSwitch;
+    private ToggleButton memoryLeakSwitch;
+    private ToggleButton screenCaptureSwitch;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -38,13 +38,13 @@ public class ConfigurationActivity extends Activity {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.left_slide_in, 0);
         setContentView(R.layout.activity_configuration);
-        screenTransitionSwitch = findViewById(R.id.screenTransitionSwitch);
-        cpuUsageSwitch = findViewById(R.id.cpuUsageSwitch);
-        memoryUsageSwitch = findViewById(R.id.memoryUsageSwitch);
-        networkUsage = findViewById(R.id.networkUsageSwitch);
-        fpsUsageSwitch = findViewById(R.id.fpsUsageSwitch);
-        memoryLeakSwitch = findViewById(R.id.memoryLeakSwitch);
-        screenCaptureSwitch = findViewById(R.id.screenCaptureSwitch);
+        screenTransitionSwitch = findViewById(R.id.screenCaptureToggleButton);
+        cpuUsageSwitch = findViewById(R.id.cpuUsageToggleButton);
+        memoryUsageSwitch = findViewById(R.id.memoryUsageToggleButton);
+        networkUsage = findViewById(R.id.networkUsageToggleButton);
+        fpsUsageSwitch = findViewById(R.id.fpsUsageToggleButton);
+        memoryLeakSwitch = findViewById(R.id.memoryLeakToggleButton);
+        screenCaptureSwitch = findViewById(R.id.screenCaptureToggleButton);
         View emptyArea = findViewById(R.id.emptyArea);
         emptyArea.setOnClickListener(new View.OnClickListener() {
             @Override

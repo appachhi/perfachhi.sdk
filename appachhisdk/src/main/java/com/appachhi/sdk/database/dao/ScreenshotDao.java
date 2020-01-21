@@ -23,7 +23,7 @@ public class ScreenshotDao {
 
     public long insertScreenshot(ScreenshotEntity screenshotEntity) {
         return sqlDB.insertWithOnConflict(
-                Contract.LogsEntry.TABLE_NAME,
+                Contract.ScreenshotEntry.TABLE_NAME,
                 null,
                 Contract.ScreenshotEntry.toContentValues(screenshotEntity),
                 SQLiteDatabase.CONFLICT_REPLACE

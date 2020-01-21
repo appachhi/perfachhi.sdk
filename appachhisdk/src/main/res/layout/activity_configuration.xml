@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/configuration_list_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/configuration_list_container">
+    android:layout_height="match_parent">
 
     <View
         android:id="@+id/emptyArea"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
+
     <ScrollView
         android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:background="@color/color_configuration_background">
+        android:background="@android:color/white">
 
         <LinearLayout
+            android:id="@+id/configuration_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/configuration_list">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -28,19 +29,18 @@
                 android:layout_marginTop="16dp"
                 android:gravity="center"
                 android:text="On-screen Performance"
-                android:textSize="16sp"
-                android:textColor="@android:color/white"
-                />
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="4dp"
-                android:layout_marginStart="16dp"
                 android:text="Metric"
-                android:textColor="@android:color/white"
-                android:layout_marginLeft="16dp" />
+                android:textColor="@android:color/black" />
 
             <View
                 android:layout_width="match_parent"
@@ -69,11 +69,11 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="Screen Transition"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:textSize="14sp" />
 
-                <Switch
-                    android:id="@+id/screenTransitionSwitch"
+                <ToggleButton
+                    android:id="@+id/screenTransitionToggleButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -87,8 +87,8 @@
                 android:paddingLeft="4dp"
                 android:paddingEnd="4dp"
                 android:paddingRight="4dp"
-                android:textColor="@android:color/white"
                 android:text="Transition configured to capture the duration take to complete the rendering"
+                android:textColor="@android:color/black"
                 android:textSize="13sp" />
 
             <LinearLayout
@@ -113,11 +113,11 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="Memory Usage"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:textSize="14sp" />
 
-                <Switch
-                    android:id="@+id/memoryUsageSwitch"
+                <ToggleButton
+                    android:id="@+id/memoryUsageToggleButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -144,11 +144,11 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="CPU Usage"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:textSize="14sp" />
 
-                <Switch
-                    android:id="@+id/cpuUsageSwitch"
+                <ToggleButton
+                    android:id="@+id/cpuUsageToggleButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -175,12 +175,12 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="Network Usage"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:textSize="14sp" />
 
-                <Switch
-                    android:id="@+id/networkUsageSwitch"
-                    android:layout_width="wrap_content"
+                <ToggleButton
+                    android:id="@+id/networkUsageToggleButton"
+                    android:layout_width="36dp"
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
@@ -206,14 +206,13 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="FPS"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:textSize="14sp" />
 
-                <Switch
-                    android:id="@+id/fpsUsageSwitch"
+                <ToggleButton
+                    android:id="@+id/fpsUsageToggleButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout
@@ -238,15 +237,14 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="Method Calls"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:textSize="14sp" />
 
-                <Switch
-                    android:id="@+id/methodCallsSwitch"
+                <ToggleButton
+                    android:id="@+id/methodCallsToggleButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clickable="false"
-                    />
+                    android:clickable="false" />
             </LinearLayout>
 
             <TextView
@@ -259,7 +257,7 @@
                 android:paddingEnd="4dp"
                 android:paddingRight="4dp"
                 android:text="Displays trace only for method defined by the app"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/black"
                 android:textSize="13sp" />
 
             <LinearLayout
@@ -284,14 +282,15 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="Memory Leaks"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:textSize="14sp" />
 
-                <Switch
-                    android:id="@+id/memoryLeakSwitch"
+                <ToggleButton
+                    android:id="@+id/memoryLeakToggleButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
@@ -314,11 +313,11 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="Session Screen Capture"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:textSize="14sp" />
 
-                <Switch
-                    android:id="@+id/screenCaptureSwitch"
+                <ToggleButton
+                    android:id="@+id/screenCaptureToggleButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -345,14 +344,14 @@
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="API Calls"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:textSize="14sp" />
 
-                <Switch
-                    android:id="@+id/apiCallSwitch"
+                <ToggleButton
+                    android:id="@+id/apiCallToggleButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clickable="false"/>
+                    android:clickable="false" />
             </LinearLayout>
 
             <TextView
@@ -365,7 +364,7 @@
                 android:paddingEnd="4dp"
                 android:paddingRight="4dp"
                 android:text="Network API calls will be monitored during the test session"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/black"
                 android:textSize="13sp" />
 
             <TextView
@@ -378,27 +377,30 @@
                 android:paddingEnd="4dp"
                 android:paddingRight="4dp"
                 android:text="(Available only on Web)"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/black"
                 android:textSize="13sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="4dp"
-                android:layout_marginStart="16dp"
+                android:visibility="gone"
                 android:text="Reports"
-                android:textColor="@android:color/white"
-                android:layout_marginLeft="16dp" />
+                android:textColor="@android:color/black" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:layout_marginTop="8dp"
+                android:visibility="gone"
                 android:orientation="horizontal">
 
 
@@ -407,20 +409,21 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
+                    android:clickable="false"
                     android:paddingStart="8dp"
                     android:paddingLeft="8dp"
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:text="Push to Web"
-                    android:clickable="false"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:textSize="14sp" />
 
-                <Switch
-                    android:id="@+id/pushToWebSwitch"
+                <ToggleButton
+                    android:id="@+id/pushToWebToggleButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -430,8 +433,9 @@
                 android:paddingLeft="4dp"
                 android:paddingEnd="4dp"
                 android:paddingRight="4dp"
-                android:textColor="@android:color/white"
+                android:visibility="gone"
                 android:text="The entire session data will be pushed when the app goes to the background"
+                android:textColor="@android:color/black"
                 android:textSize="13sp" />
         </LinearLayout>
     </ScrollView>

@@ -46,17 +46,18 @@ public class CpuUsageDao {
         return mapCursorToCpuUsage(cursor);
     }
 
-    public void updateSuccessSyncStatus(List<String> ids){
-        sqlDB.update(
+    public void updateSuccessSyncStatus(List<String> ids) {
+       String query =  String.format("%s IN (%s)", CpuUsageEntry._ID, join(ids));
+       sqlDB.update(
                 Contract.CpuUsageEntry.TABLE_NAME,
                 Contract.CpuUsageEntry.updateSyncStatusValue(),
-                String.format("%s IN (%s)", CpuUsageEntry._ID, join(ids)),
+                query,
                 null
         );
     }
 
 
-    public List<CpuUsageEntity> allCpuUsage(){
+    public List<CpuUsageEntity> allCpuUsage() {
         Cursor cursor = sqlDB.query(
                 CpuUsageEntry.TABLE_NAME,
                 null,

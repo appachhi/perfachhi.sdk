@@ -1,5 +1,6 @@
 package com.appachhi.sdk.monitor.screen;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
@@ -36,7 +38,7 @@ import static android.hardware.display.DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLI
 /**
  * Module capturing screen shot at regular interval and saving it to the app specific directory
  */
-
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class ScreenCaptureDataModule extends BaseDataModule<String> {
     private static final String TAG = "ScreenCaptureDataModule";
     private static final String SCREEN_CAP = "screen_capture";
@@ -54,6 +56,7 @@ public class ScreenCaptureDataModule extends BaseDataModule<String> {
     private Runnable compressAndSaveLatestImage;
 
     private int interval;
+
 
     ScreenCaptureDataModule(Context appContext, SessionManager sessionManager, final int interval) {
         this.appContext = appContext;
@@ -156,8 +159,6 @@ public class ScreenCaptureDataModule extends BaseDataModule<String> {
     }
 
     private void onImageAvailable(ImageReader reader) {
-        Log.d(TAG, "Image Available");
-        Log.d(TAG, "Acquiring new image");
         if (image != null) {
             image.close();
             image = null;
@@ -166,7 +167,6 @@ public class ScreenCaptureDataModule extends BaseDataModule<String> {
     }
 
     private void compressCopyAndSave(Image image) {
-        Log.d(TAG,"Compress and save");
         final int width = image.getWidth(), height = imageReader.getHeight();
         Image.Plane[] planes = image.getPlanes();
         ByteBuffer buffer = planes[0].getBuffer();
@@ -174,7 +174,6 @@ public class ScreenCaptureDataModule extends BaseDataModule<String> {
         // Create bitmap
         Bitmap bitmap = Bitmap.createBitmap(width + rowPadding / pixelStride, height, Bitmap.Config.ARGB_4444);
         bitmap.copyPixelsFromBuffer(buffer);
-        Log.d(TAG, "Pixel Copied");
 
         Session session = sessionManager.getCurrentSession();
         if (session != null) {
@@ -189,7 +188,7 @@ public class ScreenCaptureDataModule extends BaseDataModule<String> {
                 notifyObservers();
                 bitmap.recycle();
             } catch (FileNotFoundException e) {
-                Log.e(TAG, "Failed to copy the captured image", e);
+             //
             }
         }
     }

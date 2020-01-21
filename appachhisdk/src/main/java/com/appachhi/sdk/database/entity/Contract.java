@@ -78,6 +78,7 @@ public class Contract {
 
         public static CpuUsageEntity fromCursor(Cursor cursor) {
             CpuUsageEntity cpuUsageEntity = new CpuUsageEntity();
+            cpuUsageEntity.setId(cursor.getString(cursor.getColumnIndex(_ID)));
             cpuUsageEntity.setAppCpuUsage(cursor.getDouble(cursor.getColumnIndex(COLUMN_APP_CPU_USAGE)));
             cpuUsageEntity.setDeviceCpuUsage(cursor.getDouble(cursor.getColumnIndex(COLUMN_DEVICE_CPU_USAGE)));
 
@@ -149,6 +150,7 @@ public class Contract {
 
         public static MemoryEntity fromCursor(Cursor cursor) {
             MemoryEntity memoryEntity = new MemoryEntity();
+            memoryEntity.setId(cursor.getString(cursor.getColumnIndex(_ID)));
             memoryEntity.setJavaHeap(cursor.getInt(cursor.getColumnIndex(COLUMN_JAVA_HEAP)));
             memoryEntity.setNativeHeap(cursor.getInt(cursor.getColumnIndex(COLUMN_NATIVE_HEAP)));
             memoryEntity.setCode(cursor.getInt(cursor.getColumnIndex(COLUMN_SUMMARY_CODE)));
@@ -204,6 +206,7 @@ public class Contract {
 
         public static FpsEntity fromCursor(Cursor cursor) {
             FpsEntity fpsEntity = new FpsEntity();
+            fpsEntity.setId(cursor.getString(cursor.getColumnIndex(_ID)));
             fpsEntity.setFps(cursor.getInt(cursor.getColumnIndex(COLUMN_FPS)));
 
             fpsEntity.setSessionId(cursor.getString(cursor.getColumnIndex(COLUMN_SESSION_ID)));
@@ -265,6 +268,7 @@ public class Contract {
 
         public static GCEntity fromCursor(Cursor cursor) {
             GCEntity gcEntity = new GCEntity();
+            gcEntity.setId(cursor.getString(cursor.getColumnIndex(_ID)));
             gcEntity.setGcName(cursor.getString(cursor.getColumnIndex(COLUMN_GC_NAME)));
             gcEntity.setObjectFreed(cursor.getString(cursor.getColumnIndex(COLUMN_OBJECT_FREED)));
             gcEntity.setObjectFreedSize(cursor.getString(cursor.getColumnIndex(COLUMN_OBJECT_FREED_SIZE)));
@@ -321,12 +325,15 @@ public class Contract {
         }
 
         public static LogsEntity fromCursor(Cursor cursor) {
-            return new LogsEntity(
+            LogsEntity logsEntity = new LogsEntity(
+
                     cursor.getString(cursor.getColumnIndex(COLUMN_SESSION_ID)),
                     cursor.getLong(cursor.getColumnIndex(COLUMN_SESSION_TIME)),
                     cursor.getString(cursor.getColumnIndex(COLUMN_FILE_NAME)),
                     cursor.getString(cursor.getColumnIndex(COLUMN_FILE_PATH))
             );
+            logsEntity.setId(cursor.getString(cursor.getColumnIndex(_ID)));
+            return logsEntity;
         }
 
         public static String fromCursorToId(Cursor cursor) {
@@ -369,13 +376,15 @@ public class Contract {
         }
 
         public static ScreenshotEntity fromCursor(Cursor cursor) {
-            return new ScreenshotEntity(
+            ScreenshotEntity screenshotEntity = new ScreenshotEntity(
                     cursor.getString(cursor.getColumnIndex(COLUMN_SESSION_ID)),
                     cursor.getLong(cursor.getColumnIndex(COLUMN_SESSION_TIME)),
                     cursor.getString(cursor.getColumnIndex(COLUMN_FILE_NAME)),
                     cursor.getString(cursor.getColumnIndex(COLUMN_FILE_PATH)),
                     cursor.getString(cursor.getColumnIndex(COLUMN_MIME_TYPE))
             );
+            screenshotEntity.setId(cursor.getString(cursor.getColumnIndex(_ID)));
+            return screenshotEntity;
         }
 
         public static String fromCursorToId(Cursor cursor) {
@@ -415,6 +424,7 @@ public class Contract {
 
         public static NetworkUsageEntity fromCursor(Cursor cursor) {
             NetworkUsageEntity networkUsageEntity = new NetworkUsageEntity();
+            networkUsageEntity.setId(cursor.getString(cursor.getColumnIndex(_ID)));
             networkUsageEntity.setDataReceived(cursor.getLong(cursor.getColumnIndex(COLUMN_DATA_RECEIVED)));
             networkUsageEntity.setDataSent(cursor.getLong(cursor.getColumnIndex(COLUMN_DATA_SENT)));
 
@@ -462,6 +472,7 @@ public class Contract {
 
         public static MemoryLeakEntity fromCursor(Cursor cursor) {
             MemoryLeakEntity memoryLeakEntity = new MemoryLeakEntity();
+            memoryLeakEntity.setId(cursor.getString(cursor.getColumnIndex(_ID)));
             memoryLeakEntity.setClassName(cursor.getString(cursor.getColumnIndex(COLUMN_CLASS_NAME)));
             memoryLeakEntity.setLeakTrace(cursor.getString(cursor.getColumnIndex(COLUMN_LEAK_TRACE)));
 
@@ -519,6 +530,7 @@ public class Contract {
 
         public static APICallEntity fromCursor(Cursor cursor) {
             APICallEntity apiCallEntity = new APICallEntity();
+            apiCallEntity.setId(cursor.getString(cursor.getColumnIndex(_ID)));
             apiCallEntity.setUrl(cursor.getString(cursor.getColumnIndex(COLUMN_URL)));
             apiCallEntity.setMethodType(cursor.getString(cursor.getColumnIndex(COLUMN_METHOD_TYPE)));
             apiCallEntity.setContentType(cursor.getString(cursor.getColumnIndex(COLUMN_CONTENT_TYPE)));
@@ -570,7 +582,7 @@ public class Contract {
 
         public static TransitionStatEntity fromCursor(Cursor cursor) {
             TransitionStatEntity transitionStatEntity = new TransitionStatEntity();
-
+            transitionStatEntity.setId(cursor.getString(cursor.getColumnIndex(_ID)));
             transitionStatEntity.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
             transitionStatEntity.setDuration(cursor.getLong(cursor.getColumnIndex(COLUMN_DURATION)));
 
@@ -618,7 +630,7 @@ public class Contract {
 
         public static MethodTraceEntity fromCursor(Cursor cursor) {
             MethodTraceEntity methodTraceEntity = new MethodTraceEntity();
-
+            methodTraceEntity.setId(cursor.getString(cursor.getColumnIndex(_ID)));
             methodTraceEntity.setTraceName(cursor.getString(cursor.getColumnIndex(COLUMN_TRACE_NAME)));
             methodTraceEntity.setDuration(cursor.getLong(cursor.getColumnIndex(COLUMN_DURATION)));
 
@@ -663,6 +675,7 @@ public class Contract {
 
         public static FrameDropEntity fromCursor(Cursor cursor) {
             FrameDropEntity frameDropEntity = new FrameDropEntity();
+            frameDropEntity.setId(cursor.getString(cursor.getColumnIndex(_ID)));
             frameDropEntity.setDropped(cursor.getInt(cursor.getColumnIndex(COLUMN_DROPPED)));
 
             frameDropEntity.setSessionId(cursor.getString(cursor.getColumnIndex(COLUMN_SESSION_ID)));

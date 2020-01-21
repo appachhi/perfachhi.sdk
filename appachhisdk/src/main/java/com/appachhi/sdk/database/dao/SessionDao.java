@@ -79,7 +79,7 @@ public class SessionDao {
     }
 
     public void updateSuccessSyncStatus(List<String> ids) {
-        sqlDB.update(
+        int rowAffected = sqlDB.update(
                 SessionEntry.TABLE_NAME,
                 SessionEntry.updateSyncStatusValue(),
                 String.format("%s IN (%s)", SessionEntry._ID, join(ids)),

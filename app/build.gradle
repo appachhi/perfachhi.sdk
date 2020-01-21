@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.appachhi.plugin'
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -11,6 +12,7 @@ android {
     }
     buildTypes {
         release {
+            signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

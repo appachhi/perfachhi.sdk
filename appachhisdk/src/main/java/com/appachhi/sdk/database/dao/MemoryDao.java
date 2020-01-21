@@ -45,7 +45,7 @@ public class MemoryDao {
     }
 
     public void updateSuccessSyncStatus(List<String> ids){
-        sqlDB.update(
+      sqlDB.update(
                 Contract.MemoryEntry.TABLE_NAME,
                 Contract.MemoryEntry.updateSyncStatusValue(),
                 String.format("%s IN (%s)", Contract.CpuUsageEntry._ID, join(ids)),
