@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.appachhi.plugin'
+// apply plugin: 'com.appachhi.plugin'
 android {
     compileSdkVersion 28
     defaultConfig {
