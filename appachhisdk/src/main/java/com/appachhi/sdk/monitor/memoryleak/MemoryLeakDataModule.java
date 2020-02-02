@@ -32,7 +32,6 @@ public class MemoryLeakDataModule extends BaseDataModule<List<MemoryLeakInfo>> i
     private static final String NOTIFICATION_CHANNEL_ID = "com.appachhi.sdk.memoryleak";
     public static final String TAG = "MemoryLeakDataModule";
     private List<MemoryLeakInfo> allMemoryLeakInfo = new ArrayList<>();
-    private OnHeapAnalyzedListener defaultListener = DefaultOnHeapAnalyzedListener.Companion.create();
     private Application application;
 
     MemoryLeakDataModule(Application application) {
