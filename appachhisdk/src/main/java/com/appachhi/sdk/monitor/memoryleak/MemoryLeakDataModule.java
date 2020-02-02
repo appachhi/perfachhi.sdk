@@ -5,6 +5,8 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -16,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import leakcanary.DefaultOnHeapAnalyzedListener;
 import leakcanary.LeakCanary;
 import leakcanary.OnHeapAnalyzedListener;
 import shark.HeapAnalysis;
@@ -33,25 +34,31 @@ public class MemoryLeakDataModule extends BaseDataModule<List<MemoryLeakInfo>> i
     public static final String TAG = "MemoryLeakDataModule";
     private List<MemoryLeakInfo> allMemoryLeakInfo = new ArrayList<>();
     private Application application;
+    private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
     MemoryLeakDataModule(Application application) {
         this.application = application;
-        LeakCanary.INSTANCE.showLeakDisplayActivityLauncherIcon(false);
-        LeakCanary.Config existingConfig = LeakCanary.INSTANCE.getConfig();
-        LeakCanary.Config newConfig = existingConfig.copy(
-                existingConfig.getDumpHeap(),
-                existingConfig.getDumpHeapWhenDebugging(),
-                1,
-                existingConfig.getReferenceMatchers(),
-                existingConfig.getObjectInspectors(),
-                this,
-                existingConfig.getMetatadaExtractor(),
-                existingConfig.getComputeRetainedHeapSize(),
-                existingConfig.getMaxStoredHeapDumps(),
-                existingConfig.getRequestWriteExternalStoragePermission(),
-                existingConfig.getUseExperimentalLeakFinders()
-        );
-        LeakCanary.INSTANCE.setConfig(newConfig);
+        mainThreadHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                LeakCanary.INSTANCE.showLeakDisplayActivityLauncherIcon(false);
+                LeakCanary.Config existingConfig = LeakCanary.INSTANCE.getConfig();
+                LeakCanary.Config newConfig = existingConfig.copy(
+                        existingConfig.getDumpHeap(),
+                        existingConfig.getDumpHeapWhenDebugging(),
+                        1,
+                        existingConfig.getReferenceMatchers(),
+                        existingConfig.getObjectInspectors(),
+                        MemoryLeakDataModule.this,
+                        existingConfig.getMetatadaExtractor(),
+                        existingConfig.getComputeRetainedHeapSize(),
+                        existingConfig.getMaxStoredHeapDumps(),
+                        existingConfig.getRequestWriteExternalStoragePermission(),
+                        existingConfig.getUseExperimentalLeakFinders()
+                );
+                LeakCanary.INSTANCE.setConfig(newConfig);
+            }
+        },5000);
     }
 
 
