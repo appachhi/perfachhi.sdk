@@ -6,8 +6,8 @@ group = 'com.github.appachhi.android-sdk'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.android.tools.build:gradle-api:3.4.0"
-    implementation "com.android.tools.build:gradle:3.4.0"
+    implementation "com.android.tools.build:gradle-api:3.2.0"
+    implementation "com.android.tools.build:gradle:3.2.0"
 }
 
 sourceCompatibility = "7"

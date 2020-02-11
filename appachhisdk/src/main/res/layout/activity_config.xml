@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+
+    <View
+        android:id="@+id/emptyArea"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:layout_weight="2"
+        android:background="@android:color/white">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:id="@+id/title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:text="On-Screen performance"
+                android:textSize="16sp"
+                android:textStyle="bold">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/metrics_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title_text"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="Metrics"></TextView>
+
+            <RelativeLayout
+                android:id="@+id/metric_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/metrics_text">
+
+
+                <LinearLayout
+                    android:id="@+id/screen_trans_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/color_screen_transition_tag"></View>
+
+
+                    <TextView
+                        android:id="@+id/screen_trans_metric_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="10dp"
+                        android:text="Screen transition"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                    <TextView
+                        android:id="@+id/screen_trans_metric_state_text"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_shape_off"
+                        android:gravity="center"
+                        android:text="OFF"
+                        android:textAlignment="center"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/screen_trans_desc_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/screen_trans_holder"
+                    android:layout_marginTop="8dp"
+                    android:text="Transition configured to capture the duration take to complete the rendering"
+                    android:textColor="#000"
+                    android:textSize="13sp" />
+
+                <LinearLayout
+                    android:id="@+id/memoryUsage_metric_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/screen_trans_desc_text"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/color_memory_tag"></View>
+
+
+                    <TextView
+                        android:id="@+id/memoryUsage_metric_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="10dp"
+                        android:text="Memory Usage"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                    <TextView
+                        android:id="@+id/memoryUsage_metric_state_text"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_shape_off"
+                        android:gravity="center"
+                        android:text="OFF"
+                        android:textAlignment="center"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/cpuUsage_metric_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/memoryUsage_metric_holder"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/color_cpu_tag"></View>
+
+
+                    <TextView
+                        android:id="@+id/cpuUsage_metric_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="10dp"
+                        android:text="CPU Usage"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                    <TextView
+                        android:id="@+id/cpuUsage_metric_state_text"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_shape_off"
+                        android:gravity="center"
+                        android:text="OFF"
+                        android:textAlignment="center"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/networkUsage_metric_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/cpuUsage_metric_holder"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/color_network_tag"></View>
+
+
+                    <TextView
+                        android:id="@+id/networkUsage_metric_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="10dp"
+                        android:text="Network Usage"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                    <TextView
+                        android:id="@+id/networkUsage_metric_state_text"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_shape_off"
+                        android:gravity="center"
+                        android:text="OFF"
+                        android:textAlignment="center"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/fps_metric_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/networkUsage_metric_holder"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/color_fps_tag"></View>
+
+
+                    <TextView
+                        android:id="@+id/fps_metric_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="10dp"
+                        android:text="FPS"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                    <TextView
+                        android:id="@+id/fps_metric_state_text"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_shape_off"
+                        android:gravity="center"
+                        android:text="OFF"
+                        android:textAlignment="center"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/methodCalls_metric_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/fps_metric_holder"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/color_method_calls_tag"></View>
+
+
+                    <TextView
+                        android:id="@+id/methodCalls_metric_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="10dp"
+                        android:text="Method calls"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                    <TextView
+                        android:id="@+id/methodCalls_metric_state_text"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_shape_off"
+                        android:gravity="center"
+                        android:text="OFF"
+                        android:textAlignment="center"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/methodCalls_desc_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/methodCalls_metric_holder"
+                    android:layout_marginTop="8dp"
+                    android:text="Displays trace only for method defined by the app"
+                    android:textColor="#000"
+                    android:textSize="13sp" />
+
+
+                <LinearLayout
+                    android:id="@+id/memoryLeak_metric_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/methodCalls_desc_text"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/color_memory_leaks_tag"></View>
+
+
+                    <TextView
+                        android:id="@+id/memoryLeak_metric_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="10dp"
+                        android:text="Memory Leak"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                    <TextView
+                        android:id="@+id/memoryLeak_metric_state_text"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_shape_off"
+                        android:gravity="center"
+                        android:text="OFF"
+                        android:textAlignment="center"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/sessionScreen_metric_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/memoryLeak_metric_holder"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/color_memory_leaks_tag"></View>
+
+
+                    <TextView
+                        android:id="@+id/sessionScreen_metric_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="10dp"
+                        android:text="Session Screen Capture"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                    <TextView
+                        android:id="@+id/sessionScreen_metric_state_text"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_shape_off"
+                        android:gravity="center"
+                        android:text="OFF"
+                        android:textAlignment="center"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/apiCalls_metric_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/sessionScreen_metric_holder"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/color_api_calls_tag"></View>
+
+
+                    <TextView
+                        android:id="@+id/apiCalls_metric_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="10dp"
+                        android:text="API calls"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                    <TextView
+                        android:id="@+id/apiCalls_metric_state_text"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_shape_off"
+                        android:gravity="center"
+                        android:text="OFF"
+                        android:textAlignment="center"
+                        android:textColor="#000"
+                        android:textSize="13sp">
+
+                    </TextView>
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/apiCalls_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/apiCalls_metric_holder"
+                    android:layout_marginTop="8dp"
+                    android:text="Network API calls will be monitored during the test session"
+                    android:textColor="#000"
+                    android:textSize="13sp">
+
+                </TextView>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/apiCalls_text"
+                    android:layout_marginTop="8dp"
+                    android:text="(Available only on Web)"
+                    android:textColor="#000"
+                    android:textSize="13sp">
+
+                </TextView>
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+
+    </ScrollView>
+
+</LinearLayout>
