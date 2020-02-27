@@ -66,21 +66,23 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class SyncManager {
+    public static final String TAG = "SyncManager";
+    private static final String BASE_URL = "https://perfachhi.appspot.com";
+    private static final String DEVICE_ID_KEY = "device_id";
+    private static final String DEVICE_ID_UPLOADED = "device_id_uploaded";
+    private static String KEY = null;
+    private AppachhiDB appachhiDB;
+    private OkHttpClient okHttpClient;
+    private Gson gson;
+    private ScheduledExecutorService syncExecutor;
+    private ExecutorService metricSyncExecutor;
+    private SharedPreferences appachhiPref;
     private final Runnable scheduleSyncRunnable = new Runnable() {
         @Override
         public void run() {
             uploadAllMetric();
         }
     };
-    public static final String TAG = "SyncManager";
-    private AppachhiDB appachhiDB;
-    private OkHttpClient okHttpClient;
-    private static final String BASE_URL = "https://perfachhi.appspot.com";
-    private static String KEY = null;
-    private Gson gson;
-    private ScheduledExecutorService syncExecutor;
-    private ExecutorService metricSyncExecutor;
-    private SharedPreferences appachhiPref;
 
     private SyncManager(SharedPreferences appachhiPref) {
         this.appachhiPref = appachhiPref;
@@ -199,7 +201,6 @@ public class SyncManager {
         });
     }
 
-
     private void uploadNetworkCall(List<String> sessionIds, final APICallDao apiCallDao) {
         List<APICallEntity> fpsEntities = apiCallDao.allUnSyncedApiCallEntityForSession(sessionIds);
         uploadMetric("network_call", fpsEntities, new OnMetricUploadListener() {
@@ -231,8 +232,8 @@ public class SyncManager {
     }
 
     private void uploadMethodTrace(List<String> sessionIds, final MethodTraceDao methodTraceDao) {
-        List<MethodTraceEntity> fpsEntities = methodTraceDao.allUnSyncedMethodTraceEntityForSession(sessionIds);
-        uploadMetric("method_trace", fpsEntities, new OnMetricUploadListener() {
+        List<MethodTraceEntity> methodTraceEntities = methodTraceDao.allUnSyncedMethodTraceEntityForSession(sessionIds);
+        uploadMetric("method_trace", methodTraceEntities, new OnMetricUploadListener() {
             @Override
             public void onMetricUpload(List<String> ids) {
                 methodTraceDao.updateSuccessSyncStatus(ids);
@@ -325,6 +326,7 @@ public class SyncManager {
                 try {
                     Response response = getClient().newCall(request).execute();
                     if (response.isSuccessful()) {
+                        Log.d(TAG, "run: Response Code : " + response.code());
                         Log.d(TAG, String.format("%s uploaded", path));
                         List<String> ids = new ArrayList<>();
                         for (BaseEntity entity : items) {
@@ -332,6 +334,7 @@ public class SyncManager {
                         }
                         listener.onMetricUpload(ids);
                     } else {
+                        Log.d(TAG, "run: Response Code : " + response.code());
                         Log.d(TAG, String.format("%s upload failed with error : %s", path, response.message()));
                     }
                 } catch (IOException e) {
@@ -457,9 +460,6 @@ public class SyncManager {
         return okHttpClient;
     }
 
-    private static final String DEVICE_ID_KEY = "device_id";
-    private static final String DEVICE_ID_UPLOADED = "device_id_uploaded";
-
     private boolean isDeviceDetailUploaded() {
         return appachhiPref.getBoolean(DEVICE_ID_UPLOADED, false);
     }
@@ -501,10 +501,13 @@ public class SyncManager {
             Request request = getRequest("device", jsonArray.toString());
             Log.d(TAG, String.format("Url is %s", request.url().toString()));
             Response response = getClient().newCall(request).execute();
+            Log.d(TAG, "uploadDeviceDetails: Response Code : " + response.code());
             if (response.isSuccessful()) {
                 deviceIDUploaded();
+                //Check response code
             } else {
                 Log.d(TAG, String.format("Failed to upload device details : %s", response.message()));
+                Log.d(TAG, "Response code : " + response.code());
             }
 
         } catch (JSONException | IOException e) {

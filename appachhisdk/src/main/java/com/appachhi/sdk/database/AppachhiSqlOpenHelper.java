@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class AppachhiSqlOpenHelper extends SQLiteOpenHelper {
     AppachhiSqlOpenHelper(Context context) {
-        super(context, "appachhi", null, 1);
+        super(context, "appachhi", null, 2);
     }
 
     @Override
@@ -134,9 +134,11 @@ public class AppachhiSqlOpenHelper extends SQLiteOpenHelper {
                 "  syncStatus INT" +
                 ")";
 
+
         String createMethodTraceTable = "CREATE TABLE IF NOT EXISTS method_traces (" +
                 "_id TEXT PRIMARY KEY NOT NULL," +
                 "trace TEXT," +
+                "traceName TEXT," +
                 "duration INT," +
                 "sessionId TEXT," +
                 "executionTime INT," +
