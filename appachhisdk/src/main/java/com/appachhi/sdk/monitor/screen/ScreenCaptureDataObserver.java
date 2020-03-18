@@ -35,6 +35,7 @@ public class ScreenCaptureDataObserver implements DataObserver<String> {
                     ScreenshotEntity screenshotEntity = DatabaseMapper.fromScreensShotFilePath(filePath, "image/jpeg", session.getId(), sessionTimeElapsed);
                     long result = screenshotDao.insertScreenshot(screenshotEntity);
                     if (result > -1) {
+                        Log.d(TAG, "run: Screenshot path : " + filePath);
                         Log.i(TAG, "Screenshot Data saved");
                     }
                 }

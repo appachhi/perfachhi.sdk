@@ -334,7 +334,22 @@ public class ConfigurationActivity extends Activity implements View.OnClickListe
         }
 
 
-        //Session Screen Capture and API Calls not supported on mobile yet
+        if (v == ssCaptureText) {
+            if (TextUtils.equals(ssCaptureText.getText().toString(), "OFF")) {
+                ssCaptureText.setBackground(getResources().getDrawable(R.drawable.button_shape_on));
+                ssCaptureText.setText("ON");
+
+                Appachhi.getInstance().getFeatureConfigManager().setScreenShotEnable(this, true);
+            } else {
+                ssCaptureText.setBackground(getResources().getDrawable(R.drawable.button_shape_off));
+                ssCaptureText.setText("OFF");
+
+                Appachhi.getInstance().getFeatureConfigManager().setScreenShotEnable(this, false);
+
+            }
+        }
+
+
 
     }
 }

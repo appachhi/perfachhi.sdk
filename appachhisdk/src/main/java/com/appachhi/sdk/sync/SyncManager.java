@@ -323,18 +323,23 @@ public class SyncManager {
                 JsonArray array = addDeviceIdProperty(element);
                 String jsonArray = gson.toJson(array);
                 Request request = getRequest(path, jsonArray);
+
+                List<String> ids = new ArrayList<>();
+                for (BaseEntity entity : items) {
+                    ids.add(entity.getId());
+                }
+
+
                 try {
                     Response response = getClient().newCall(request).execute();
                     if (response.isSuccessful()) {
-                        Log.d(TAG, "run: Response Code : " + response.code());
+                        Log.d(TAG, "run: Response Code : " + response.code() + " : " + response.message());
                         Log.d(TAG, String.format("%s uploaded", path));
-                        List<String> ids = new ArrayList<>();
-                        for (BaseEntity entity : items) {
-                            ids.add(entity.getId());
-                        }
                         listener.onMetricUpload(ids);
-                    } else {
-                        Log.d(TAG, "run: Response Code : " + response.code());
+                    } if(!response.isSuccessful() && response.code() == 500) {
+                        Log.d(TAG, "run: Updating sync status to 1");
+                        listener.onMetricUpload(ids);
+                        Log.d(TAG, "run: Response Code : " + response.body().string() + ": Response message : " +  response.message());
                         Log.d(TAG, String.format("%s upload failed with error : %s", path, response.message()));
                     }
                 } catch (IOException e) {
@@ -364,16 +369,24 @@ public class SyncManager {
                 JsonArray array = addDeviceIdProperty(element);
                 String jsonArray = gson.toJson(array);
                 Request request = getFileUploadRequest(path, fileKey, filePaths, jsonArray, items.get(0).getMimeType());
+
+                List<String> ids = new ArrayList<>();
+                for (BaseEntity entity : items) {
+                    ids.add(entity.getId());
+                    Log.d(TAG, "run: IDS : " + entity.getId());
+                }
+
+
                 try {
                     Response response = getClient().newCall(request).execute();
                     if (response.isSuccessful()) {
                         Log.d(TAG, String.format("%s uploaded", path));
-                        List<String> ids = new ArrayList<>();
-                        for (BaseEntity entity : items) {
-                            ids.add(entity.getId());
-                        }
                         listener.onMetricUpload(ids);
-                    } else {
+                    } else if(!response.isSuccessful() && response.code() == 500) {
+                        String successResponse = new Gson().toJson(response.body());
+                        Log.d(TAG, "run: Updating sync status to 1");
+                        listener.onMetricUpload(ids);
+                        Log.d(TAG, "run: Response Code : " + response.body().string() + ": Response message : " +  response.message());
                         Log.d(TAG, String.format("%s upload failed with error : %s", path, response.message()));
                     }
                 } catch (IOException e) {
