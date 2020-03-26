@@ -185,27 +185,46 @@ public class SyncManager {
         List<ScreenshotEntity> screenshotEntities = screenshotDao.unSyncedScreenshotEntityForSession(allSyncedSessionIds, 20);
         uploadFile("screenshot", "screenshot", screenshotEntities, new OnMetricUploadListener() {
             @Override
-            public void onMetricUpload(List<String> ids) {
+            public void onMetricUpload(List<String> ids, List<String> filepaths) {
                 screenshotDao.updateSuccessSyncStatus(ids);
+
+                for (int i = 0; i<filepaths.size(); i++) {
+                    deleteImage(filepaths.get(i));
+                    Log.d(TAG, "onMetricUpload: From upload screenshot : " + filepaths.get(i));
+
+                }
             }
         });
+    }
+
+    private void deleteImage(String itemPath) {
+        File file = new File(itemPath);
+        boolean deleted = file.delete();
+
+        Log.d(TAG, "deleteImage: Status : " + deleted);
     }
 
     private void uploadLogs(List<String> allSyncedSessionIds, final LogsDao logsDao) {
         List<LogsEntity> logsEntities = logsDao.unSyncedLogEntityForSession(allSyncedSessionIds, 5);
         uploadFile("logs", "logs", logsEntities, new OnMetricUploadListener() {
             @Override
-            public void onMetricUpload(List<String> ids) {
+            public void onMetricUpload(List<String> ids, List<String> filepaths) {
                 logsDao.updateSuccessSyncStatus(ids);
+
+                for (int i = 0; i<filepaths.size(); i++) {
+                    deleteImage(filepaths.get(i));
+                    Log.d(TAG, "onMetricUpload: From upload logs : " + filepaths.get(i));
+
+                }
             }
         });
     }
 
     private void uploadNetworkCall(List<String> sessionIds, final APICallDao apiCallDao) {
-        List<APICallEntity> fpsEntities = apiCallDao.allUnSyncedApiCallEntityForSession(sessionIds);
-        uploadMetric("network_call", fpsEntities, new OnMetricUploadListener() {
+        List<APICallEntity> apiEntities = apiCallDao.allUnSyncedApiCallEntityForSession(sessionIds);
+        uploadMetric("network_call", apiEntities, new OnMetricUploadListener() {
             @Override
-            public void onMetricUpload(List<String> ids) {
+            public void onMetricUpload(List<String> ids, List<String> filepaths) {
                 apiCallDao.updateSuccessSyncStatus(ids);
             }
         });
@@ -215,7 +234,7 @@ public class SyncManager {
         List<FrameDropEntity> fpsEntities = frameDropDao.allUnSyncedFpsEntityForSession(allSyncedSessionIds);
         uploadMetric("frame_drop", fpsEntities, new OnMetricUploadListener() {
             @Override
-            public void onMetricUpload(List<String> ids) {
+            public void onMetricUpload(List<String> ids, List<String> filepaths) {
                 frameDropDao.updateSuccessSyncStatus(ids);
             }
         });
@@ -225,7 +244,7 @@ public class SyncManager {
         List<NetworkUsageEntity> fpsEntities = networkDao.allUnSyncedNetworkUsageEntityForSession(sessionIds);
         uploadMetric("network_usage", fpsEntities, new OnMetricUploadListener() {
             @Override
-            public void onMetricUpload(List<String> ids) {
+            public void onMetricUpload(List<String> ids, List<String> filepaths) {
                 networkDao.updateSuccessSyncStatus(ids);
             }
         });
@@ -235,7 +254,7 @@ public class SyncManager {
         List<MethodTraceEntity> methodTraceEntities = methodTraceDao.allUnSyncedMethodTraceEntityForSession(sessionIds);
         uploadMetric("method_trace", methodTraceEntities, new OnMetricUploadListener() {
             @Override
-            public void onMetricUpload(List<String> ids) {
+            public void onMetricUpload(List<String> ids, List<String> filepaths) {
                 methodTraceDao.updateSuccessSyncStatus(ids);
             }
         });
@@ -245,7 +264,7 @@ public class SyncManager {
         List<MemoryLeakEntity> fpsEntities = memoryLeakDao.allUnSyncedMemoryLeakEntityForSession(sessionIds);
         uploadMetric("memory_leak", fpsEntities, new OnMetricUploadListener() {
             @Override
-            public void onMetricUpload(List<String> ids) {
+            public void onMetricUpload(List<String> ids, List<String> filepaths) {
                 memoryLeakDao.updateSuccessSyncStatus(ids);
             }
         });
@@ -255,7 +274,7 @@ public class SyncManager {
         List<MemoryEntity> fpsEntities = memoryDao.allUnSyncedMemoryEntityForSession(sessionIds);
         uploadMetric("memory_usage", fpsEntities, new OnMetricUploadListener() {
             @Override
-            public void onMetricUpload(List<String> ids) {
+            public void onMetricUpload(List<String> ids, List<String> filepaths) {
                 memoryDao.updateSuccessSyncStatus(ids);
             }
         });
@@ -266,7 +285,7 @@ public class SyncManager {
 
         uploadMetric("gc", gcEntities, new OnMetricUploadListener() {
             @Override
-            public void onMetricUpload(List<String> ids) {
+            public void onMetricUpload(List<String> ids, List<String> filepaths) {
                 gcDao.updateSuccessSyncStatus(ids);
             }
         });
@@ -276,7 +295,7 @@ public class SyncManager {
         List<CpuUsageEntity> cpuUsageEntities = cpuUsageDao.allUnSyncedCpuEntityForSession(sessionIds);
         uploadMetric("cpu_usage", cpuUsageEntities, new OnMetricUploadListener() {
             @Override
-            public void onMetricUpload(List<String> ids) {
+            public void onMetricUpload(List<String> ids, List<String> filepaths) {
                 cpuUsageDao.updateSuccessSyncStatus(ids);
             }
         });
@@ -286,7 +305,7 @@ public class SyncManager {
         List<FpsEntity> fpsEntities = fpsDao.allUnSyncedFpsEntityForSession(sessionIds);
         uploadMetric("fps", fpsEntities, new OnMetricUploadListener() {
             @Override
-            public void onMetricUpload(List<String> ids) {
+            public void onMetricUpload(List<String> ids, List<String> filepaths) {
                 fpsDao.updateSuccessSyncStatus(ids);
             }
         });
@@ -301,7 +320,7 @@ public class SyncManager {
         List<TransitionStatEntity> transitionStatEntities = screenTransitionDao.allUnSyncedScreenTransitionForSession(sessionIds);
         uploadMetric("screen_transition", transitionStatEntities, new OnMetricUploadListener() {
             @Override
-            public void onMetricUpload(List<String> ids) {
+            public void onMetricUpload(List<String> ids, List<String> filepaths) {
                 screenTransitionDao.updateSuccessSyncStatus(ids);
             }
         });
@@ -329,16 +348,17 @@ public class SyncManager {
                     ids.add(entity.getId());
                 }
 
+                List<String> filepaths = new ArrayList<>();
 
                 try {
                     Response response = getClient().newCall(request).execute();
                     if (response.isSuccessful()) {
                         Log.d(TAG, "run: Response Code : " + response.code() + " : " + response.message());
                         Log.d(TAG, String.format("%s uploaded", path));
-                        listener.onMetricUpload(ids);
+                        listener.onMetricUpload(ids, filepaths);
                     } if(!response.isSuccessful() && response.code() == 500) {
                         Log.d(TAG, "run: Updating sync status to 1");
-                        listener.onMetricUpload(ids);
+                        listener.onMetricUpload(ids, filepaths);
                         Log.d(TAG, "run: Response Code : " + response.body().string() + ": Response message : " +  response.message());
                         Log.d(TAG, String.format("%s upload failed with error : %s", path, response.message()));
                     }
@@ -381,11 +401,11 @@ public class SyncManager {
                     Response response = getClient().newCall(request).execute();
                     if (response.isSuccessful()) {
                         Log.d(TAG, String.format("%s uploaded", path));
-                        listener.onMetricUpload(ids);
+                        listener.onMetricUpload(ids, filePaths);
                     } else if(!response.isSuccessful() && response.code() == 500) {
                         String successResponse = new Gson().toJson(response.body());
                         Log.d(TAG, "run: Updating sync status to 1");
-                        listener.onMetricUpload(ids);
+                        listener.onMetricUpload(ids, filePaths);
                         Log.d(TAG, "run: Response Code : " + response.body().string() + ": Response message : " +  response.message());
                         Log.d(TAG, String.format("%s upload failed with error : %s", path, response.message()));
                     }
@@ -530,6 +550,6 @@ public class SyncManager {
     }
 
     interface OnMetricUploadListener {
-        void onMetricUpload(List<String> ids);
+        void onMetricUpload(List<String> ids, List<String> filepaths);
     }
 }
