@@ -24,6 +24,7 @@ import com.appachhi.sdk.database.dao.NetworkDao;
 import com.appachhi.sdk.database.dao.ScreenTransitionDao;
 import com.appachhi.sdk.database.dao.ScreenshotDao;
 import com.appachhi.sdk.database.dao.SessionDao;
+import com.appachhi.sdk.database.dao.StartupDao;
 import com.appachhi.sdk.database.entity.APICallEntity;
 import com.appachhi.sdk.database.entity.BaseEntity;
 import com.appachhi.sdk.database.entity.BaseFileEntity;
@@ -38,6 +39,7 @@ import com.appachhi.sdk.database.entity.MethodTraceEntity;
 import com.appachhi.sdk.database.entity.NetworkUsageEntity;
 import com.appachhi.sdk.database.entity.ScreenshotEntity;
 import com.appachhi.sdk.database.entity.Session;
+import com.appachhi.sdk.database.entity.StartupEntity;
 import com.appachhi.sdk.database.entity.TransitionStatEntity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -179,6 +181,9 @@ public class SyncManager {
         uploadScreenShot(allSyncedSessionIds, appachhiDB.screenshotDao());
 
         uploadLogs(allSyncedSessionIds, appachhiDB.logsDao());
+
+        uploadStartupTime(allSyncedSessionIds, appachhiDB.startupDao());
+
     }
 
     private void uploadScreenShot(List<String> allSyncedSessionIds, final ScreenshotDao screenshotDao) {
@@ -188,7 +193,7 @@ public class SyncManager {
             public void onMetricUpload(List<String> ids, List<String> filepaths) {
                 screenshotDao.updateSuccessSyncStatus(ids);
 
-                for (int i = 0; i<filepaths.size(); i++) {
+                for (int i = 0; i < filepaths.size(); i++) {
                     deleteImage(filepaths.get(i));
                     Log.d(TAG, "onMetricUpload: From upload screenshot : " + filepaths.get(i));
 
@@ -211,7 +216,7 @@ public class SyncManager {
             public void onMetricUpload(List<String> ids, List<String> filepaths) {
                 logsDao.updateSuccessSyncStatus(ids);
 
-                for (int i = 0; i<filepaths.size(); i++) {
+                for (int i = 0; i < filepaths.size(); i++) {
                     deleteImage(filepaths.get(i));
                     Log.d(TAG, "onMetricUpload: From upload logs : " + filepaths.get(i));
 
@@ -302,6 +307,7 @@ public class SyncManager {
     }
 
     private void uploadFps(List<String> sessionIds, final FpsDao fpsDao) {
+        Log.d(TAG, "uploadFps: " + sessionIds.get(0));
         List<FpsEntity> fpsEntities = fpsDao.allUnSyncedFpsEntityForSession(sessionIds);
         uploadMetric("fps", fpsEntities, new OnMetricUploadListener() {
             @Override
@@ -311,6 +317,32 @@ public class SyncManager {
         });
 
     }
+
+    private void uploadStartupTime(List<String> sessionIds, final StartupDao startupDao) {
+        List<StartupEntity> startupEntities = startupDao.allUnSyncedStartupEntityForSession(sessionIds);
+        uploadMetric("startup_time", startupEntities, new OnMetricUploadListener() {
+            @Override
+            public void onMetricUpload(List<String> ids, List<String> filepaths) {
+                startupDao.updateSucessSyncStatus(ids);
+            }
+        });
+    }
+
+
+   /* private void uploadStartupTime(List<String> sessionIds, final StartupDao startupDao) {
+        Log.d(TAG, "uploadStartupTime: Entered here. " + sessionIds.get(1));
+
+        List<StartupEntity> startupEntities = startupDao.allUnSyncedStartupEntityForSession(sessionIds);
+        uploadMetric("startup_time", startupEntities, new OnMetricUploadListener() {
+            @Override
+            public void onMetricUpload(List<String> ids, List<String> filepaths) {
+                Log.d(TAG, "on: Entered uploadStartupTime");
+                startupDao.updateSucessSyncStatus(ids);
+
+            }
+        });
+    }
+*/
 
     /**
      * Upload the screen transition status for all the give session only
@@ -346,7 +378,10 @@ public class SyncManager {
                 List<String> ids = new ArrayList<>();
                 for (BaseEntity entity : items) {
                     ids.add(entity.getId());
+
                 }
+
+                Log.d(TAG, "run: JSON ARRAY FOR TIME : " + jsonArray);
 
                 List<String> filepaths = new ArrayList<>();
 
@@ -356,10 +391,11 @@ public class SyncManager {
                         Log.d(TAG, "run: Response Code : " + response.code() + " : " + response.message());
                         Log.d(TAG, String.format("%s uploaded", path));
                         listener.onMetricUpload(ids, filepaths);
-                    } if(!response.isSuccessful() && response.code() == 500) {
+                    }
+                    if (!response.isSuccessful() && response.code() == 500) {
                         Log.d(TAG, "run: Updating sync status to 1");
                         listener.onMetricUpload(ids, filepaths);
-                        Log.d(TAG, "run: Response Code : " + response.body().string() + ": Response message : " +  response.message());
+                        Log.d(TAG, "run: Response Code : " + response.body().string() + ": Response message : " + response.message());
                         Log.d(TAG, String.format("%s upload failed with error : %s", path, response.message()));
                     }
                 } catch (IOException e) {
@@ -402,11 +438,11 @@ public class SyncManager {
                     if (response.isSuccessful()) {
                         Log.d(TAG, String.format("%s uploaded", path));
                         listener.onMetricUpload(ids, filePaths);
-                    } else if(!response.isSuccessful() && response.code() == 500) {
+                    } else if (!response.isSuccessful() && response.code() == 500) {
                         String successResponse = new Gson().toJson(response.body());
                         Log.d(TAG, "run: Updating sync status to 1");
                         listener.onMetricUpload(ids, filePaths);
-                        Log.d(TAG, "run: Response Code : " + response.body().string() + ": Response message : " +  response.message());
+                        Log.d(TAG, "run: Response Code : " + response.body().string() + ": Response message : " + response.message());
                         Log.d(TAG, String.format("%s upload failed with error : %s", path, response.message()));
                     }
                 } catch (IOException e) {
@@ -418,6 +454,7 @@ public class SyncManager {
 
     private Request getRequest(String path, String contentArray) {
         RequestBody requestBody = RequestBody.create(MediaType.get("application/json"), contentArray);
+
         return new Request.Builder()
                 .url(String.format("%s/%s", BASE_URL, path))
                 .post(requestBody)

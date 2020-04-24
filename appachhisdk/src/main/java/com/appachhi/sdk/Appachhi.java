@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.appachhi.sdk.database.AppachhiDB;
@@ -28,6 +29,9 @@ import com.appachhi.sdk.monitor.memory.MemoryInfoFeatureModule;
 import com.appachhi.sdk.monitor.memoryleak.MemoryLeakFeatureModule;
 import com.appachhi.sdk.monitor.network.NetworkFeatureModule;
 import com.appachhi.sdk.monitor.screen.ScreenCaptureFeatureModule;
+import com.appachhi.sdk.monitor.startup.StartupDataModule;
+import com.appachhi.sdk.monitor.startup.StartupFeatureModule;
+import com.appachhi.sdk.monitor.startup.StartupTimeManager;
 import com.appachhi.sdk.sync.SessionManager;
 
 import java.util.LinkedList;
@@ -41,10 +45,42 @@ public class Appachhi {
     // Constants
     static final String ACTION_UNBIND = "com.appachhi.sdk.overlay.ACTION_UNBIND";
     public static boolean DEBUG = false;
-    private static final String TAG = "Appachhi-DEBUG";
+    private static final String TAG = "Perfachhi-DEBUG";
 
     private static Appachhi instance;
+    private final ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder serviceBinder) {
+            if (Appachhi.DEBUG) {
+                Log.d(TAG, "onServiceConnected");
+            }
+            // We've bound to OverlayService, cast the IBinder and get OverlayService getInstance
+            OverlayService.OverlayServiceBinder binder = (OverlayService.OverlayServiceBinder) serviceBinder;
+            overlayService = binder.getService();
+            overlayService.setOverlayModules(featureModules);
+            overlayService.setOverlayViewManager(overlayViewManager);
+            overlayService.startModules();
+        }
 
+        // This is called when the connection with the service has been
+        // unexpectedly disconnected -- that is, its process crashed.
+        // So, this is not called when the client unbinds.
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+    };
+    private final EventBus.Listener receiver = new EventBus.Listener() {
+        @Override
+        public void onChange(String action) {
+            if (ACTION_UNBIND.equals(action)) {
+                if (Appachhi.DEBUG) {
+                    Log.d(TAG, "Serivce Unbind Broadcast");
+                }
+                unBindRequestReceived = true;
+                unbindFromDebugOverlayService();
+            }
+        }
+    };
 
     private List<FeatureModule> featureModules;
 
@@ -70,31 +106,11 @@ public class Appachhi {
     private HttpMetricSavingManager httpMetricSavingManager;
     @SuppressWarnings("FieldCanBeLocal")
     private ActivityCallbacks activityCallbacks;
+    public StartupTimeManager startupTimeManager;
+    private boolean warmStartStatus = true;
+    private boolean passedOnCreate = true;
+    private StartupDataModule startupDataModule;
 
-    @SuppressWarnings("UnusedReturnValue")
-    public static Appachhi init(Application application) {
-        DEBUG = true;
-        instance = new Appachhi(application, new Config(true, true));
-        return instance;
-    }
-
-
-    public static Appachhi getInstance() {
-        if (instance == null) {
-            throw new IllegalStateException("Cannot request Appachhi getInstance before calling init()");
-        }
-        return instance;
-    }
-
-
-    public static MethodTrace newTrace(String traceName) {
-        return new MethodTrace(traceName, Appachhi.getInstance().getMethodTraceSavingManager());
-    }
-
-
-    public static HttpMetric newHttpTrace() {
-        return new HttpMetric(Appachhi.getInstance().getHttpMetricSavingManager());
-    }
 
     private Appachhi(Application application, Config config) {
         this.application = application;
@@ -125,6 +141,25 @@ public class Appachhi {
         startAndBindDebugOverlayService();
         activityCallbacks = new ActivityCallbacks();
         application.registerActivityLifecycleCallbacks(activityCallbacks);
+
+
+        startupTimeManager = new StartupTimeManager(application.getApplicationContext());
+
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    public static Appachhi init(Application application) {
+        DEBUG = true;
+        instance = new Appachhi(application, new Config(true, true));
+        return instance;
+    }
+
+    public static Appachhi getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("Cannot request Appachhi getInstance before calling init()");
+        }
+
+        return instance;
     }
 
 
@@ -152,7 +187,18 @@ public class Appachhi {
         return db;
     }
 
+    public static MethodTrace newTrace(String traceName) {
+        return new MethodTrace(traceName, Appachhi.getInstance().getMethodTraceSavingManager());
+    }
+
+    public static HttpMetric newHttpTrace() {
+        return new HttpMetric(Appachhi.getInstance().getHttpMetricSavingManager());
+    }
+
     private List<FeatureModule> addModules(Application application) {
+
+        Log.d(TAG, "addModules: Called");
+
         List<FeatureModule> featureModules = new LinkedList<>();
         featureModules.add(new MemoryInfoFeatureModule(application, db.memoryDao(), dbExecutor, sessionManager));
         featureModules.add(new GCInfoFeatureModule(db.gcDao(), dbExecutor, sessionManager));
@@ -166,7 +212,81 @@ public class Appachhi {
         }
         featureModules.add(new ScreenTransitionFeatureModule(ScreenTransitionManager.getInstance(), db.screenTransitionDao(), dbExecutor, sessionManager));
         featureModules.add(new LogsFeatureModule(application.getApplicationContext(), sessionManager, db.logsDao(), dbExecutor));
+        featureModules.add(new StartupFeatureModule(application.getApplicationContext(), db.startupDao(), dbExecutor, sessionManager));
         return featureModules;
+    }
+
+    private void startAndBindDebugOverlayService() {
+        OverlayService.startAndBind(application, config);
+        bindToDebugOverlayService();
+    }
+
+    private void bindToDebugOverlayService() {
+        boolean bound = application.bindService(OverlayService.createIntent(application),
+                serviceConnection, Context.BIND_AUTO_CREATE);
+        if (!bound) {
+            throw new RuntimeException("Could not bind the OverlayService");
+        }
+        EventBus.getInstance().register(receiver);
+    }
+
+    private void unbindFromDebugOverlayService() {
+        if (Appachhi.DEBUG) {
+            Log.d(TAG, "unbindFromDebugOverlayService ");
+        }
+        if (overlayService != null) {
+            if (Appachhi.DEBUG) {
+                Log.d(TAG, "Unbing when service is not null ");
+            }
+            application.unbindService(serviceConnection);
+            overlayService = null;
+        }
+        EventBus.getInstance().unRegister(receiver);
+    }
+
+    public static class Config implements Parcelable {
+        public static final Creator<Config> CREATOR = new Creator<Config>() {
+            @Override
+            public Config createFromParcel(Parcel source) {
+                return new Config(source);
+            }
+
+            @Override
+            public Config[] newArray(int size) {
+                return new Config[size];
+            }
+        };
+        private final boolean overlayAllowed;
+        private final boolean showNotification;
+
+        Config(boolean overlayAllowed, boolean showNotification) {
+            this.overlayAllowed = overlayAllowed;
+            this.showNotification = showNotification;
+        }
+
+        Config(Parcel in) {
+            this.overlayAllowed = in.readByte() != 0;
+            this.showNotification = in.readByte() != 0;
+        }
+
+        boolean isOverlayAllowed() {
+            return overlayAllowed;
+        }
+
+        boolean showNotification() {
+            return showNotification;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeByte(this.overlayAllowed ? (byte) 1 : (byte) 0);
+            dest.writeByte(this.showNotification ? (byte) 1 : (byte) 0);
+        }
     }
 
     /**
@@ -193,6 +313,9 @@ public class Appachhi {
 
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+            passedOnCreate = true;
+
             if (Appachhi.DEBUG) {
                 Log.d(TAG, String.format("onActivityCreated: %s", activity.getComponentName()));
             }
@@ -201,6 +324,15 @@ public class Appachhi {
                         overlayViewManager.createAttachStateChangeListener();
                 activity.getWindow().getDecorView().addOnAttachStateChangeListener(listener);
                 attachStateChangeListeners.put(activity, listener);
+            }
+
+            if (savedInstanceState != null) {
+
+                warmStartStatus = savedInstanceState.getBoolean("warmStartStatus");
+            }
+
+            if (passedOnCreate && warmStartStatus) {
+                startupTimeManager.setWarm_starttime(SystemClock.elapsedRealtime());
             }
         }
 
@@ -228,6 +360,36 @@ public class Appachhi {
                     listener.onActivityResumed();
                 }
             }
+
+            if (numRunningActivities == 1) {
+                if (startupTimeManager != null) {
+
+                    if (startupTimeManager.isFirstLaunch()) {
+
+                        long coldStarttime = startupTimeManager.getCold_starttime();
+                        long coldstartValue = SystemClock.elapsedRealtime() - coldStarttime;
+
+                        Log.d(TAG, "onActivityResumed: Cold start time : " + coldStarttime + ": Cold Start End time = " + SystemClock.elapsedRealtime());
+
+                        startupTimeManager.setCold_startResult(coldstartValue);
+                        Log.d(TAG, "onActivityResumed: COLD : " + startupTimeManager.getCold_starttime() + " : ColdStart Value : " + startupTimeManager.getCold_startResult());
+
+                        startupTimeManager.setFirstLaunch(false);
+                    }
+
+
+                } else {
+                    Log.d(TAG, "onActivityResumed: StartupTimeManager is null");
+                }
+
+                if (passedOnCreate && warmStartStatus) {
+                    Log.d(TAG, "onActivityResumed: Warm Start time : " + startupTimeManager.getWarm_starttime() + " End time : " + SystemClock.elapsedRealtime());
+                    long warmStartResult = SystemClock.elapsedRealtime() - startupTimeManager.getWarm_starttime();
+                    startupTimeManager.setWarmStart_result(warmStartResult);
+                    Log.d(TAG, "onActivityResumed: WarmStartResult = " + warmStartResult);
+                }
+            }
+
         }
 
         @Override
@@ -242,11 +404,17 @@ public class Appachhi {
             if (Appachhi.DEBUG) {
                 Log.d(TAG, "onActivityStopped");
             }
+
+            passedOnCreate = false;
+
             decrementNumRunningActivities();
         }
 
         @Override
         public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+            outState.putBoolean("warmStartStatus", false);
+            Log.d(TAG, "onActivitySaveInstanceState: called : Warm start is " + outState.getBoolean("warmStartStatus"));
+
         }
 
         @Override
@@ -309,113 +477,5 @@ public class Appachhi {
                 }
             }
         }
-    }
-
-    private void startAndBindDebugOverlayService() {
-        OverlayService.startAndBind(application, config);
-        bindToDebugOverlayService();
-    }
-
-    private void bindToDebugOverlayService() {
-        boolean bound = application.bindService(OverlayService.createIntent(application),
-                serviceConnection, Context.BIND_AUTO_CREATE);
-        if (!bound) {
-            throw new RuntimeException("Could not bind the OverlayService");
-        }
-        EventBus.getInstance().register(receiver);
-    }
-
-    private final ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder serviceBinder) {
-            if (Appachhi.DEBUG) {
-                Log.d(TAG, "onServiceConnected");
-            }
-            // We've bound to OverlayService, cast the IBinder and get OverlayService getInstance
-            OverlayService.OverlayServiceBinder binder = (OverlayService.OverlayServiceBinder) serviceBinder;
-            overlayService = binder.getService();
-            overlayService.setOverlayModules(featureModules);
-            overlayService.setOverlayViewManager(overlayViewManager);
-            overlayService.startModules();
-        }
-
-        // This is called when the connection with the service has been
-        // unexpectedly disconnected -- that is, its process crashed.
-        // So, this is not called when the client unbinds.
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-    };
-    private final EventBus.Listener receiver = new EventBus.Listener() {
-        @Override
-        public void onChange(String action) {
-            if (ACTION_UNBIND.equals(action)) {
-                if (Appachhi.DEBUG) {
-                    Log.d(TAG, "Serivce Unbind Broadcast");
-                }
-                unBindRequestReceived = true;
-                unbindFromDebugOverlayService();
-            }
-        }
-    };
-
-    private void unbindFromDebugOverlayService() {
-        if (Appachhi.DEBUG) {
-            Log.d(TAG, "unbindFromDebugOverlayService ");
-        }
-        if (overlayService != null) {
-            if (Appachhi.DEBUG) {
-                Log.d(TAG, "Unbing when service is not null ");
-            }
-            application.unbindService(serviceConnection);
-            overlayService = null;
-        }
-        EventBus.getInstance().unRegister(receiver);
-    }
-
-    public static class Config implements Parcelable {
-        private final boolean overlayAllowed;
-        private final boolean showNotification;
-
-        Config(boolean overlayAllowed, boolean showNotification) {
-            this.overlayAllowed = overlayAllowed;
-            this.showNotification = showNotification;
-        }
-
-        boolean isOverlayAllowed() {
-            return overlayAllowed;
-        }
-
-        boolean showNotification() {
-            return showNotification;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeByte(this.overlayAllowed ? (byte) 1 : (byte) 0);
-            dest.writeByte(this.showNotification ? (byte) 1 : (byte) 0);
-        }
-
-        Config(Parcel in) {
-            this.overlayAllowed = in.readByte() != 0;
-            this.showNotification = in.readByte() != 0;
-        }
-
-        public static final Creator<Config> CREATOR = new Creator<Config>() {
-            @Override
-            public Config createFromParcel(Parcel source) {
-                return new Config(source);
-            }
-
-            @Override
-            public Config[] newArray(int size) {
-                return new Config[size];
-            }
-        };
     }
 }

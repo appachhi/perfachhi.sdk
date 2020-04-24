@@ -598,6 +598,52 @@ public class Contract {
         }
     }
 
+    public static class StartupEntry implements BaseColumns {
+        public final static String TABLE_NAME = "startup_time";
+
+        public static final String COLUMN_COLD_START_VALUE = "coldStartValue";
+        public static final String COLUMN_WARM_START_VALUE = "warmStartValue";
+        public static final String COLUMN_SESSION_ID = "sessionId";
+        public static final String COLUMN_EXECUTION_TIME = "executionTime";
+        public static final String COLUMN_SESSION_TIME = "sessionTime";
+        public static final String COLUMN_SYNC_STATUS = "syncStatus";
+
+        public static ContentValues toContentValues(StartupEntity startupEntity) {
+            ContentValues values = new ContentValues();
+            values.put(_ID, startupEntity.getId());
+            values.put(COLUMN_COLD_START_VALUE, startupEntity.getColdStartResult());
+            values.put(COLUMN_WARM_START_VALUE, startupEntity.getWarmStartResult());
+
+            values.put(COLUMN_SESSION_ID, startupEntity.getSessionId());
+            values.put(COLUMN_EXECUTION_TIME, startupEntity.getExecutionTime());
+            values.put(COLUMN_SESSION_TIME, startupEntity.getSessionTime());
+            values.put(COLUMN_SYNC_STATUS, startupEntity.getSyncStatus());
+            return values;
+        }
+
+        public static ContentValues updateSyncStatusValue() {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(COLUMN_SYNC_STATUS, 1);
+            return contentValues;
+        }
+
+        public static StartupEntity fromCursor(Cursor cursor) {
+            StartupEntity startupEntity = new StartupEntity();
+            startupEntity.setId(cursor.getString(cursor.getColumnIndex(_ID)));
+            startupEntity.setColdStartResult(cursor.getLong(cursor.getColumnIndex(COLUMN_COLD_START_VALUE)));
+            startupEntity.setWarmStartResult(cursor.getLong(cursor.getColumnIndex(COLUMN_WARM_START_VALUE)));
+
+            startupEntity.setSessionId(cursor.getString(cursor.getColumnIndex(COLUMN_SESSION_ID)));
+            startupEntity.setExecutionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_EXECUTION_TIME)));
+            startupEntity.setSessionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_SESSION_TIME)));
+            startupEntity.setSyncStatus(cursor.getInt(cursor.getColumnIndex(COLUMN_SYNC_STATUS)));
+            return startupEntity;
+        }
+
+        public static String fromCursorToId(Cursor cursor) {
+            return cursor.getString(cursor.getColumnIndex(_ID));
+        }
+    }
 
     public static class MethodTraceEntry implements BaseColumns {
         public final static String TABLE_NAME = "method_traces";
