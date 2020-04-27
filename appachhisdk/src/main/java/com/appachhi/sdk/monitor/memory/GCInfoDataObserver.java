@@ -18,7 +18,7 @@ import static com.appachhi.sdk.database.DatabaseMapper.fromGCInfoToGCEntity;
  * {@link GCInfo} Data Observer logging the GC related information on to the logcat
  */
 public class GCInfoDataObserver implements DataObserver<GCInfo> {
-    private static final String TAG = "Appachhi-GC";
+    private static final String TAG = "Perfachhi-GC";
 
     private GCDao gcDao;
     private ExecutorService databaseExecutor;

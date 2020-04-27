@@ -611,8 +611,8 @@ public class Contract {
         public static ContentValues toContentValues(StartupEntity startupEntity) {
             ContentValues values = new ContentValues();
             values.put(_ID, startupEntity.getId());
-            values.put(COLUMN_COLD_START_VALUE, startupEntity.getColdStartResult());
-            values.put(COLUMN_WARM_START_VALUE, startupEntity.getWarmStartResult());
+            values.put(COLUMN_COLD_START_VALUE, startupEntity.getColdStartValue());
+            values.put(COLUMN_WARM_START_VALUE, startupEntity.getWarmStartValue());
 
             values.put(COLUMN_SESSION_ID, startupEntity.getSessionId());
             values.put(COLUMN_EXECUTION_TIME, startupEntity.getExecutionTime());
@@ -630,8 +630,8 @@ public class Contract {
         public static StartupEntity fromCursor(Cursor cursor) {
             StartupEntity startupEntity = new StartupEntity();
             startupEntity.setId(cursor.getString(cursor.getColumnIndex(_ID)));
-            startupEntity.setColdStartResult(cursor.getLong(cursor.getColumnIndex(COLUMN_COLD_START_VALUE)));
-            startupEntity.setWarmStartResult(cursor.getLong(cursor.getColumnIndex(COLUMN_WARM_START_VALUE)));
+            startupEntity.setColdStartValue(cursor.getLong(cursor.getColumnIndex(COLUMN_COLD_START_VALUE)));
+            startupEntity.setWarmStartValue(cursor.getLong(cursor.getColumnIndex(COLUMN_WARM_START_VALUE)));
 
             startupEntity.setSessionId(cursor.getString(cursor.getColumnIndex(COLUMN_SESSION_ID)));
             startupEntity.setExecutionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_EXECUTION_TIME)));

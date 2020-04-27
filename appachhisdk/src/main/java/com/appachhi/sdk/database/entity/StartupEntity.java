@@ -4,16 +4,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class StartupEntity extends BaseEntity {
 
-    @SerializedName("coldStartResult")
-    private long coldStartResult;
+    @SerializedName("coldStartValue")
+    private long coldStartValue;
 
-    @SerializedName("warmStartResult")
-    private long warmStartResult;
+    @SerializedName("warmStartValue")
+    private long warmStartValue;
 
-    public StartupEntity(long coldStartResult, long warmStartResult, String sessionId, long sessionTime) {
+    public StartupEntity(long coldStartValue, long warmStartValue, String sessionId, long sessionTime) {
         super(sessionId, sessionTime);
-        this.coldStartResult = coldStartResult;
-        this.warmStartResult = warmStartResult;
+        this.coldStartValue = coldStartValue;
+        this.warmStartValue = warmStartValue;
 
     }
 
@@ -21,19 +21,19 @@ public class StartupEntity extends BaseEntity {
 
     }
 
-    public long getColdStartResult() {
-        return coldStartResult;
+    public long getColdStartValue() {
+        return coldStartValue;
     }
 
-    public void setColdStartResult(long coldStartResult) {
-        this.coldStartResult = coldStartResult;
+    public void setColdStartValue(long coldStartValue) {
+        this.coldStartValue = coldStartValue;
     }
 
-    public long getWarmStartResult() {
-        return warmStartResult;
+    public long getWarmStartValue() {
+        return warmStartValue;
     }
 
-    public void setWarmStartResult(long warmStartResult) {
-        this.warmStartResult = warmStartResult;
+    public void setWarmStartValue(long warmStartValue) {
+        this.warmStartValue = warmStartValue;
     }
 }
