@@ -19,77 +19,65 @@ import okhttp3.ResponseBody;
 public class RetrofitInterceptor implements Interceptor {
     public static final String TAG = "RetrofitInterceptor";
 
+
+    Request req;
+
     @Override
     public Response intercept(Chain chain) throws IOException {
+
+        Log.d(TAG, "intercept: Enterred");
         HttpMetric httpMetric = Appachhi.newHttpTrace();
         long startTime = httpMetric.start();
 
-        if (chain == null) {
-            Log.d(TAG, "logtheCall: Response is null. Call was not executed");
-        }
-        else {
-            try {
-                long endTime = httpMetric.stop();
-                handleCallSuccess(chain, httpMetric, startTime, endTime);
 
-            } catch (IOException e) {
-                Request request;
-                if ((request = chain.request()) != null) {
-                    HttpUrl url = request.url();
-                    if (url!=null) {
-                        httpMetric.setUrl(url.url().toString());
-                    }
-                    if (request.method() != null) {
-                        httpMetric.setMethodType(request.method());
+        Response res = chain.proceed(chain.call().request());
+        long endTime = httpMetric.stop();
+
+        if(res!=null) {
+
+            Request request = res.request();
+            if (request!=null) {
+                httpMetric.setUrl(request.url().url().toString());
+                httpMetric.setMethodType(request.method());
+                long requestContentLength;
+
+                if (request.body() != null && (requestContentLength = request.body().contentLength()) != -1L) {
+                    httpMetric.setRequestContentLength(requestContentLength);
+                }
+
+                ResponseBody responseBody = res.body();
+                if (responseBody != null) {
+                    long responseContentLength = responseBody.contentLength();
+                    if (responseContentLength != -1L) {
+                        httpMetric.setResponseContentLength(responseContentLength);
                     }
 
-                    RequestBody requestBody = request.body();
-                    if (requestBody !=null && requestBody.contentLength() != -1) {
-                        httpMetric.setRequestContentLength(requestBody.contentLength());
+                    MediaType mediaType;
+                    if ((mediaType = responseBody.contentType()) != null) {
+                        httpMetric.setContentType(mediaType.toString());
                     }
                 }
 
+                httpMetric.setResponseCode(res.code());
                 httpMetric.setStartTime(startTime);
-                httpMetric.setEndTime(httpMetric.stop());
+                httpMetric.setEndTime(endTime);
+                httpMetric.setThreadName(Thread.currentThread().getName());
                 httpMetric.complete();
 
-                e.printStackTrace();
+                Request original = chain.request();
+                Request.Builder requestBuilder = original.newBuilder()
+                        .addHeader("Accept", "application/json")
+                        .addHeader("Content-Type", "application/json");
+
+                req = requestBuilder.build();
+                return res;
             }
+
         }
 
-        return null;
-    }
 
 
-    static void handleCallSuccess(Chain response, HttpMetric httpMetric,
-                                  long startTime, long endTime) throws IOException {
-        Request request = response.request();
-        if (request != null) {
-            httpMetric.setUrl(request.url().url().toString());
-            httpMetric.setMethodType(request.method());
-            long requestContentLength;
-            if (request.body() != null && (requestContentLength = request.body().contentLength()) != -1L) {
-                httpMetric.setRequestContentLength(requestContentLength);
-            }
+        return chain.proceed(req);
 
-            RequestBody responseBody = response.request().body();
-            if (responseBody != null) {
-                long responseContentLength = responseBody.contentLength();
-                if (responseContentLength != -1L) {
-                    httpMetric.setResponseContentLength(responseContentLength);
-                }
-
-                MediaType mediaType;
-                if ((mediaType = responseBody.contentType()) != null) {
-                    httpMetric.setContentType(mediaType.toString());
-                }
-            }
-
-            httpMetric.setResponseCode(response.proceed(request).code());
-            httpMetric.setStartTime(startTime);
-            httpMetric.setEndTime(endTime);
-            httpMetric.setThreadName(Thread.currentThread().getName());
-            httpMetric.complete();
-        }
     }
 }
