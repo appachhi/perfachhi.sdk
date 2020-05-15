@@ -342,7 +342,19 @@ public class Appachhi {
                 Log.d(TAG, String.format("onActivityStarted: %s", activity.getComponentName()));
             }
             incrementNumRunningActivities();
+            decideScreenshotCapture(activity, numRunningActivities);
 
+        }
+
+        private void decideScreenshotCapture(Activity activity, int numRunningActivities) {
+
+            if (numRunningActivities >=1) {
+                featureConfigManager.setScreenShotEnable(activity, true);
+
+            } else {
+                featureConfigManager.setScreenShotEnable(activity, false);
+
+            }
         }
 
         @Override
@@ -409,6 +421,7 @@ public class Appachhi {
             passedOnCreate = false;
 
             decrementNumRunningActivities();
+            decideScreenshotCapture(activity, numRunningActivities);
         }
 
         @Override
