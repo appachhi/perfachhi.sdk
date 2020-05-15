@@ -210,6 +210,7 @@ public class Appachhi {
                 Log.d(TAG, String.format("onActivityStarted: %s", activity.getComponentName()));
             }
             incrementNumRunningActivities();
+
         }
 
         @Override

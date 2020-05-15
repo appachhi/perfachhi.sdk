@@ -1,6 +1,7 @@
 package com.appachhi.sdk.instrument.network.internal.okhttp;
 
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.appachhi.sdk.Appachhi;
@@ -19,7 +20,6 @@ import okhttp3.ResponseBody;
 
 public class AppachhiOkHttp3Client {
     public static final String TAG = "AppachhiOKHttp3Client";
-
 
     public static Response execute(Call call) throws IOException {
         HttpMetric httpMetric = Appachhi.newHttpTrace();
