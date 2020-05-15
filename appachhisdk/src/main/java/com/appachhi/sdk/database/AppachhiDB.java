@@ -16,6 +16,7 @@ import com.appachhi.sdk.database.dao.NetworkDao;
 import com.appachhi.sdk.database.dao.ScreenTransitionDao;
 import com.appachhi.sdk.database.dao.ScreenshotDao;
 import com.appachhi.sdk.database.dao.SessionDao;
+import com.appachhi.sdk.database.dao.StartupDao;
 
 
 public class AppachhiDB {
@@ -34,6 +35,8 @@ public class AppachhiDB {
     private ScreenTransitionDao screenTransitionDao;
     private MethodTraceDao methodTraceDao;
     private FrameDropDao frameDropDao;
+    private static final String DB_NAME = "appachhi";
+    private StartupDao startupDao;
 
     private AppachhiDB(SQLiteDatabase sqLiteDatabase) {
         sessionDao = new SessionDao(sqLiteDatabase);
@@ -49,9 +52,9 @@ public class AppachhiDB {
         screenTransitionDao = new ScreenTransitionDao(sqLiteDatabase);
         methodTraceDao = new MethodTraceDao(sqLiteDatabase);
         frameDropDao = new FrameDropDao(sqLiteDatabase);
-    }
+        startupDao = new StartupDao(sqLiteDatabase);
 
-    private static final String DB_NAME = "appachhi";
+    }
 
     public SessionDao sessionDao() {
         return sessionDao;
@@ -110,6 +113,10 @@ public class AppachhiDB {
             instance = new AppachhiDB(new AppachhiSqlOpenHelper(context).getWritableDatabase());
         }
         return instance;
+    }
+
+    public StartupDao startupDao() {
+        return startupDao;
     }
 
 }

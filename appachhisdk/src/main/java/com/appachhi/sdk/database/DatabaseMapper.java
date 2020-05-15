@@ -14,6 +14,7 @@ import com.appachhi.sdk.database.entity.MemoryLeakEntity;
 import com.appachhi.sdk.database.entity.MethodTraceEntity;
 import com.appachhi.sdk.database.entity.NetworkUsageEntity;
 import com.appachhi.sdk.database.entity.ScreenshotEntity;
+import com.appachhi.sdk.database.entity.StartupEntity;
 import com.appachhi.sdk.database.entity.TransitionStatEntity;
 import com.appachhi.sdk.instrument.network.internal.HttpMetric;
 import com.appachhi.sdk.instrument.trace.MethodTrace;
@@ -23,6 +24,7 @@ import com.appachhi.sdk.monitor.memory.GCInfo;
 import com.appachhi.sdk.monitor.memory.MemoryInfo;
 import com.appachhi.sdk.monitor.memoryleak.MemoryLeakInfo;
 import com.appachhi.sdk.monitor.network.NetworkInfo;
+import com.appachhi.sdk.monitor.startup.StartupTimeInfo;
 
 import java.io.File;
 
@@ -80,6 +82,10 @@ public class DatabaseMapper {
 
     public static NetworkUsageEntity fromNetworkUsageInfoToNetworkUsageEntity(NetworkInfo networkInfo, String sessionId, long sessionTimeElapsed) {
         return new NetworkUsageEntity(networkInfo.getByteSend(), networkInfo.getByteReceived(), sessionId, sessionTimeElapsed);
+    }
+
+    public static StartupEntity fromStartupTimeInfotoStartupEntity(StartupTimeInfo startupTimeInfo, String sessionId, long sessionTimeElapsed) {
+        return new StartupEntity(startupTimeInfo.getColdStartValue(), startupTimeInfo.getWarmStartValue(), sessionId, sessionTimeElapsed);
     }
 
     public static TransitionStatEntity fromTransitionStatToTransitionStatEntity(TransitionStat transitionStat, String sessionId, long sessionTimeElapsed) {

@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class AppachhiSqlOpenHelper extends SQLiteOpenHelper {
     AppachhiSqlOpenHelper(Context context) {
-        super(context, "appachhi", null, 2);
+        super(context, "appachhi", null, 3);
     }
 
     @Override
@@ -165,6 +165,16 @@ public class AppachhiSqlOpenHelper extends SQLiteOpenHelper {
                 "syncStatus INT" +
                 ")";
 
+        String createStartupTimeTable = "CREATE TABLE IF NOT EXISTS startup_time (" +
+                "_id TEXT PRIMARY KEY NOT NULL," +
+                "coldStartValue INT," +
+                "warmStartValue INT," +
+                "sessionId TEXT," +
+                "executionTime INT," +
+                "sessionTime INT," +
+                "syncStatus INT" +
+                ")";
+
         db.execSQL(createSessionTable);
         db.execSQL(createAPIEntryTable);
         db.execSQL(createCpuUsageTable);
@@ -178,6 +188,7 @@ public class AppachhiSqlOpenHelper extends SQLiteOpenHelper {
         db.execSQL(createMethodTraceTable);
         db.execSQL(createTransitionTable);
         db.execSQL(createNetworkUsageTable);
+        db.execSQL(createStartupTimeTable);
     }
 
     @Override
