@@ -1,12 +1,15 @@
 package com.appachhi.sdk.sync;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
+import android.content.ContentProvider;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.appachhi.sdk.Appachhi;
@@ -45,6 +48,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,8 +57,10 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -66,11 +73,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class SyncManager {
     public static final String TAG = "SyncManager";
     private static final String BASE_URL = "https://perfachhi.appspot.com";
     private static final String DEVICE_ID_KEY = "device_id";
+    private static final String SECURE_ID_KEY = "secure_id";
+
     private static final String DEVICE_ID_UPLOADED = "device_id_uploaded";
     private static String KEY = null;
     private AppachhiDB appachhiDB;
@@ -381,7 +391,7 @@ public class SyncManager {
 
                 }
 
-                Log.d(TAG, "run: JSON ARRAY FOR TIME : " + jsonArray);
+
 
                 List<String> filepaths = new ArrayList<>();
 
@@ -439,7 +449,7 @@ public class SyncManager {
                         Log.d(TAG, String.format("%s uploaded", path));
                         listener.onMetricUpload(ids, filePaths);
                     } else if (!response.isSuccessful() && response.code() == 500) {
-                        String successResponse = new Gson().toJson(response.body());
+                        // String successResponse = new Gson().toJson(response.body());
                         Log.d(TAG, "run: Updating sync status to 1");
                         listener.onMetricUpload(ids, filePaths);
                         Log.d(TAG, "run: Response Code : " + response.body().string() + ": Response message : " + response.message());
@@ -538,14 +548,40 @@ public class SyncManager {
         appachhiPref.edit().putBoolean(DEVICE_ID_UPLOADED, true).apply();
     }
 
+  /*  @SuppressLint("HardwareIds")
+    private String getDeviceId() {
+        String storedDeviceId = appachhiPref.getString(DEVICE_ID_KEY, null);
+        if (storedDeviceId == null) {
+            //storedDeviceId = appachhiPref.getString(DEVICE_ID_KEY, "Null");
+            storedDeviceId = UUID.randomUUID().toString();
+            appachhiPref.edit().putString(DEVICE_ID_KEY, storedDeviceId).apply();
+        }
+        Log.d(TAG, "getDeviceId: key : " + storedDeviceId);
+        return storedDeviceId;
+    }*/
+
     private String getDeviceId() {
         String storedDeviceId = appachhiPref.getString(DEVICE_ID_KEY, null);
         if (storedDeviceId == null) {
             storedDeviceId = UUID.randomUUID().toString();
             appachhiPref.edit().putString(DEVICE_ID_KEY, storedDeviceId).apply();
         }
+        Log.d(TAG, "getDeviceId: key : " + storedDeviceId);
         return storedDeviceId;
     }
+
+    @SuppressLint("HardwareIds")
+    private String getSecureId() {
+        String storedSecureId = appachhiPref.getString(SECURE_ID_KEY, null);
+        if (storedSecureId == null) {
+            storedSecureId = appachhiPref.getString(SECURE_ID_KEY, "Null");
+            //storedDeviceId = UUID.randomUUID().toString();
+            appachhiPref.edit().putString(SECURE_ID_KEY, storedSecureId).apply();
+        }
+        Log.d(TAG, "getSecureDeviceId: key : " + storedSecureId);
+        return storedSecureId;
+    }
+
 
     /**
      * Upload the device detail if not uploaded already.Repeated upload will return in
@@ -558,10 +594,12 @@ public class SyncManager {
             return;
         }
         try {
+
             Log.d(TAG, "Uploading device details");
             JSONArray jsonArray = new JSONArray();
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id", getDeviceId());
+            jsonObject.put("secureId", getSecureId());
             jsonObject.put("manufacturer", Build.BRAND);
             jsonObject.put("model", Build.MODEL);
             jsonObject.put("os", "android");
@@ -574,6 +612,13 @@ public class SyncManager {
             Log.d(TAG, "uploadDeviceDetails: Response Code : " + response.code());
             if (response.isSuccessful()) {
                 deviceIDUploaded();
+                ResponseBody r = response.body();
+
+                Type type = new TypeToken<Map<String, String>>(){}.getType();
+                Map<String, String> myMap = gson.fromJson(response.body().string() , type);
+                String deviceIDfromResponse = myMap.get("id");
+                Log.d(TAG, "uploadDeviceDetails: Upload device details : " + deviceIDfromResponse);
+                appachhiPref.edit().putString(DEVICE_ID_KEY, deviceIDfromResponse).apply();
                 //Check response code
             } else {
                 Log.d(TAG, String.format("Failed to upload device details : %s", response.message()));
@@ -581,7 +626,7 @@ public class SyncManager {
             }
 
         } catch (JSONException | IOException e) {
-            Log.e(TAG, "Failed to upload device details", e);
+            Log.d(TAG, "Failed to upload device details" + e.getMessage());
         }
 
     }

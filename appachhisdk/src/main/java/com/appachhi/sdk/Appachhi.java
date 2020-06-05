@@ -348,10 +348,10 @@ public class Appachhi {
 
         private void decideScreenshotCapture(Activity activity, int numRunningActivities) {
 
-            if (numRunningActivities >=1) {
+            if (numRunningActivities == 1) {
                 featureConfigManager.setScreenShotEnable(activity, true);
 
-            } else {
+            } else if(numRunningActivities < 1){
                 featureConfigManager.setScreenShotEnable(activity, false);
 
             }
@@ -436,6 +436,10 @@ public class Appachhi {
             if (attachStateChangeListeners != null) {
                 if (Appachhi.DEBUG) {
                     Log.d(TAG, "onActivityDestroyed");
+                }
+
+                if (numRunningActivities==0) {
+                    featureConfigManager.setScreenShotEnable(activity, false);
                 }
                 attachStateChangeListeners.remove(activity);
             }

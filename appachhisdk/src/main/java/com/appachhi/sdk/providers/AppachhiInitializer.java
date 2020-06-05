@@ -1,13 +1,16 @@
 package com.appachhi.sdk.providers;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.appachhi.sdk.Appachhi;
@@ -18,6 +21,12 @@ public class AppachhiInitializer extends ContentProvider {
     public static final String TAG = "AppachhiInitializer";
 
     public StartupTimeManager startupTimeManager;
+    public SharedPreferences sharedPreferences;
+    public SharedPreferences.Editor editor;
+
+    private static final String DEVICE_ID_KEY = "device_id";
+    private static final String SECURE_ID_KEY = "secure_id";
+
 
     public long cold_starttime;
 
@@ -33,6 +42,18 @@ public class AppachhiInitializer extends ContentProvider {
     @Override
     public void attachInfo(Context context, ProviderInfo info) {
         Log.d(TAG, "AppachhiInitializer attach");
+
+        @SuppressLint("HardwareIds")
+        String secureID = Settings.Secure.getString(context.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
+        sharedPreferences = context.getSharedPreferences("appachhi_pref", Context.MODE_PRIVATE);
+
+        editor = sharedPreferences.edit();
+        editor.putString(SECURE_ID_KEY, secureID);
+        editor.apply();
+
+
 
         startupTimeManager = new StartupTimeManager(context);
         cold_starttime = SystemClock.elapsedRealtime();
