@@ -342,7 +342,7 @@ public class Appachhi {
                 Log.d(TAG, String.format("onActivityStarted: %s", activity.getComponentName()));
             }
             incrementNumRunningActivities();
-            decideScreenshotCapture(activity, numRunningActivities);
+           // decideScreenshotCapture(activity, numRunningActivities);
 
         }
 
@@ -421,7 +421,8 @@ public class Appachhi {
             passedOnCreate = false;
 
             decrementNumRunningActivities();
-            decideScreenshotCapture(activity, numRunningActivities);
+
+           // decideScreenshotCapture(activity, numRunningActivities);
         }
 
         @Override
