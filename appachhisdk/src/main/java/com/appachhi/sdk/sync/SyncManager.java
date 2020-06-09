@@ -604,6 +604,8 @@ public class SyncManager {
             jsonObject.put("model", Build.MODEL);
             jsonObject.put("os", "android");
             jsonObject.put("osVersion", Build.VERSION.SDK_INT);
+
+
             jsonArray.put(jsonObject);
 
             Request request = getRequest("device", jsonArray.toString());

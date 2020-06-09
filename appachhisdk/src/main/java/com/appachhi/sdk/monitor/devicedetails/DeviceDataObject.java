@@ -1,4 +1,4 @@
-package com.appachhi.sdk.providers;
+package com.appachhi.sdk.monitor.devicedetails;
 
 /* Data Object model for devicedetails. Parameters and Methods of devicedetails
 *  Get and Set method for all parameters added here via getter and setter option */
@@ -15,24 +15,79 @@ public class DeviceDataObject {
     private String modelid;
     private float lcddensity;
     private String Secure_ID;
-    private int processid;
-    private int userid;
+    private double raminfo_totalsize;
+    private double raminfo_remainingsize;
+    private String btname;
+    boolean cellularEnabled;
+    boolean wifiEnabled;
+    boolean btEnabled;
+    boolean ethEnabled;
+    boolean wifiAwareEnabled;
 
-    public int getProcessid() {
-        return processid;
+    public boolean isCellularEnabled() {
+        return cellularEnabled;
     }
 
-    public void setProcessid(int processid) {
-        this.processid = processid;
+    public void setCellularEnabled(boolean cellularEnabled) {
+        this.cellularEnabled = cellularEnabled;
     }
 
-    public int getUserid() {
-        return userid;
+    public boolean isWifiEnabled() {
+        return wifiEnabled;
     }
 
-    public void setUserid(int userid) {
-        this.userid = userid;
+    public void setWifiEnabled(boolean wifiEnabled) {
+        this.wifiEnabled = wifiEnabled;
     }
+
+    public boolean isBtEnabled() {
+        return btEnabled;
+    }
+
+    public void setBtEnabled(boolean btEnabled) {
+        this.btEnabled = btEnabled;
+    }
+
+    public boolean isEthEnabled() {
+        return ethEnabled;
+    }
+
+    public void setEthEnabled(boolean ethEnabled) {
+        this.ethEnabled = ethEnabled;
+    }
+
+    public boolean isWifiAwareEnabled() {
+        return wifiAwareEnabled;
+    }
+
+    public void setWifiAwareEnabled(boolean wifiAwareEnabled) {
+        this.wifiAwareEnabled = wifiAwareEnabled;
+    }
+
+    public String getBtname() {
+        return btname;
+    }
+
+    public void setBtname(String btname) {
+        this.btname = btname;
+    }
+
+    public double getRaminfo_totalsize() {
+        return raminfo_totalsize;
+    }
+
+    public void setRaminfo_totalsize(double raminfo_totalsize) {
+        this.raminfo_totalsize = raminfo_totalsize;
+    }
+
+    public double getRaminfo_remainingsize() {
+        return raminfo_remainingsize;
+    }
+
+    public void setRaminfo_remainingsize(double raminfo_remainingsize) {
+        this.raminfo_remainingsize = raminfo_remainingsize;
+    }
+
 
     public String getSecure_ID() {
         return Secure_ID;
