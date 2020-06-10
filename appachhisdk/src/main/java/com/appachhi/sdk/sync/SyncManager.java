@@ -44,6 +44,8 @@ import com.appachhi.sdk.database.entity.ScreenshotEntity;
 import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.database.entity.StartupEntity;
 import com.appachhi.sdk.database.entity.TransitionStatEntity;
+import com.appachhi.sdk.monitor.devicedetails.DeviceDataObject;
+import com.appachhi.sdk.monitor.devicedetails.DeviceDetailUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -77,7 +79,9 @@ import okhttp3.ResponseBody;
 
 public class SyncManager {
     public static final String TAG = "SyncManager";
-    private static final String BASE_URL = "https://perfachhi.appspot.com";
+  //  private static final String BASE_URL = "https://perfachhi.appspot.com";
+      private static final String BASE_URL = "https://e21c1a37fd20.ngrok.io";
+
     private static final String DEVICE_ID_KEY = "device_id";
     private static final String SECURE_ID_KEY = "secure_id";
 
@@ -96,6 +100,9 @@ public class SyncManager {
         }
     };
 
+    public static DeviceDetailUtils deviceDetailUtils;
+    public static DeviceDataObject deviceDataObject;
+
     private SyncManager(SharedPreferences appachhiPref) {
         this.appachhiPref = appachhiPref;
         this.appachhiDB = Appachhi.getInstance().getDb();
@@ -103,10 +110,18 @@ public class SyncManager {
                 .create();
         syncExecutor = Executors.newSingleThreadScheduledExecutor();
         metricSyncExecutor = Executors.newCachedThreadPool();
+
+
     }
 
     public static SyncManager create(Application application) {
         loadApiKey(application);
+
+        deviceDetailUtils = new DeviceDetailUtils();
+
+        deviceDataObject = deviceDetailUtils.fetchDeviceData(application.getBaseContext());
+
+
         return new SyncManager(application.getSharedPreferences("appachhi_pref", Context.MODE_PRIVATE));
     }
 
@@ -121,6 +136,8 @@ public class SyncManager {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+
+
     }
 
     public void startSync() {
@@ -595,6 +612,7 @@ public class SyncManager {
         }
         try {
 
+
             Log.d(TAG, "Uploading device details");
             JSONArray jsonArray = new JSONArray();
             JSONObject jsonObject = new JSONObject();
@@ -604,6 +622,12 @@ public class SyncManager {
             jsonObject.put("model", Build.MODEL);
             jsonObject.put("os", "android");
             jsonObject.put("osVersion", Build.VERSION.SDK_INT);
+
+            jsonObject.put("lcddensity", deviceDataObject.getlcddensity());
+            jsonObject.put("screenheight", deviceDataObject.getScreenheight());
+            jsonObject.put("screenwidth", deviceDataObject.getscreenwidth());
+            jsonObject.put("cpuarchitecture", deviceDataObject.getCPUarchitecture());
+
 
 
             jsonArray.put(jsonObject);

@@ -11,9 +11,7 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
 
-import com.example.myapplication.model.DeviceDataObject;
 
 
 public class DeviceDetailUtils {
@@ -21,8 +19,8 @@ public class DeviceDetailUtils {
     /* This function retrieves all device parameters via Android framework calls.
      * These values are bundled and sent via an Intent to the activity which will
      * access these values and stores in DB */
-    @SuppressLint("NewApi")
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @SuppressLint({"NewApi", "MissingPermission"})
+   // @RequiresApi(api = Build.VERSION_CODES.M)
     public DeviceDataObject fetchDeviceData(final Context context) {
         DeviceDataObject deviceobj = new DeviceDataObject();
         String modelid = null;
