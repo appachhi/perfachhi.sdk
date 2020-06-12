@@ -44,6 +44,9 @@ import com.appachhi.sdk.database.entity.ScreenshotEntity;
 import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.database.entity.StartupEntity;
 import com.appachhi.sdk.database.entity.TransitionStatEntity;
+import com.appachhi.sdk.monitor.battery.BatteryBasicDetails;
+import com.appachhi.sdk.monitor.battery.BatteryDataObject;
+import com.appachhi.sdk.monitor.battery.BatteryDetailUtils;
 import com.appachhi.sdk.monitor.devicedetails.DeviceDataObject;
 import com.appachhi.sdk.monitor.devicedetails.DeviceDetailUtils;
 import com.google.gson.Gson;
@@ -79,8 +82,8 @@ import okhttp3.ResponseBody;
 
 public class SyncManager {
     public static final String TAG = "SyncManager";
-  //  private static final String BASE_URL = "https://perfachhi.appspot.com";
-      private static final String BASE_URL = "https://e21c1a37fd20.ngrok.io";
+    private static final String BASE_URL = "https://perfachhi.appspot.com";
+  //    private static final String BASE_URL = "https://796cae3a73b9.ngrok.io";
 
     private static final String DEVICE_ID_KEY = "device_id";
     private static final String SECURE_ID_KEY = "secure_id";
@@ -103,6 +106,10 @@ public class SyncManager {
     public static DeviceDetailUtils deviceDetailUtils;
     public static DeviceDataObject deviceDataObject;
 
+    public static BatteryDetailUtils batteryDetailUtils;
+    public static BatteryDataObject batteryDataObject;
+
+
     private SyncManager(SharedPreferences appachhiPref) {
         this.appachhiPref = appachhiPref;
         this.appachhiDB = Appachhi.getInstance().getDb();
@@ -118,8 +125,11 @@ public class SyncManager {
         loadApiKey(application);
 
         deviceDetailUtils = new DeviceDetailUtils();
-
         deviceDataObject = deviceDetailUtils.fetchDeviceData(application.getBaseContext());
+
+        batteryDetailUtils = new BatteryDetailUtils();
+        batteryDataObject = batteryDetailUtils.fetchBatteryData(application.getBaseContext());
+
 
 
         return new SyncManager(application.getSharedPreferences("appachhi_pref", Context.MODE_PRIVATE));
@@ -612,6 +622,7 @@ public class SyncManager {
         }
         try {
 
+            batteryDataObject.getPerfBatteryCapacity();
 
             Log.d(TAG, "Uploading device details");
             JSONArray jsonArray = new JSONArray();
