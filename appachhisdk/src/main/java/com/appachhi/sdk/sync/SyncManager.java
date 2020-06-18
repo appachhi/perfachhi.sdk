@@ -83,7 +83,7 @@ import okhttp3.ResponseBody;
 public class SyncManager {
     public static final String TAG = "SyncManager";
     private static final String BASE_URL = "https://perfachhi.appspot.com";
-  //    private static final String BASE_URL = "https://796cae3a73b9.ngrok.io";
+    //    private static final String BASE_URL = "https://796cae3a73b9.ngrok.io";
 
     private static final String DEVICE_ID_KEY = "device_id";
     private static final String SECURE_ID_KEY = "secure_id";
@@ -175,51 +175,56 @@ public class SyncManager {
             // Don't Proceed if the device is not synced already
             return;
         }
-        // Proceed to uploading session only when the device detail is uploaded
-        uploadSessions(appachhiDB.sessionDao());
+        //If device is uploaded, then you start uploading all the sessions.
+        /*if (isDeviceDetailUploaded()) {*/
+            // Proceed to uploading session only when the device detail is uploaded
+            Log.d(TAG, "uploadAllMetric: isDeviceDetailUpload : " + isDeviceDetailUploaded());
+            uploadSessions(appachhiDB.sessionDao());
 
-        // Fetch all the synced session ids
-        List<String> allSyncedSessionIds = appachhiDB.sessionDao().allSyncedSessionIds();
+            // Fetch all the synced session ids
+            List<String> allSyncedSessionIds = appachhiDB.sessionDao().allSyncedSessionIds();
 
-        // Upload Screen Transition for all the synced session only
-        uploadScreenTransitionForSession(allSyncedSessionIds, appachhiDB.screenTransitionDao());
+            // Upload Screen Transition for all the synced session only
+            uploadScreenTransitionForSession(allSyncedSessionIds, appachhiDB.screenTransitionDao());
 
-        // Upload CpuUsage for all the synced session only
-        uploadCpuUsage(allSyncedSessionIds, appachhiDB.cpuUsageDao());
+            // Upload CpuUsage for all the synced session only
+            uploadCpuUsage(allSyncedSessionIds, appachhiDB.cpuUsageDao());
 
-        // Upload FPS for all the synced session only
-        uploadFps(allSyncedSessionIds, appachhiDB.fpsDao());
+            // Upload FPS for all the synced session only
+            uploadFps(allSyncedSessionIds, appachhiDB.fpsDao());
 
-        // Upload GC for all the synced session only
-        uploadGc(allSyncedSessionIds, appachhiDB.gcDao());
+            // Upload GC for all the synced session only
+            uploadGc(allSyncedSessionIds, appachhiDB.gcDao());
 
-        // Upload Memory for all the synced session only
-        uploadMemory(allSyncedSessionIds, appachhiDB.memoryDao());
+            // Upload Memory for all the synced session only
+            uploadMemory(allSyncedSessionIds, appachhiDB.memoryDao());
 
-        // Upload Memory Leak for all the synced session only
-        uploadMemoryLeak(allSyncedSessionIds, appachhiDB.memoryLeakDao());
+            // Upload Memory Leak for all the synced session only
+            uploadMemoryLeak(allSyncedSessionIds, appachhiDB.memoryLeakDao());
 
-        // Upload Method Trace for all the synced session only
-        uploadMethodTrace(allSyncedSessionIds, appachhiDB.methodTraceDao());
+            // Upload Method Trace for all the synced session only
+            uploadMethodTrace(allSyncedSessionIds, appachhiDB.methodTraceDao());
 
-        // Upload Network Usage for all the synced session only
-        uploadNetworkUsage(allSyncedSessionIds, appachhiDB.networkDao());
-
-
-        // Upload Frame Drop for all the synced session only
-        uploadFrameDrop(allSyncedSessionIds, appachhiDB.frameDropDao());
+            // Upload Network Usage for all the synced session only
+            uploadNetworkUsage(allSyncedSessionIds, appachhiDB.networkDao());
 
 
-        // Upload Api Call for all the synced session only
-        uploadNetworkCall(allSyncedSessionIds, appachhiDB.apiCallDao());
+            // Upload Frame Drop for all the synced session only
+            uploadFrameDrop(allSyncedSessionIds, appachhiDB.frameDropDao());
 
-        // Upload Screenshot for all synced session only
 
-        uploadScreenShot(allSyncedSessionIds, appachhiDB.screenshotDao());
+            // Upload Api Call for all the synced session only
+            uploadNetworkCall(allSyncedSessionIds, appachhiDB.apiCallDao());
 
-        uploadLogs(allSyncedSessionIds, appachhiDB.logsDao());
+            // Upload Screenshot for all synced session only
 
-        uploadStartupTime(allSyncedSessionIds, appachhiDB.startupDao());
+            uploadScreenShot(allSyncedSessionIds, appachhiDB.screenshotDao());
+
+            uploadLogs(allSyncedSessionIds, appachhiDB.logsDao());
+
+            uploadStartupTime(allSyncedSessionIds, appachhiDB.startupDao());
+
+        //}
 
     }
 
@@ -368,14 +373,12 @@ public class SyncManager {
 
    /* private void uploadStartupTime(List<String> sessionIds, final StartupDao startupDao) {
         Log.d(TAG, "uploadStartupTime: Entered here. " + sessionIds.get(1));
-
         List<StartupEntity> startupEntities = startupDao.allUnSyncedStartupEntityForSession(sessionIds);
         uploadMetric("startup_time", startupEntities, new OnMetricUploadListener() {
             @Override
             public void onMetricUpload(List<String> ids, List<String> filepaths) {
                 Log.d(TAG, "on: Entered uploadStartupTime");
                 startupDao.updateSucessSyncStatus(ids);
-
             }
         });
     }
@@ -573,6 +576,7 @@ public class SyncManager {
 
     private void deviceIDUploaded() {
         appachhiPref.edit().putBoolean(DEVICE_ID_UPLOADED, true).apply();
+        Log.d(TAG, "deviceIDUploaded: flag set to true");
     }
 
   /*  @SuppressLint("HardwareIds")
@@ -593,7 +597,7 @@ public class SyncManager {
             storedDeviceId = UUID.randomUUID().toString();
             appachhiPref.edit().putString(DEVICE_ID_KEY, storedDeviceId).apply();
         }
-        Log.d(TAG, "getDeviceId: key : " + storedDeviceId);
+       // Log.d(TAG, "getDeviceId: key : " + storedDeviceId);
         return storedDeviceId;
     }
 
@@ -605,7 +609,7 @@ public class SyncManager {
             //storedDeviceId = UUID.randomUUID().toString();
             appachhiPref.edit().putString(SECURE_ID_KEY, storedSecureId).apply();
         }
-        Log.d(TAG, "getSecureDeviceId: key : " + storedSecureId);
+        //Log.d(TAG, "getSecureDeviceId: key : " + storedSecureId);
         return storedSecureId;
     }
 
@@ -639,24 +643,34 @@ public class SyncManager {
             jsonObject.put("screenwidth", deviceDataObject.getscreenwidth());
             jsonObject.put("cpuarchitecture", deviceDataObject.getCPUarchitecture());
 
-
-
             jsonArray.put(jsonObject);
 
             Request request = getRequest("device", jsonArray.toString());
             Log.d(TAG, String.format("Url is %s", request.url().toString()));
             Response response = getClient().newCall(request).execute();
             Log.d(TAG, "uploadDeviceDetails: Response Code : " + response.code());
-            if (response.isSuccessful()) {
-                deviceIDUploaded();
-                ResponseBody r = response.body();
+            if (response.isSuccessful() || response.code()==207 ) {
 
+                //Log.d(TAG, "uploadDeviceDetails: response status : " + response.isSuccessful());
+                deviceIDUploaded();
+
+                //setDeviceID(response);
+               /* ResponseBody r = response.body();
                 Type type = new TypeToken<Map<String, String>>(){}.getType();
                 Map<String, String> myMap = gson.fromJson(response.body().string() , type);
-                String deviceIDfromResponse = myMap.get("id");
-                Log.d(TAG, "uploadDeviceDetails: Upload device details : " + deviceIDfromResponse);
+                String deviceIDfromResponse = myMap.get("id");*/
+
+                JSONObject jsonObject2 = new JSONObject(response.body().string());
+                String deviceIDfromResponse = jsonObject2.get("id").toString();
+
+               // Log.d(TAG, "setDeviceID: ID : " + deviceIDfromResponse);
+
+                //Log.d(TAG, "uploadDeviceDetails: Device ID from response : " + deviceIDfromResponse);
+
+                //Log.d(TAG, "uploadDeviceDetails: Upload device details : " + deviceIDfromResponse);
                 appachhiPref.edit().putString(DEVICE_ID_KEY, deviceIDfromResponse).apply();
                 //Check response code
+
             } else {
                 Log.d(TAG, String.format("Failed to upload device details : %s", response.message()));
                 Log.d(TAG, "Response code : " + response.code());
@@ -667,6 +681,7 @@ public class SyncManager {
         }
 
     }
+
 
     interface OnMetricUploadListener {
         void onMetricUpload(List<String> ids, List<String> filepaths);

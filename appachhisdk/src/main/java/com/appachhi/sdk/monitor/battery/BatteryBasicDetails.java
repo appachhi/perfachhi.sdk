@@ -28,8 +28,8 @@ public class BatteryBasicDetails {
     private float perfBatteryPercentage;
 
     @SuppressLint("SetTextI18n")
-   // @RequiresApi(api = Build.VERSION_CODES.M)
-    public void fetchbatterydetails(Activity context) {
+  //  @RequiresApi(api = Build.VERSION_CODES.M)
+    public void fetchbatterydetails(Context context) {
         // Fetch Battery details - Start
         dataListener = (DataListener) context;
         IntentFilter batteryintent = new IntentFilter();
@@ -48,7 +48,7 @@ public class BatteryBasicDetails {
 
     /* This function retrieves updated data of battery statistics in BatteryDataReceiver call
      *  based on the Action registered in the intent */
-   // @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+ //   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void updatebatterydata(Intent intent, Context context){  //Update battery data - start
         boolean perf_Batterypresent = intent.getBooleanExtra(BatteryManager.EXTRA_PRESENT, false);
         if (perf_Batterypresent) {
@@ -196,7 +196,7 @@ public class BatteryBasicDetails {
     }
     /* Populate values of Battery object and place it in batterydataobject of
     *  onDataReceive in DataListener. Main activity will pick data from this interface */
-  //  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+   // @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public BatteryDataObject fetchbatterybasicdata(final Context context) {
         BatteryDataObject perfBasicBattObj = new BatteryDataObject();
 
@@ -209,6 +209,7 @@ public class BatteryBasicDetails {
         perfBasicBattObj.setPerfBatteryHealthLabel(perfBatteryHealthLabel);
         perfBasicBattObj.setPerfPluggedInSource(perfPluggedInSource);
         perfBasicBattObj.setPerfBatteryPercentage(perfBatteryPercentage);
+
         try {
             dataListener.onDataReceive(perfBasicBattObj);
         }

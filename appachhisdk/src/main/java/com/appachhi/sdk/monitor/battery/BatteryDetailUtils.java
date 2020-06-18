@@ -13,7 +13,6 @@ import android.view.WindowManager;
 import com.appachhi.sdk.monitor.devicedetails.DeviceDataObject;
 import com.appachhi.sdk.monitor.devicedetails.DeviceDetailUtils;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -24,7 +23,7 @@ import java.util.ListIterator;
 public class BatteryDetailUtils {
 
     @SuppressLint("NewApi")
-    //@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+
     public BatteryDataObject fetchBatteryData(final Context context){
 
         BatteryDataObject perfBattObj = new BatteryDataObject();

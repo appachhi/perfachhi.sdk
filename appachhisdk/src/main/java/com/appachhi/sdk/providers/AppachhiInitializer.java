@@ -1,6 +1,7 @@
 package com.appachhi.sdk.providers;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Application;
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -14,10 +15,14 @@ import android.provider.Settings;
 import android.util.Log;
 
 import com.appachhi.sdk.Appachhi;
+import com.appachhi.sdk.monitor.battery.BatteryBasicDetails;
+import com.appachhi.sdk.monitor.battery.BatteryDataObject;
+import com.appachhi.sdk.monitor.battery.BatteryDetailUtils;
+import com.appachhi.sdk.monitor.battery.DataListener;
 import com.appachhi.sdk.monitor.startup.StartupTimeManager;
 
 
-public class AppachhiInitializer extends ContentProvider {
+public class AppachhiInitializer extends ContentProvider implements DataListener {
     public static final String TAG = "AppachhiInitializer";
 
     public StartupTimeManager startupTimeManager;
@@ -54,6 +59,14 @@ public class AppachhiInitializer extends ContentProvider {
         editor.apply();
 
 
+       /* BatteryDetailUtils batteryDetailUtils = new BatteryDetailUtils();
+        BatteryDataObject batteryDataObject = batteryDetailUtils.fetchBatteryData(context);
+        BatteryBasicDetails batteryBasicDetails = new BatteryBasicDetails();
+        batteryBasicDetails.fetchbatterydetails((Activity) context);*/
+
+
+
+      //  Log.d(TAG, "attachInfo: Battery " + batteryDataObject.getPerfBatteryCapacity());
 
         startupTimeManager = new StartupTimeManager(context);
         cold_starttime = SystemClock.elapsedRealtime();
@@ -67,6 +80,11 @@ public class AppachhiInitializer extends ContentProvider {
         } else {
             super.attachInfo(context, info);
         }
+    }
+
+    @Override
+    public void onDataReceive(BatteryDataObject batteryDataObject) {
+        Log.d(TAG, "onDataReceive: Battery Data : " + batteryDataObject.getPerfBatteryCapacity());
     }
 
 
@@ -96,5 +114,6 @@ public class AppachhiInitializer extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
     }
+
 
 }
