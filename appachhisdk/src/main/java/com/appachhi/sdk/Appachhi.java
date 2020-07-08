@@ -1,45 +1,48 @@
-package com.appachhi.sdk;
+ package com.appachhi.sdk;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.ServiceConnection;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.os.SystemClock;
-import android.util.Log;
+        import android.content.ComponentName;
+        import android.content.Context;
+        import android.content.ServiceConnection;
+        import android.os.Build;
+        import android.os.Bundle;
+        import android.os.IBinder;
+        import android.os.Parcel;
+        import android.os.Parcelable;
+        import android.os.SystemClock;
+        import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.appachhi.sdk.database.AppachhiDB;
-import com.appachhi.sdk.instrument.network.internal.HttpMetric;
-import com.appachhi.sdk.instrument.network.internal.HttpMetricSavingManager;
-import com.appachhi.sdk.instrument.trace.MethodTrace;
-import com.appachhi.sdk.instrument.trace.MethodTraceSavingManager;
-import com.appachhi.sdk.instrument.transition.ScreenTransitionFeatureModule;
-import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
+        import com.appachhi.sdk.instrument.network.internal.HttpMetric;
+        import com.appachhi.sdk.instrument.network.internal.HttpMetricSavingManager;
+        import com.appachhi.sdk.instrument.trace.MethodTrace;
+        import com.appachhi.sdk.instrument.trace.MethodTraceSavingManager;
+        import com.appachhi.sdk.instrument.transition.ScreenTransitionFeatureModule;
+        import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
+import com.appachhi.sdk.monitor.battery.component.BatteryDataFeatureModule;
 import com.appachhi.sdk.monitor.cpu.CpuUsageInfoFeatureModule;
-import com.appachhi.sdk.monitor.fps.FpsFeatureModule;
-import com.appachhi.sdk.monitor.framedrop.FrameDropFeatureModule;
-import com.appachhi.sdk.monitor.logs.LogsFeatureModule;
-import com.appachhi.sdk.monitor.memory.GCInfoFeatureModule;
-import com.appachhi.sdk.monitor.memory.MemoryInfoFeatureModule;
-import com.appachhi.sdk.monitor.memoryleak.MemoryLeakFeatureModule;
-import com.appachhi.sdk.monitor.network.NetworkFeatureModule;
-import com.appachhi.sdk.monitor.screen.ScreenCaptureFeatureModule;
-import com.appachhi.sdk.monitor.startup.StartupDataModule;
-import com.appachhi.sdk.monitor.startup.StartupFeatureModule;
-import com.appachhi.sdk.monitor.startup.StartupTimeManager;
-import com.appachhi.sdk.sync.SessionManager;
+        import com.appachhi.sdk.monitor.fps.FpsFeatureModule;
+        import com.appachhi.sdk.monitor.framedrop.FrameDropFeatureModule;
+        import com.appachhi.sdk.monitor.logs.LogsFeatureModule;
+        import com.appachhi.sdk.monitor.memory.GCInfoFeatureModule;
+        import com.appachhi.sdk.monitor.memory.MemoryInfoFeatureModule;
+        import com.appachhi.sdk.monitor.memoryleak.MemoryLeakFeatureModule;
+        import com.appachhi.sdk.monitor.network.NetworkFeatureModule;
+        import com.appachhi.sdk.monitor.screen.ScreenCaptureFeatureModule;
+        import com.appachhi.sdk.monitor.startup.StartupDataModule;
+        import com.appachhi.sdk.monitor.startup.StartupFeatureModule;
+        import com.appachhi.sdk.monitor.startup.StartupTimeManager;
+        import com.appachhi.sdk.sync.SessionManager;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+        import java.util.LinkedList;
+        import java.util.List;
+        import java.util.Map;
+        import java.util.WeakHashMap;
+        import java.util.concurrent.ExecutorService;
+        import java.util.concurrent.Executors;
 
 public class Appachhi {
     // Constants
@@ -195,6 +198,49 @@ public class Appachhi {
         return new HttpMetric(Appachhi.getInstance().getHttpMetricSavingManager());
     }
 
+
+    // Methods for Perfachhi Config
+
+    public void addMemoryInfoModule() {
+        this.featureModules.add(new MemoryInfoFeatureModule(application, db.memoryDao(), dbExecutor, sessionManager));
+    }
+
+    public void addGCModule() {
+        this.featureModules.add(new GCInfoFeatureModule(db.gcDao(), dbExecutor, sessionManager));
+    }
+
+    public void addNetworkUsageModule () {
+        this.featureModules.add(new NetworkFeatureModule(db.networkDao(), dbExecutor, sessionManager));
+    }
+
+    public void addCpuUsage() {
+        this.featureModules.add(new CpuUsageInfoFeatureModule(db.cpuUsageDao(), dbExecutor, sessionManager));
+    }
+
+    public void addFpsModule() {
+        this.featureModules.add(new FpsFeatureModule(db.fpsDao(), dbExecutor, sessionManager));
+    }
+
+    public void addMemoryLeakModule() {
+        this.featureModules.add(new MemoryLeakFeatureModule(application, db.memoryLeakDao(), dbExecutor, sessionManager));
+    }
+
+    public void addFrameDropModule() {
+        this.featureModules.add(new FrameDropFeatureModule(application, dbExecutor, sessionManager, db.frameDropDao()));
+    }
+
+    public void addScreenCaptureModule() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            this.featureModules.add(new ScreenCaptureFeatureModule(application.getApplicationContext(), sessionManager, db.screenshotDao(), dbExecutor));
+        }
+    }
+
+     /*
+     * End of Methods
+     *
+     * */
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private List<FeatureModule> addModules(Application application) {
 
         Log.d(TAG, "addModules: Called");
@@ -213,6 +259,7 @@ public class Appachhi {
         featureModules.add(new ScreenTransitionFeatureModule(ScreenTransitionManager.getInstance(), db.screenTransitionDao(), dbExecutor, sessionManager));
         featureModules.add(new LogsFeatureModule(application.getApplicationContext(), sessionManager, db.logsDao(), dbExecutor));
         featureModules.add(new StartupFeatureModule(application.getApplicationContext(), db.startupDao(), dbExecutor, sessionManager));
+        featureModules.add(new BatteryDataFeatureModule(application.getApplicationContext(), db.batteryDataDao(), dbExecutor, sessionManager));
         return featureModules;
     }
 
@@ -342,7 +389,7 @@ public class Appachhi {
                 Log.d(TAG, String.format("onActivityStarted: %s", activity.getComponentName()));
             }
             incrementNumRunningActivities();
-           // decideScreenshotCapture(activity, numRunningActivities);
+            // decideScreenshotCapture(activity, numRunningActivities);
 
         }
 
@@ -422,7 +469,7 @@ public class Appachhi {
 
             decrementNumRunningActivities();
 
-           // decideScreenshotCapture(activity, numRunningActivities);
+            // decideScreenshotCapture(activity, numRunningActivities);
         }
 
         @Override

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.appachhi.sdk.database.dao.APICallDao;
+import com.appachhi.sdk.database.dao.BatteryDataDao;
 import com.appachhi.sdk.database.dao.CpuUsageDao;
 import com.appachhi.sdk.database.dao.FpsDao;
 import com.appachhi.sdk.database.dao.FrameDropDao;
@@ -37,6 +38,7 @@ public class AppachhiDB {
     private FrameDropDao frameDropDao;
     private static final String DB_NAME = "appachhi";
     private StartupDao startupDao;
+    private BatteryDataDao batteryDataDao;
 
     private AppachhiDB(SQLiteDatabase sqLiteDatabase) {
         sessionDao = new SessionDao(sqLiteDatabase);
@@ -53,6 +55,7 @@ public class AppachhiDB {
         methodTraceDao = new MethodTraceDao(sqLiteDatabase);
         frameDropDao = new FrameDropDao(sqLiteDatabase);
         startupDao = new StartupDao(sqLiteDatabase);
+        batteryDataDao = new BatteryDataDao((sqLiteDatabase));
 
     }
 
@@ -117,6 +120,10 @@ public class AppachhiDB {
 
     public StartupDao startupDao() {
         return startupDao;
+    }
+
+    public BatteryDataDao batteryDataDao() {
+        return batteryDataDao;
     }
 
 }

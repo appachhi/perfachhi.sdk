@@ -175,6 +175,21 @@ public class AppachhiSqlOpenHelper extends SQLiteOpenHelper {
                 "syncStatus INT" +
                 ")";
 
+        String createBatteryDataTable = "CREATE TABLE IF NOT EXISTS battery_stats (" +
+                "_id TEXT PRIMARY KEY NOT NULL," +
+                "batteryPercentage TEXT," +
+                "batteryPluggedInStatus TEXT," +
+                "batteryDeviceConsumption TEXT," +
+                "batteryAppConsumption TEXT," +
+                "batteryTemperature TEXT," +
+                "batteryVoltage TEXT," +
+                "batteryDischargeRate TEXT," +
+                "sessionId TEXT," +
+                "executionTime INT," +
+                "sessionTime INT," +
+                "syncStatus INT" +
+                ")";
+
         db.execSQL(createSessionTable);
         db.execSQL(createAPIEntryTable);
         db.execSQL(createCpuUsageTable);
@@ -189,6 +204,7 @@ public class AppachhiSqlOpenHelper extends SQLiteOpenHelper {
         db.execSQL(createTransitionTable);
         db.execSQL(createNetworkUsageTable);
         db.execSQL(createStartupTimeTable);
+        db.execSQL(createBatteryDataTable);
     }
 
     @Override

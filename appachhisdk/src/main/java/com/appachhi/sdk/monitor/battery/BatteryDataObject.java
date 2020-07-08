@@ -2,11 +2,8 @@ package com.appachhi.sdk.monitor.battery;
 
 public class BatteryDataObject {
 
-    private int processid;
-    private int userid;
     private String perfDeviceOrientationText;
     private String perfScreenStatusText;
-    private float perfRefreshrate;
     private int rotation;
     private StringBuilder perfTasklist;
     private StringBuilder perfProcesslist;
@@ -20,6 +17,127 @@ public class BatteryDataObject {
     private String perfBatteryHealthLabel;
     private String perfPluggedInSource;
     private float perfBatteryPercentage;
+    private String perfPowerSaveMode;
+    private String perfLifeCycleState;
+    private float perfBatteryAvailablemA;
+    private String perfDateTime,gpsEnabled,perfNetworkType,perfBTState, perfWiFiState,cellularstatetext;
+    private boolean btEnabled,wifiEnabled;
+    private boolean bthastransport = false;
+    private boolean wifihastransport = false;
+    private boolean cellularhastransport = false;
+
+    public boolean Wifihastransport() {
+        return wifihastransport;
+    }
+
+    public void setWifihastransport(boolean wifihastransport) {
+        this.wifihastransport = wifihastransport;
+    }
+
+    public boolean cellularhastransport() {
+        return cellularhastransport;
+    }
+
+    public void setCellularhastransport(boolean cellularhastransport) {
+        this.cellularhastransport = cellularhastransport;
+    }
+
+    public boolean bthastransport() {
+        return bthastransport;
+    }
+
+    public void setBthastransport(boolean bthastransport) {
+        this.bthastransport = bthastransport;
+    }
+
+
+    public String getCellularstatetext() {
+        return cellularstatetext;
+    }
+
+    public void setCellularstatetext(String cellularstatetext) {
+        this.cellularstatetext = cellularstatetext;
+    }
+
+    public String getPerfWiFiState() {
+        return perfWiFiState;
+    }
+
+    public void setPerfWiFiState(String perfWiFiState) {
+        this.perfWiFiState = perfWiFiState;
+    }
+
+    public String getPerfBTState() {
+        return perfBTState;
+    }
+
+    public void setPerfBTState(String perfBTState) {
+        this.perfBTState = perfBTState;
+    }
+
+    public boolean isWifiEnabled() {
+        return wifiEnabled;
+    }
+
+    public void setWifiEnabled(boolean wifiEnabled) {
+        this.wifiEnabled = wifiEnabled;
+    }
+
+    public boolean isBtEnabled() {
+        return btEnabled;
+    }
+
+    public void setBtEnabled(boolean btEnabled) {
+        this.btEnabled = btEnabled;
+    }
+
+    public String getPerfNetworkType() {
+        return perfNetworkType;
+    }
+
+    public void setPerfNetworkType(String perfNetworkType) {
+        this.perfNetworkType = perfNetworkType;
+    }
+
+    public String isGpsEnabled() {
+        return gpsEnabled;
+    }
+
+    public void setGpsEnabled(String gpsEnabled) {
+        this.gpsEnabled = gpsEnabled;
+    }
+
+    public String getPerfDateTime() {
+        return perfDateTime;
+    }
+
+    public void setPerfDateTime(String perfDateTime) {
+        this.perfDateTime = perfDateTime;
+    }
+
+    public float getPerfBatteryAvailablemA() {
+        return perfBatteryAvailablemA;
+    }
+
+    public void setPerfBatteryAvailablemA(float perfBatteryAvailablemA) {
+        this.perfBatteryAvailablemA = perfBatteryAvailablemA;
+    }
+
+    public String getPerfLifeCycleState() {
+        return perfLifeCycleState;
+    }
+
+    public void setPerfLifeCycleState(String perfLifeCycleState) {
+        this.perfLifeCycleState = perfLifeCycleState;
+    }
+
+    public String getPerfPowerSaveMode() {
+        return perfPowerSaveMode;
+    }
+
+    public void setPerfPowerSaveMode(String perfPowerSaveMode) {
+        this.perfPowerSaveMode = perfPowerSaveMode;
+    }
 
     public float getPerfBatteryPercentage() {
         return perfBatteryPercentage;
@@ -117,21 +235,7 @@ public class BatteryDataObject {
         perfTasklist = perftasklist;
     }
 
-    public int getUserid() {
-        return userid;
-    }
 
-    public void setUserid(int userid) {
-        this.userid = userid;
-    }
-
-    public int getProcessid() {
-        return processid;
-    }
-
-    public void setProcessid(int processid) {
-        this.processid = processid;
-    }
 
     public String getScreenstatustext() {
         return perfScreenStatusText;
@@ -141,13 +245,7 @@ public class BatteryDataObject {
         this.perfScreenStatusText = screenstatustext;
     }
 
-    public float getPerfRefreshrate() {
-        return perfRefreshrate;
-    }
 
-    public void setPerfRefreshrate(float perfRefreshrate) {
-        this.perfRefreshrate = perfRefreshrate;
-    }
 
     public int getRotation() {
         return rotation;

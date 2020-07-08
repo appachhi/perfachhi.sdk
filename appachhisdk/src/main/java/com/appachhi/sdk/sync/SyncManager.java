@@ -2,19 +2,21 @@ package com.appachhi.sdk.sync;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.content.ContentProvider;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.appachhi.sdk.Appachhi;
 import com.appachhi.sdk.database.AppachhiDB;
 import com.appachhi.sdk.database.dao.APICallDao;
+import com.appachhi.sdk.database.dao.BatteryDataDao;
 import com.appachhi.sdk.database.dao.CpuUsageDao;
 import com.appachhi.sdk.database.dao.FpsDao;
 import com.appachhi.sdk.database.dao.FrameDropDao;
@@ -31,6 +33,7 @@ import com.appachhi.sdk.database.dao.StartupDao;
 import com.appachhi.sdk.database.entity.APICallEntity;
 import com.appachhi.sdk.database.entity.BaseEntity;
 import com.appachhi.sdk.database.entity.BaseFileEntity;
+import com.appachhi.sdk.database.entity.BatteryEntity;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
 import com.appachhi.sdk.database.entity.FpsEntity;
 import com.appachhi.sdk.database.entity.FrameDropEntity;
@@ -46,15 +49,13 @@ import com.appachhi.sdk.database.entity.StartupEntity;
 import com.appachhi.sdk.database.entity.TransitionStatEntity;
 import com.appachhi.sdk.monitor.battery.BatteryBasicDetails;
 import com.appachhi.sdk.monitor.battery.BatteryDataObject;
-import com.appachhi.sdk.monitor.battery.BatteryDetailUtils;
+import com.appachhi.sdk.monitor.battery.DataListener;
 import com.appachhi.sdk.monitor.devicedetails.DeviceDataObject;
 import com.appachhi.sdk.monitor.devicedetails.DeviceDetailUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,10 +63,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -78,12 +77,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class SyncManager {
     public static final String TAG = "SyncManager";
     private static final String BASE_URL = "https://perfachhi.appspot.com";
-    //    private static final String BASE_URL = "https://796cae3a73b9.ngrok.io";
+   // private static final String BASE_URL = "https:/34a547c86bb9.ngrok.io";
 
     private static final String DEVICE_ID_KEY = "device_id";
     private static final String SECURE_ID_KEY = "secure_id";
@@ -106,8 +104,6 @@ public class SyncManager {
     public static DeviceDetailUtils deviceDetailUtils;
     public static DeviceDataObject deviceDataObject;
 
-    public static BatteryDetailUtils batteryDetailUtils;
-    public static BatteryDataObject batteryDataObject;
 
 
     private SyncManager(SharedPreferences appachhiPref) {
@@ -127,13 +123,11 @@ public class SyncManager {
         deviceDetailUtils = new DeviceDetailUtils();
         deviceDataObject = deviceDetailUtils.fetchDeviceData(application.getBaseContext());
 
-        batteryDetailUtils = new BatteryDetailUtils();
-        batteryDataObject = batteryDetailUtils.fetchBatteryData(application.getBaseContext());
-
 
 
         return new SyncManager(application.getSharedPreferences("appachhi_pref", Context.MODE_PRIVATE));
     }
+
 
     private static void loadApiKey(Application application) {
         try {
@@ -223,6 +217,9 @@ public class SyncManager {
             uploadLogs(allSyncedSessionIds, appachhiDB.logsDao());
 
             uploadStartupTime(allSyncedSessionIds, appachhiDB.startupDao());
+
+            uploadBatteryStats(allSyncedSessionIds, appachhiDB.batteryDataDao());
+            // Check flag f
 
         //}
 
@@ -370,6 +367,16 @@ public class SyncManager {
         });
     }
 
+    private void uploadBatteryStats(List<String> sessionIds, final BatteryDataDao batteryDataDao) {
+        List<BatteryEntity> batteryEntities = batteryDataDao.allUnSyncedBatteryEntityForSession(sessionIds);
+        uploadMetric("battery_stats", batteryEntities, new OnMetricUploadListener() {
+            @Override
+            public void onMetricUpload(List<String> ids, List<String> filepaths) {
+                Log.d(TAG, "onMetricUpload: Battery Data IDS : " + ids + "\n");
+                batteryDataDao.updateSucessSyncStatus(ids);
+            }
+        });
+    }
 
    /* private void uploadStartupTime(List<String> sessionIds, final StartupDao startupDao) {
         Log.d(TAG, "uploadStartupTime: Entered here. " + sessionIds.get(1));
@@ -421,7 +428,10 @@ public class SyncManager {
 
                 }
 
-
+             /*   if (TextUtils.equals(path, "battery_stats")) {
+                    Log.d(TAG, "run: JSON : " + jsonArray);
+                }
+*/
 
                 List<String> filepaths = new ArrayList<>();
 
@@ -626,7 +636,7 @@ public class SyncManager {
         }
         try {
 
-            batteryDataObject.getPerfBatteryCapacity();
+
 
             Log.d(TAG, "Uploading device details");
             JSONArray jsonArray = new JSONArray();
@@ -681,6 +691,7 @@ public class SyncManager {
         }
 
     }
+
 
 
     interface OnMetricUploadListener {

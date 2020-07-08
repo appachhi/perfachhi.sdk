@@ -23,7 +23,7 @@ public class MemoryInfoDataObserver implements DataObserver<MemoryInfo> {
     private ExecutorService databaseExecutor;
     private SessionManager sessionManager;
 
-    MemoryInfoDataObserver(MemoryDao memoryDao, ExecutorService databaseExecutor, SessionManager sessionManager) {
+    public MemoryInfoDataObserver(MemoryDao memoryDao, ExecutorService databaseExecutor, SessionManager sessionManager) {
         this.memoryDao = memoryDao;
         this.databaseExecutor = databaseExecutor;
         this.sessionManager = sessionManager;

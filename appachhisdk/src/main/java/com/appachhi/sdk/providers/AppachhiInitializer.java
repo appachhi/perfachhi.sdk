@@ -1,7 +1,6 @@
 package com.appachhi.sdk.providers;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Application;
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -15,9 +14,7 @@ import android.provider.Settings;
 import android.util.Log;
 
 import com.appachhi.sdk.Appachhi;
-import com.appachhi.sdk.monitor.battery.BatteryBasicDetails;
 import com.appachhi.sdk.monitor.battery.BatteryDataObject;
-import com.appachhi.sdk.monitor.battery.BatteryDetailUtils;
 import com.appachhi.sdk.monitor.battery.DataListener;
 import com.appachhi.sdk.monitor.startup.StartupTimeManager;
 

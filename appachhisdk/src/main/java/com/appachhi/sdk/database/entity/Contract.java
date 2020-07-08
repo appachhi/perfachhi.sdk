@@ -645,6 +645,75 @@ public class Contract {
         }
     }
 
+
+    public static class BatteryEntry implements BaseColumns {
+        public final static String TABLE_NAME = "battery_stats";
+
+        public static final String COLUMN_BATTERY_PERCENTAGE_VALUE = "batteryPercentage";
+        public static final String COLUMN_BATTERY_PLUGGED_IN_STATUS_VALUE = "batteryPluggedInStatus";
+        public static final String COLUMN_BATTERY_DEVICE_CONSUMPTION_VALUE = "batteryDeviceConsumption";
+        public static final String COLUMN_BATTERY_APP_CONSUMPTION_VALUE = "batteryAppConsumption";
+        public static final String COLUMN_BATTERY_TEMPERATURE = "batteryTemperature";
+        public static final String COLUMN_BATTERY_VOLTAGE = "batteryVoltage";
+        public static final String COLUMN_BATTERY_DISCHARGE_VALUE = "batteryDischargeRate";
+
+        public static final String COLUMN_SESSION_ID = "sessionId";
+        public static final String COLUMN_EXECUTION_TIME = "executionTime";
+        public static final String COLUMN_SESSION_TIME = "sessionTime";
+        public static final String COLUMN_SYNC_STATUS = "syncStatus";
+
+        public static ContentValues toContentValues(BatteryEntity batteryEntity) {
+            ContentValues values = new ContentValues();
+            values.put(_ID, batteryEntity.getId());
+            values.put(COLUMN_BATTERY_PERCENTAGE_VALUE, batteryEntity.getBatteryPercentage());
+            values.put(COLUMN_BATTERY_PLUGGED_IN_STATUS_VALUE, batteryEntity.getBatteryPluggedInStatus());
+            values.put(COLUMN_BATTERY_DEVICE_CONSUMPTION_VALUE, batteryEntity.getBatteryDeviceConsumption());
+            values.put(COLUMN_BATTERY_APP_CONSUMPTION_VALUE, batteryEntity.getBatteryAppConsumption());
+            values.put(COLUMN_BATTERY_TEMPERATURE, batteryEntity.getBatteryTemperature());
+            values.put(COLUMN_BATTERY_VOLTAGE, batteryEntity.getBatteryVoltage());
+            values.put(COLUMN_BATTERY_DISCHARGE_VALUE, batteryEntity.getBatteryDischargeRate());
+
+            values.put(COLUMN_SESSION_ID, batteryEntity.getSessionId());
+            values.put(COLUMN_EXECUTION_TIME, batteryEntity.getExecutionTime());
+            values.put(COLUMN_SESSION_TIME, batteryEntity.getSessionTime());
+            values.put(COLUMN_SYNC_STATUS, batteryEntity.getSyncStatus());
+            return values;
+        }
+
+        public static ContentValues updateSyncStatusValue() {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(COLUMN_SYNC_STATUS, 1);
+            return contentValues;
+        }
+
+        public static BatteryEntity fromCursor(Cursor cursor) {
+
+            //Change entry values
+            BatteryEntity batteryEntity = new BatteryEntity();
+            batteryEntity.setId(cursor.getString(cursor.getColumnIndex(_ID)));
+            batteryEntity.setBatteryPercentage(cursor.getString(cursor.getColumnIndex(COLUMN_BATTERY_PERCENTAGE_VALUE)));
+            batteryEntity.setBatteryPluggedInStatus(cursor.getString(cursor.getColumnIndex(COLUMN_BATTERY_PLUGGED_IN_STATUS_VALUE)));
+            batteryEntity.setBatteryDeviceConsumption(cursor.getString(cursor.getColumnIndex(COLUMN_BATTERY_DEVICE_CONSUMPTION_VALUE)));
+            batteryEntity.setBatteryAppConsumption(cursor.getString(cursor.getColumnIndex(COLUMN_BATTERY_APP_CONSUMPTION_VALUE)));
+            batteryEntity.setBatteryTemperature(cursor.getString(cursor.getColumnIndex(COLUMN_BATTERY_TEMPERATURE)));
+            batteryEntity.setBatteryVoltage(cursor.getString(cursor.getColumnIndex(COLUMN_BATTERY_VOLTAGE)));
+            batteryEntity.setBatteryDischargeRate(cursor.getString(cursor.getColumnIndex(COLUMN_BATTERY_DISCHARGE_VALUE)));
+
+            batteryEntity.setSessionId(cursor.getString(cursor.getColumnIndex(COLUMN_SESSION_ID)));
+            batteryEntity.setExecutionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_EXECUTION_TIME)));
+            batteryEntity.setSessionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_SESSION_TIME)));
+            batteryEntity.setSyncStatus(cursor.getInt(cursor.getColumnIndex(COLUMN_SYNC_STATUS)));
+
+
+            return batteryEntity;
+        }
+
+        public static String fromCursorToId(Cursor cursor) {
+            return cursor.getString(cursor.getColumnIndex(_ID));
+        }
+    }
+
+
     public static class MethodTraceEntry implements BaseColumns {
         public final static String TABLE_NAME = "method_traces";
 

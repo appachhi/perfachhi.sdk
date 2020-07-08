@@ -96,7 +96,7 @@ public class MemoryLeakDataModule extends BaseDataModule<List<MemoryLeakInfo>> i
     private static void showNotification(Context context, CharSequence message) {
 
         int notificationId = (int) (SystemClock.uptimeMillis() / 1000);
- //       createNotificationChannel(context);
+        //       createNotificationChannel(context);
 //        Notification notification = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
 //                .setContentTitle("Memory Leaked")
 //                .setContentText(message)

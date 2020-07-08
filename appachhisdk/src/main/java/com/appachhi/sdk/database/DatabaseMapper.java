@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Build;
 
 import com.appachhi.sdk.database.entity.APICallEntity;
+import com.appachhi.sdk.database.entity.BatteryEntity;
 import com.appachhi.sdk.database.entity.CpuUsageEntity;
 import com.appachhi.sdk.database.entity.FpsEntity;
 import com.appachhi.sdk.database.entity.FrameDropEntity;
@@ -19,6 +20,7 @@ import com.appachhi.sdk.database.entity.TransitionStatEntity;
 import com.appachhi.sdk.instrument.network.internal.HttpMetric;
 import com.appachhi.sdk.instrument.trace.MethodTrace;
 import com.appachhi.sdk.instrument.transition.TransitionStat;
+import com.appachhi.sdk.monitor.battery.component.BatteryDataInfo;
 import com.appachhi.sdk.monitor.cpu.CpuUsageInfo;
 import com.appachhi.sdk.monitor.memory.GCInfo;
 import com.appachhi.sdk.monitor.memory.MemoryInfo;
@@ -86,6 +88,11 @@ public class DatabaseMapper {
 
     public static StartupEntity fromStartupTimeInfotoStartupEntity(StartupTimeInfo startupTimeInfo, String sessionId, long sessionTimeElapsed) {
         return new StartupEntity(startupTimeInfo.getColdStartValue(), startupTimeInfo.getWarmStartValue(), sessionId, sessionTimeElapsed);
+    }
+
+    public static BatteryEntity fromBatteryDataInfotoBatteryEntity(BatteryDataInfo batteryDataInfo, String sessionId, long sessionTimeElapsed) {
+        return new BatteryEntity(batteryDataInfo.getBatteryPercentage(), batteryDataInfo.getBatteryPluggedInStatus(), batteryDataInfo.getBatteryDeviceConsumption(), batteryDataInfo.getBatteryAppConsumption(),
+                batteryDataInfo.getBatteryTemperature(), batteryDataInfo.getBatteryVoltage(), batteryDataInfo.getBatteryDischargeRate(), sessionId, sessionTimeElapsed);
     }
 
     public static TransitionStatEntity fromTransitionStatToTransitionStatEntity(TransitionStat transitionStat, String sessionId, long sessionTimeElapsed) {
