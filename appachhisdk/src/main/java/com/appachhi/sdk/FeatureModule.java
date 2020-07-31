@@ -19,6 +19,8 @@ public abstract class FeatureModule<T> implements DataModule<T>, ViewDataObserve
     private ViewDataObserver<T> viewDataObserver;
     private boolean isOverlayEnabled = false;
 
+    public boolean started;
+
     public FeatureModule(DataModule<T> publisher, DataObserver<T> subscriber) {
         this.publisher = publisher;
         this.subscriber = subscriber;
@@ -31,6 +33,7 @@ public abstract class FeatureModule<T> implements DataModule<T>, ViewDataObserve
 
     @Override
     public void start() {
+        started = true;
         publisher.addObserver(subscriber);
         if (viewDataObserver != null) {
             publisher.addObserver(viewDataObserver);
@@ -40,6 +43,7 @@ public abstract class FeatureModule<T> implements DataModule<T>, ViewDataObserve
 
     @Override
     public void stop() {
+        started = false;
         publisher.removeObserver(subscriber);
         if (viewDataObserver != null) {
             publisher.removeObserver(viewDataObserver);

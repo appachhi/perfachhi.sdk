@@ -1,55 +1,77 @@
- package com.appachhi.sdk;
+package com.appachhi.sdk;
 
 import android.app.Activity;
 import android.app.Application;
-        import android.content.ComponentName;
-        import android.content.Context;
-        import android.content.ServiceConnection;
-        import android.os.Build;
-        import android.os.Bundle;
-        import android.os.IBinder;
-        import android.os.Parcel;
-        import android.os.Parcelable;
-        import android.os.SystemClock;
-        import android.util.Log;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.SystemClock;
+import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
 import com.appachhi.sdk.database.AppachhiDB;
-        import com.appachhi.sdk.instrument.network.internal.HttpMetric;
-        import com.appachhi.sdk.instrument.network.internal.HttpMetricSavingManager;
-        import com.appachhi.sdk.instrument.trace.MethodTrace;
-        import com.appachhi.sdk.instrument.trace.MethodTraceSavingManager;
-        import com.appachhi.sdk.instrument.transition.ScreenTransitionFeatureModule;
-        import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
+import com.appachhi.sdk.instrument.network.internal.HttpMetric;
+import com.appachhi.sdk.instrument.network.internal.HttpMetricSavingManager;
+import com.appachhi.sdk.instrument.trace.MethodTrace;
+import com.appachhi.sdk.instrument.trace.MethodTraceSavingManager;
+import com.appachhi.sdk.instrument.transition.ScreenTransitionFeatureModule;
+import com.appachhi.sdk.instrument.transition.ScreenTransitionManager;
 import com.appachhi.sdk.monitor.battery.component.BatteryDataFeatureModule;
 import com.appachhi.sdk.monitor.cpu.CpuUsageInfoFeatureModule;
-        import com.appachhi.sdk.monitor.fps.FpsFeatureModule;
-        import com.appachhi.sdk.monitor.framedrop.FrameDropFeatureModule;
-        import com.appachhi.sdk.monitor.logs.LogsFeatureModule;
-        import com.appachhi.sdk.monitor.memory.GCInfoFeatureModule;
-        import com.appachhi.sdk.monitor.memory.MemoryInfoFeatureModule;
-        import com.appachhi.sdk.monitor.memoryleak.MemoryLeakFeatureModule;
-        import com.appachhi.sdk.monitor.network.NetworkFeatureModule;
-        import com.appachhi.sdk.monitor.screen.ScreenCaptureFeatureModule;
-        import com.appachhi.sdk.monitor.startup.StartupDataModule;
-        import com.appachhi.sdk.monitor.startup.StartupFeatureModule;
-        import com.appachhi.sdk.monitor.startup.StartupTimeManager;
-        import com.appachhi.sdk.sync.SessionManager;
+import com.appachhi.sdk.monitor.fps.FpsDataModule;
+import com.appachhi.sdk.monitor.fps.FpsFeatureModule;
+import com.appachhi.sdk.monitor.framedrop.FrameDropFeatureModule;
+import com.appachhi.sdk.monitor.logs.LogsFeatureModule;
+import com.appachhi.sdk.monitor.memory.GCInfoFeatureModule;
+import com.appachhi.sdk.monitor.memory.MemoryInfoFeatureModule;
+import com.appachhi.sdk.monitor.memoryleak.MemoryLeakFeatureModule;
+import com.appachhi.sdk.monitor.network.NetworkFeatureModule;
+import com.appachhi.sdk.monitor.screen.ScreenCaptureFeatureModule;
+import com.appachhi.sdk.monitor.startup.StartupDataModule;
+import com.appachhi.sdk.monitor.startup.StartupFeatureModule;
+import com.appachhi.sdk.monitor.startup.StartupTimeManager;
+import com.appachhi.sdk.sync.SessionManager;
 
-        import java.util.LinkedList;
-        import java.util.List;
-        import java.util.Map;
-        import java.util.WeakHashMap;
-        import java.util.concurrent.ExecutorService;
-        import java.util.concurrent.Executors;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 
 public class Appachhi {
     // Constants
     static final String ACTION_UNBIND = "com.appachhi.sdk.overlay.ACTION_UNBIND";
+    private static String KEY = null;
     public static boolean DEBUG = false;
     private static final String TAG = "Perfachhi-DEBUG";
 
+    Handler handler = new Handler();
+
+    FpsFeatureModule fpsFeatureModule;
+    FrameDropFeatureModule frameDropFeatureModule;
+    MemoryInfoFeatureModule memoryInfoFeatureModule;
+    MemoryLeakFeatureModule memoryLeakFeatureModule;
+    NetworkFeatureModule networkUsageModule;
+    GCInfoFeatureModule gcInfoFeatureModule;
+    BatteryDataFeatureModule batteryDataFeatureModule;
+
+
+    //   private final Runnable checkConfigRunnable;
     private static Appachhi instance;
     private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -60,7 +82,7 @@ public class Appachhi {
             // We've bound to OverlayService, cast the IBinder and get OverlayService getInstance
             OverlayService.OverlayServiceBinder binder = (OverlayService.OverlayServiceBinder) serviceBinder;
             overlayService = binder.getService();
-            overlayService.setOverlayModules(featureModules);
+            overlayService.setOverlayModules(defaultFeatureModule);
             overlayService.setOverlayViewManager(overlayViewManager);
             overlayService.startModules();
         }
@@ -86,6 +108,8 @@ public class Appachhi {
     };
 
     private List<FeatureModule> featureModules;
+
+    private List<FeatureModule> defaultFeatureModule;
 
     private OverlayViewManager overlayViewManager;
 
@@ -113,11 +137,20 @@ public class Appachhi {
     private boolean warmStartStatus = true;
     private boolean passedOnCreate = true;
     private StartupDataModule startupDataModule;
+    private OkHttpClient okHttpClient;
 
+    private SharedPreferences appachhiPref;
 
-    private Appachhi(Application application, Config config) {
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public Appachhi(Application application, Config config) {
         this.application = application;
         this.config = config;
+
+        //  metricConfigManager = new MetricConfigManager(application);
+
+
+        appachhiPref = application.getSharedPreferences("appachhi_pref", Context.MODE_PRIVATE);
+
 
         // Creates DB
         db = AppachhiDB.getInstance(application);
@@ -131,6 +164,9 @@ public class Appachhi {
         methodTraceSavingManager = new MethodTraceSavingManager(db.methodTraceDao(), dbExecutor, sessionManager);
         httpMetricSavingManager = new HttpMetricSavingManager(db.apiCallDao(), dbExecutor, sessionManager);
 
+        //metricConfigManager = new MetricConfigManager(application);
+
+        this.defaultFeatureModule = adddefaultFeatureModules(application);
         // Build the feature modules
         this.featureModules = addModules(application);
         // Build Feature Configuration Manager
@@ -147,9 +183,93 @@ public class Appachhi {
 
 
         startupTimeManager = new StartupTimeManager(application.getApplicationContext());
+        //appachhiPref.registerOnSharedPreferenceChangeListener(this);
+        // loadApiKey(application);
+        // checkConfigStats();
+
+
 
     }
 
+       /* handler.postDelayed(new Runnable(){
+            public void run(){
+                //do something
+                Log.d(TAG, "run: Checking via handler.");
+
+                String fps = appachhiPref.getString("fps_status", "XXX");
+                if (TextUtils.equals(fps, "true")) {
+                    Log.d(TAG, "run: True");
+                    if (!status) {
+
+                        addFpsModule(true);
+                        status = true;
+
+                    }
+                }
+                handler.postDelayed(this, 2000);
+            }
+        }, 2000);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.d(TAG, "onSharedPreferenceChanged: CHANGED" + key);
+
+        String fps = sharedPreferences.getString("fps_status", "XXX");
+        if (TextUtils.equals(fps, "true")) {
+
+            if (!status) {
+
+               // addFpsModule();
+                status = true;
+            }Log.d(TAG, "onSharedPreferenceChanged: Fps is true");
+            *//*if (featureModules.contains(new FpsFeatureModule(db.fpsDao(), dbExecutor, sessionManager))) {
+
+            } else {
+                addFpsModule();
+                Log.d(TAG, "onSharedPreferenceChanged: Added FPS Module");
+            }*//*
+
+        }
+
+    }
+*/
+
+
+    //Trigger metrics from here.
+
+    /*  */
+
+
+    private OkHttpClient getClient() {
+        if (okHttpClient == null) {
+            okHttpClient = new OkHttpClient.Builder()
+                    .callTimeout(600, TimeUnit.SECONDS)
+                    .connectTimeout(600, TimeUnit.SECONDS)
+                    .followRedirects(true)
+                    .writeTimeout(60, TimeUnit.SECONDS)
+                    .build();
+        }
+        return okHttpClient;
+    }
+
+    private static void loadApiKey(Application application) {
+        Log.d(TAG, "loadApiKey: Entered");
+        try {
+            ApplicationInfo info = ((Context) application).getPackageManager().getApplicationInfo(application.getPackageName(), PackageManager.GET_META_DATA);
+            if (info.metaData == null) {
+                Log.w(TAG, "Perfachhi api key is missing");
+                return;
+            }
+            KEY = info.metaData.getString("perfachhi_api_key", null);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @SuppressWarnings("UnusedReturnValue")
     public static Appachhi init(Application application) {
         DEBUG = true;
@@ -201,44 +321,278 @@ public class Appachhi {
 
     // Methods for Perfachhi Config
 
-    public void addMemoryInfoModule() {
-        this.featureModules.add(new MemoryInfoFeatureModule(application, db.memoryDao(), dbExecutor, sessionManager));
+    public void addMemoryInfoModule(boolean status) {
+
+        if(memoryInfoFeatureModule == null) {
+            Log.d(TAG, "addMemoryInfoModule: addMemoryInfoModule module is null");
+
+            for (FeatureModule featureModule : this.featureModules) {
+                if (featureModule instanceof MemoryInfoFeatureModule) {
+                    memoryInfoFeatureModule = (MemoryInfoFeatureModule) featureModule;
+
+                }
+            }
+        } else {
+            Log.d(TAG, "addMemoryInfoModule: addMemoryInfoModule is not null. Already exists.");
+
+        }
+
+        if (status) {
+            if (!memoryInfoFeatureModule.started) {
+
+                Log.d(TAG, "checkConfigStatse: TRUE + addMemoryInfoModule feature module started : " + memoryInfoFeatureModule.started);
+                memoryInfoFeatureModule.start();
+
+            } else {
+                Log.d(TAG, "addMemoryInfoModule: addMemoryInfoModule feature module started : " + memoryInfoFeatureModule.started);
+            }
+        } else {
+            Log.d(TAG, "addMemoryInfoModule: FALSE");
+            memoryInfoFeatureModule.stop();
+        }
+
+
     }
 
-    public void addGCModule() {
-        this.featureModules.add(new GCInfoFeatureModule(db.gcDao(), dbExecutor, sessionManager));
+
+    public void addGCModule(boolean status) {
+
+        if(gcInfoFeatureModule == null) {
+            Log.d(TAG, "addGCModule: addGCModule module is null");
+
+            for (FeatureModule featureModule : this.featureModules) {
+                if (featureModule instanceof GCInfoFeatureModule) {
+                    gcInfoFeatureModule = (GCInfoFeatureModule) featureModule;
+
+                }
+            }
+        } else {
+            Log.d(TAG, "addGCModule: addGCModule is not null. Already exists.");
+
+        }
+
+        if (status) {
+            if (!gcInfoFeatureModule.started) {
+
+                Log.d(TAG, "checkConfigStatse: TRUE + addGCModule feature module started : " + gcInfoFeatureModule.started);
+                gcInfoFeatureModule.start();
+
+            } else {
+                Log.d(TAG, "addGCModule: addGCModule feature module started : " + gcInfoFeatureModule.started);
+            }
+        } else {
+            Log.d(TAG, "addGCModule: FALSE");
+            gcInfoFeatureModule.stop();
+        }
     }
 
-    public void addNetworkUsageModule () {
-        this.featureModules.add(new NetworkFeatureModule(db.networkDao(), dbExecutor, sessionManager));
+    public void addNetworkUsageModule (boolean status) {
+        if(networkUsageModule == null) {
+            Log.d(TAG, "addNetworkUsageModule: Fps module is null");
+
+            for (FeatureModule featureModule : this.featureModules) {
+                if (featureModule instanceof NetworkFeatureModule) {
+                    networkUsageModule = (NetworkFeatureModule) featureModule;
+
+                }
+            }
+        } else {
+            Log.d(TAG, "addNetworkUsageModule: addNetworkUsageModule is not null. Already exists.");
+
+        }
+
+        if (status) {
+            if (!networkUsageModule.started) {
+
+                Log.d(TAG, "checkConfigStatse: TRUE + addNetworkUsageModule feature module started : " + networkUsageModule.started);
+                networkUsageModule.start();
+
+            } else {
+                Log.d(TAG, "addFpsModule: addNetworkUsageModule feature module started : " + networkUsageModule.started);
+            }
+        } else {
+            Log.d(TAG, "addNetworkUsageModule: FALSE");
+            networkUsageModule.stop();
+        }
     }
 
     public void addCpuUsage() {
         this.featureModules.add(new CpuUsageInfoFeatureModule(db.cpuUsageDao(), dbExecutor, sessionManager));
     }
 
-    public void addFpsModule() {
-        this.featureModules.add(new FpsFeatureModule(db.fpsDao(), dbExecutor, sessionManager));
+    public void addFpsModule(boolean status) {
+        Log.d(TAG, "addFpsModule: Triggered");
+
+        // this.featureModules.add(new FpsFeatureModule(db.fpsDao(), dbExecutor, sessionManager));
+
+        if(fpsFeatureModule == null) {
+            Log.d(TAG, "addFpsModule: Fps module is null");
+
+            for (FeatureModule featureModule : this.featureModules) {
+                if (featureModule instanceof FpsFeatureModule) {
+                    fpsFeatureModule = (FpsFeatureModule) featureModule;
+
+                }
+            }
+        } else {
+            Log.d(TAG, "addFpsModule: FPS is not null. Already exists.");
+
+        }
+
+        if (status) {
+            if (!fpsFeatureModule.started) {
+
+                Log.d(TAG, "checkConfigStatse: TRUE + FPS feature module started : " + fpsFeatureModule.started);
+                fpsFeatureModule.start();
+
+            } else {
+                Log.d(TAG, "addFpsModule: FPS feature module started : " + fpsFeatureModule.started);
+            }
+        } else {
+            Log.d(TAG, "addFpsModule: FALSE");
+            fpsFeatureModule.stop();
+        }
+
     }
 
-    public void addMemoryLeakModule() {
-        this.featureModules.add(new MemoryLeakFeatureModule(application, db.memoryLeakDao(), dbExecutor, sessionManager));
+    public void addMemoryLeakModule(boolean status) {
+
+        if(memoryLeakFeatureModule == null) {
+            Log.d(TAG, "addMemoryLeakModule: addMemoryLeakModule module is null");
+
+            for (FeatureModule featureModule : this.featureModules) {
+                if (featureModule instanceof MemoryLeakFeatureModule) {
+                    memoryLeakFeatureModule = (MemoryLeakFeatureModule) featureModule;
+
+                }
+            }
+        } else {
+            Log.d(TAG, "addMemoryLeakModule: addMemoryLeakModule is not null. Already exists.");
+
+        }
+
+        if (status) {
+            if (!memoryLeakFeatureModule.started) {
+
+                Log.d(TAG, "checkConfigStatse: TRUE + addMemoryLeakModule feature module started : " + memoryLeakFeatureModule.started);
+                memoryLeakFeatureModule.start();
+
+            } else {
+                Log.d(TAG, "addFpsModule: addMemoryLeakModule feature module started : " + memoryLeakFeatureModule.started);
+            }
+        } else {
+            Log.d(TAG, "addMemoryLeakModule: FALSE");
+            memoryLeakFeatureModule.stop();
+        }
+
     }
 
-    public void addFrameDropModule() {
-        this.featureModules.add(new FrameDropFeatureModule(application, dbExecutor, sessionManager, db.frameDropDao()));
+    public void addFrameDropModule(boolean status) {
+
+        if(frameDropFeatureModule == null) {
+            Log.d(TAG, "addFrameDropModule: addFrameDropModule module is null");
+
+            for (FeatureModule featureModule : this.featureModules) {
+                if (featureModule instanceof FrameDropFeatureModule) {
+                    frameDropFeatureModule = (FrameDropFeatureModule) featureModule;
+
+                }
+            }
+        } else {
+            Log.d(TAG, "addFrameDropModule: addFrameDropModule is not null. Already exists.");
+
+        }
+
+        if (status) {
+            if (!frameDropFeatureModule.started) {
+
+                Log.d(TAG, "checkConfigStatse: TRUE + addFrameDropModule feature module started : " + frameDropFeatureModule.started);
+                frameDropFeatureModule.start();
+
+            } else {
+                Log.d(TAG, "addFrameDropModule: addFrameDropModule feature module started : " + frameDropFeatureModule.started);
+            }
+        } else {
+            Log.d(TAG, "addFpsModule: FALSE");
+            frameDropFeatureModule.stop();
+        }
+
+
     }
 
-    public void addScreenCaptureModule() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            this.featureModules.add(new ScreenCaptureFeatureModule(application.getApplicationContext(), sessionManager, db.screenshotDao(), dbExecutor));
+    public void addBatteryStatsModule(boolean status) {
+        if(batteryDataFeatureModule == null) {
+            Log.d(TAG, "addBatteryStatsModule: addBatteryStatsModule module is null");
+
+            for (FeatureModule featureModule : this.featureModules) {
+                if (featureModule instanceof BatteryDataFeatureModule) {
+                    batteryDataFeatureModule = (BatteryDataFeatureModule) featureModule;
+
+                }
+            }
+        } else {
+            Log.d(TAG, "addBatteryStatsModule: addBatteryStatsModule is not null. Already exists.");
+
+        }
+
+        if (status) {
+            if (!batteryDataFeatureModule.started) {
+
+                Log.d(TAG, "checkConfigStatse: TRUE + addBatteryStatsModule feature module started : " + batteryDataFeatureModule.started);
+                batteryDataFeatureModule.start();
+
+            } else {
+                Log.d(TAG, "addFpsModule: addBatteryStatsModule feature module started : " + batteryDataFeatureModule.started);
+            }
+        } else {
+            Log.d(TAG, "addFpsModule: FALSE");
+            batteryDataFeatureModule.stop();
         }
     }
 
-     /*
+    public void addScreenCaptureModule(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Log.d(TAG, "addScreenCaptureModule: Enable if statement True");
+            //  this.featureModules.add(new ScreenCaptureFeatureModule(application.getApplicationContext(), sessionManager, db.screenshotDao(), dbExecutor));
+            //Appachhi.getInstance().getFeatureConfigManager().setScreenShotEnable(activity, true);
+
+            ScreenCaptureFeatureModule screenCaptureFeatureModule = new ScreenCaptureFeatureModule(application.getApplicationContext(),
+                    sessionManager, db.screenshotDao(), dbExecutor);
+            screenCaptureFeatureModule.toggleProjection(activity, true);
+
+
+
+        }
+    }
+
+    public void disableScreenCaptureModule(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Log.d(TAG, "addScreenCaptureModule: Disable if statement True");
+
+            Appachhi.getInstance().getFeatureConfigManager().setScreenShotEnable(activity, false);
+        }
+    }
+
+    /*
      * End of Methods
      *
      * */
+
+
+    private List<FeatureModule> adddefaultFeatureModules(Application application) {
+
+        Log.d(TAG, "adddefaultFeatureModules: called!");
+
+        List<FeatureModule> defaultFeatureModule = new LinkedList<>();
+        defaultFeatureModule.add(new LogsFeatureModule(application.getApplicationContext(), sessionManager, db.logsDao(), dbExecutor));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            defaultFeatureModule.add(new ScreenCaptureFeatureModule(application.getApplicationContext(), sessionManager, db.screenshotDao(), dbExecutor));
+        }
+        defaultFeatureModule.add(new StartupFeatureModule(application.getApplicationContext(), db.startupDao(), dbExecutor, sessionManager));
+        defaultFeatureModule.add(new ScreenTransitionFeatureModule(ScreenTransitionManager.getInstance(), db.screenTransitionDao(), dbExecutor, sessionManager));
+        return defaultFeatureModule;
+
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private List<FeatureModule> addModules(Application application) {
@@ -260,11 +614,12 @@ public class Appachhi {
         featureModules.add(new LogsFeatureModule(application.getApplicationContext(), sessionManager, db.logsDao(), dbExecutor));
         featureModules.add(new StartupFeatureModule(application.getApplicationContext(), db.startupDao(), dbExecutor, sessionManager));
         featureModules.add(new BatteryDataFeatureModule(application.getApplicationContext(), db.batteryDataDao(), dbExecutor, sessionManager));
+
         return featureModules;
     }
 
     private void startAndBindDebugOverlayService() {
-        OverlayService.startAndBind(application, config);
+        OverlayService.startAndBind(application, config, appachhiPref);
         bindToDebugOverlayService();
     }
 
@@ -290,6 +645,7 @@ public class Appachhi {
         }
         EventBus.getInstance().unRegister(receiver);
     }
+
 
     public static class Config implements Parcelable {
         public static final Creator<Config> CREATOR = new Creator<Config>() {
@@ -393,16 +749,7 @@ public class Appachhi {
 
         }
 
-        private void decideScreenshotCapture(Activity activity, int numRunningActivities) {
 
-            if (numRunningActivities == 1) {
-                featureConfigManager.setScreenShotEnable(activity, true);
-
-            } else if(numRunningActivities < 1){
-                featureConfigManager.setScreenShotEnable(activity, false);
-
-            }
-        }
 
         @Override
         public void onActivityResumed(Activity activity) {
@@ -514,7 +861,7 @@ public class Appachhi {
                         if (Appachhi.DEBUG) {
                             Log.d(TAG, "incrementNumRunningActivities: Starting Module");
                         }
-                        overlayService.startModules();
+                        //overlayService.startModules();
                     }
                 }
             }

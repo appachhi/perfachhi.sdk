@@ -55,15 +55,16 @@ public class ConfigurationActivity extends Activity implements View.OnClickListe
         overridePendingTransition(R.anim.left_slide_in, 0);
         setContentView(R.layout.activity_config);
 
-        screenTransitionText = findViewById(R.id.screen_trans_metric_state_text);
+      /*  screenTransitionText = findViewById(R.id.screen_trans_metric_state_text);
         fpsText = findViewById(R.id.fps_metric_state_text);
         memoryUsageText = findViewById(R.id.memoryUsage_metric_state_text);
         cpuUsageText = findViewById(R.id.cpuUsage_metric_state_text);
         networkUsageText = findViewById(R.id.networkUsage_metric_state_text);
         methodCallsText = findViewById(R.id.methodCalls_metric_state_text);
         memoryLeaksText = findViewById(R.id.memoryLeak_metric_state_text);
+        apiCallsText = findViewById(R.id.apiCalls_metric_state_text);*/
+
         ssCaptureText = findViewById(R.id.sessionScreen_metric_state_text);
-        apiCallsText = findViewById(R.id.apiCalls_metric_state_text);
 
 
         View emptyArea = findViewById(R.id.emptyArea);
@@ -80,16 +81,16 @@ public class ConfigurationActivity extends Activity implements View.OnClickListe
     }
 
     private void setConfigurationSwitchListener() {
-
+/*
         screenTransitionText.setOnClickListener(this);
         fpsText.setOnClickListener(this);
         memoryUsageText.setOnClickListener(this);
         cpuUsageText.setOnClickListener(this);
         networkUsageText.setOnClickListener(this);
         methodCallsText.setOnClickListener(this);
-        memoryLeaksText.setOnClickListener(this);
+        memoryLeaksText.setOnClickListener(this);*/
         ssCaptureText.setOnClickListener(this);
-        apiCallsText.setOnClickListener(this);
+        //apiCallsText.setOnClickListener(this);
 
         /*screenTransitionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -139,7 +140,7 @@ public class ConfigurationActivity extends Activity implements View.OnClickListe
     private void initializeConfigurationSwitch() {
 
 
-        if (Appachhi.getInstance().getFeatureConfigManager().isScreenTransitionOverlayEnabled()) {
+     /*   if (Appachhi.getInstance().getFeatureConfigManager().isScreenTransitionOverlayEnabled()) {
             screenTransitionText.setBackground(getResources().getDrawable(R.drawable.button_shape_on));
             screenTransitionText.setText("ON");
         } else {
@@ -190,7 +191,7 @@ public class ConfigurationActivity extends Activity implements View.OnClickListe
             memoryLeaksText.setBackground(getResources().getDrawable(R.drawable.button_shape_off));
             memoryLeaksText.setText("OFF");
         }
-
+*/
 
         if (Appachhi.getInstance().getFeatureConfigManager().isEnableScreenShotEnabled()) {
             ssCaptureText.setBackground(getResources().getDrawable(R.drawable.button_shape_on));
@@ -238,7 +239,7 @@ public class ConfigurationActivity extends Activity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
-        if (v == screenTransitionText) {
+       /* if (v == screenTransitionText) {
             if (TextUtils.equals(screenTransitionText.getText().toString(), "OFF")) {
                 screenTransitionText.setBackground(getResources().getDrawable(R.drawable.button_shape_on));
                 screenTransitionText.setText("ON");
@@ -333,7 +334,7 @@ public class ConfigurationActivity extends Activity implements View.OnClickListe
             }
         }
 
-
+*/
         if (v == ssCaptureText) {
             if (TextUtils.equals(ssCaptureText.getText().toString(), "OFF")) {
                 ssCaptureText.setBackground(getResources().getDrawable(R.drawable.button_shape_on));

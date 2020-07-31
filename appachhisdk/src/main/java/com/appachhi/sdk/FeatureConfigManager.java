@@ -3,7 +3,9 @@ package com.appachhi.sdk;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 
+import com.appachhi.sdk.database.dao.LogsDao;
 import com.appachhi.sdk.instrument.transition.ScreenTransitionFeatureModule;
 import com.appachhi.sdk.monitor.cpu.CpuUsageInfoFeatureModule;
 import com.appachhi.sdk.monitor.fps.FpsFeatureModule;
@@ -17,6 +19,7 @@ public class FeatureConfigManager {
 
     private List<? extends FeatureModule> featureModules;
 
+    private static String FEATURE_TAG = "FeatureConfigManager";
     public FeatureConfigManager(List<? extends FeatureModule> featureModules) {
         this.featureModules = featureModules;
     }
@@ -162,12 +165,23 @@ public class FeatureConfigManager {
 
     public boolean setScreenShotEnable(Activity activity, boolean enabled) {
         for (FeatureModule featureModule : this.featureModules) {
+          //  Log.d(FEATURE_TAG, "Inside setScreenShotEnable : " + activity.getLocalClassName() + " : " + enabled);
             if (featureModule instanceof ScreenCaptureFeatureModule) {
+                Log.d(FEATURE_TAG, "Inside IF ScreenCaptureFeatureModule : " + activity.getLocalClassName() + " : " + enabled);
+
                 ScreenCaptureFeatureModule screenCaptureModule = (ScreenCaptureFeatureModule) featureModule;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Log.d(FEATURE_TAG, "Inside IF Build version greater than lollipop : " + activity.getLocalClassName() + " : " + enabled);
+
                     screenCaptureModule.toggleProjection(activity, enabled);
+                } else {
+                    Log.d(FEATURE_TAG, "Inside ELSE Build version greater than lollipop : " + activity.getLocalClassName() + " : " + enabled);
+
                 }
                 return true;
+            } else {
+                Log.d(FEATURE_TAG, "Inside ELSE ScreenCaptureFeatureModule : " + activity.getLocalClassName() + " : " + enabled);
+
             }
         }
         return false;

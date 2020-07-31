@@ -9,9 +9,12 @@ import android.content.SharedPreferences;
 import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.appachhi.sdk.Appachhi;
 import com.appachhi.sdk.monitor.battery.BatteryDataObject;
@@ -32,6 +35,7 @@ public class AppachhiInitializer extends ContentProvider implements DataListener
 
     public long cold_starttime;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onCreate() {
         if (getContext() != null) {
@@ -77,7 +81,11 @@ public class AppachhiInitializer extends ContentProvider implements DataListener
         } else {
             super.attachInfo(context, info);
         }
+
+        //sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
+
+
 
     @Override
     public void onDataReceive(BatteryDataObject batteryDataObject) {
@@ -111,6 +119,7 @@ public class AppachhiInitializer extends ContentProvider implements DataListener
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
     }
+
 
 
 }

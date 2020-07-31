@@ -8,44 +8,63 @@ public class DeviceDataObject {
     private int screenheight;
     private int screenwidth ;
     private String manufacturer;
-    private  String softwareversion ;
+    private String softwareversion ;
     private String deviceid ;
     private int releaseid;
     private String CPUarchitecture;
     private String modelid;
-    private float lcddensity;
+    private float perfDensitydpi;
     private String Secure_ID;
     private double raminfo_totalsize;
     private double raminfo_remainingsize;
     private String btname;
-    boolean cellularEnabled;
-    boolean wifiEnabled;
-    boolean btEnabled;
-    boolean ethEnabled;
-    boolean wifiAwareEnabled;
+    private boolean ethEnabled;
+    private boolean wifiAwareEnabled;
+    private float perfScreenSize;
+    private String perfWiFiMac;
+    private int processid;
+    private int userid;
+    private float perfRefreshrate;
 
-    public boolean isCellularEnabled() {
-        return cellularEnabled;
+
+    public int getUserid() {
+        return userid;
     }
 
-    public void setCellularEnabled(boolean cellularEnabled) {
-        this.cellularEnabled = cellularEnabled;
+    public void setUserid(int userid) {
+        this.userid = userid;
     }
 
-    public boolean isWifiEnabled() {
-        return wifiEnabled;
+    public int getProcessid() {
+        return processid;
     }
 
-    public void setWifiEnabled(boolean wifiEnabled) {
-        this.wifiEnabled = wifiEnabled;
+    public void setProcessid(int processid) {
+        this.processid = processid;
     }
 
-    public boolean isBtEnabled() {
-        return btEnabled;
+    public float getPerfRefreshrate() {
+        return perfRefreshrate;
     }
 
-    public void setBtEnabled(boolean btEnabled) {
-        this.btEnabled = btEnabled;
+    public void setPerfRefreshrate(float perfRefreshrate) {
+        this.perfRefreshrate = perfRefreshrate;
+    }
+
+    public String getPerfWiFiMac() {
+        return perfWiFiMac;
+    }
+
+    public void setPerfWiFiMac(String perfWiFiMac) {
+        this.perfWiFiMac = perfWiFiMac;
+    }
+
+    public float getPerfScreenSize() {
+        return perfScreenSize;
+    }
+
+    public void setPerfScreenSize(float perfScreenSize) {
+        this.perfScreenSize = perfScreenSize;
     }
 
     public boolean isEthEnabled() {
@@ -106,11 +125,11 @@ public class DeviceDataObject {
     }
 
     public float getlcddensity() {
-        return lcddensity;
+        return perfDensitydpi;
     }
 
-    public void setlcddensity(float lcddensity) {
-        this.lcddensity = lcddensity;
+    public void setlcddensity(float perfDensitydpi) {
+        this.perfDensitydpi = perfDensitydpi;
     }
 
     public int getScreenheight() {

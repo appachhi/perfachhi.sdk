@@ -3,6 +3,7 @@ package com.appachhi.sdk.monitor.screen;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.appachhi.sdk.FeatureModule;
 import com.appachhi.sdk.database.dao.ScreenshotDao;
@@ -24,11 +25,15 @@ public class ScreenCaptureFeatureModule extends FeatureModule<String> {
     }
 
     public void toggleProjection(Activity activity, boolean enabled) {
+        Log.d("ScreenCaptureFM", "toggleProjection: triggered + " + enabled);
         ScreenCaptureDataModule publisher = (ScreenCaptureDataModule) getPublisher();
         screenShotEnabled = enabled;
         if (screenShotEnabled) {
+            Log.d("ScreenCaptureFM", "toggleProjection: if screenshotEnable is " + enabled);
             publisher.createMediaProjection(activity);
         } else {
+            Log.d("ScreenCaptureFM", "toggleProjection: else screenshotEnable is " + enabled);
+
             publisher.stopProjection();
         }
     }

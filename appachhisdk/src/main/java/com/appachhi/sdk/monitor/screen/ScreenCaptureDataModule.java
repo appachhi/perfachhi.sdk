@@ -126,8 +126,11 @@ public class ScreenCaptureDataModule extends BaseDataModule<String> {
     }
 
     void createMediaProjection(Activity activity) {
+        Log.d(TAG, "createMediaProjection: Entered");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             if (vDisplay == null) {
+                Log.d(TAG, "createMediaProjection: Intent state");
+
                 Intent intent = projectionManager.createScreenCaptureIntent();
                 activity.startActivityForResult(intent, 34);
             }
@@ -151,7 +154,9 @@ public class ScreenCaptureDataModule extends BaseDataModule<String> {
             imageReader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
+
                     ScreenCaptureDataModule.this.onImageAvailable(imageReader);
+
                 }
             }, handler);
 

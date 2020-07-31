@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -40,8 +41,10 @@ public class OverlayService extends Service {
     // Temporart Work Around for Sync
     SyncManager syncManager;
 
+    public SharedPreferences appachhiPerf;
 
-    public static void startAndBind(Context context, Appachhi.Config config) {
+
+    public static void startAndBind(Context context, Appachhi.Config config, SharedPreferences appachhiPref) {
         Intent intent = createIntent(context);
         intent.putExtra(CONFIG_KEY, config);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -81,6 +84,9 @@ public class OverlayService extends Service {
         if (Appachhi.DEBUG) {
             Log.d(TAG, "onCreate");
         }
+        appachhiPerf = getApplicationContext().getSharedPreferences("appachhi_pref", Context.MODE_PRIVATE);
+
+
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         createNotificationChannel();
 
@@ -97,7 +103,77 @@ public class OverlayService extends Service {
         // Create sync manager and start sync
 
         syncManager = SyncManager.create(this.getApplication());
+        // call trigger metrics here - Should pull values from the shared pref and start/stop each metric based on values.
+
+        //  getMetricDetails();
         syncManager.startSync();
+    }
+
+    private void getMetricDetails() {
+        Log.d(TAG, "getMetricDetails: Get Metric details called. Initial run");
+        String fps = appachhiPerf.getString("fps_status", "false");
+        String gcs = appachhiPerf.getString("gcs_status", "false");
+        String memory_leak = appachhiPerf.getString("memory_leak_status", "false");
+        String network_usage = appachhiPerf.getString("network  _usage_status", "false");
+        String memory_usage = appachhiPerf.getString("memory_usage_status", "false");
+
+        String battery_stats = appachhiPerf.getString("battery_stats_status", "false");
+
+        triggerMetrics(fps, gcs, memory_leak, network_usage, memory_usage, battery_stats);
+    }
+
+    private void triggerMetrics(String fps, String gcs, String memory_leak, String network_usage,
+                                String memory_usage, String battery_stats) {
+
+        //Update the values to the shared pref
+
+
+        Log.d(TAG, "Overlay Service triggerMetrics: Called : FPS = " + fps + " + GC : " + gcs + " : Memory Leak :  "
+                + memory_leak + " : Network Usage : " + network_usage + " : Memory Usage : " + memory_usage +
+                " : Battery Stats : " + battery_stats);
+        //Appachhi.getInstance().checkConfigStats();
+        //    Appachhi appachhi = new Appachhi();
+
+
+        if (fps.equals("true")) {
+            Appachhi.getInstance().addFpsModule(true);
+            Appachhi.getInstance().addFrameDropModule(true);
+        } else {
+            Appachhi.getInstance().addFpsModule(false);
+            Appachhi.getInstance().addFrameDropModule(false);
+
+        }
+
+        if (gcs.equals("true")) {
+            Appachhi.getInstance().addGCModule(true);
+        } else {
+            Appachhi.getInstance().addGCModule(false);
+        }
+
+        if (memory_leak.equals("true")) {
+            Appachhi.getInstance().addMemoryLeakModule(true);
+        } else {
+            Appachhi.getInstance().addMemoryLeakModule(false);
+        }
+
+        if (network_usage.equals("true")) {
+            Appachhi.getInstance().addNetworkUsageModule(true);
+        } else {
+            Appachhi.getInstance().addNetworkUsageModule(false);
+        }
+
+        if (memory_usage.equals("true")) {
+            Appachhi.getInstance().addMemoryInfoModule(true);
+        } else {
+            Appachhi.getInstance().addMemoryInfoModule(false);
+        }
+
+        if (battery_stats.equals("true")) {
+            Appachhi.getInstance().addBatteryStatsModule(true);
+
+        } else {
+            Appachhi.getInstance().addBatteryStatsModule(false);
+        }
     }
 
     @Override
@@ -143,7 +219,7 @@ public class OverlayService extends Service {
             if (Appachhi.DEBUG) {
                 Log.d(TAG, "showDebugSystemOverlay");
             }
-            overlayViewManager.showDebugSystemOverlay();
+            //  overlayViewManager.showDebugSystemOverlay();
             if (config.showNotification()) {
                 if (Appachhi.DEBUG) {
                     Log.d(TAG, "showNotification");
@@ -161,11 +237,13 @@ public class OverlayService extends Service {
     }
 
     public void startModules() {
+        //Trigger Startup Time and Logs by default
         if (Appachhi.DEBUG) {
             Log.d(TAG, "startModules");
         }
         if (!modulesStarted) {
             for (FeatureModule overlayModule : featureModules) {
+                Log.d(TAG, "startModules: Overlay Service : " + overlayModule.toString());
                 overlayModule.start();
             }
             modulesStarted = true;

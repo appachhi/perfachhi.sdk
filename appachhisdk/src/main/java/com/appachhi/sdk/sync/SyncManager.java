@@ -47,6 +47,7 @@ import com.appachhi.sdk.database.entity.ScreenshotEntity;
 import com.appachhi.sdk.database.entity.Session;
 import com.appachhi.sdk.database.entity.StartupEntity;
 import com.appachhi.sdk.database.entity.TransitionStatEntity;
+import com.appachhi.sdk.instrument.sdkfeatures.PerfachhiConfig;
 import com.appachhi.sdk.monitor.battery.BatteryBasicDetails;
 import com.appachhi.sdk.monitor.battery.BatteryDataObject;
 import com.appachhi.sdk.monitor.battery.DataListener;
@@ -60,6 +61,7 @@ import com.google.gson.JsonElement;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,12 +83,13 @@ import okhttp3.Response;
 public class SyncManager {
     public static final String TAG = "SyncManager";
     private static final String BASE_URL = "https://perfachhi.appspot.com";
-   // private static final String BASE_URL = "https:/34a547c86bb9.ngrok.io";
+    //private static final String BASE_URL = "https://1846690d06fe.ngrok.io";
 
     private static final String DEVICE_ID_KEY = "device_id";
     private static final String SECURE_ID_KEY = "secure_id";
 
     private static final String DEVICE_ID_UPLOADED = "device_id_uploaded";
+    private static final String CONFIG_FETCHED = "device_id_uploaded";
     private static String KEY = null;
     private AppachhiDB appachhiDB;
     private OkHttpClient okHttpClient;
@@ -94,12 +97,17 @@ public class SyncManager {
     private ScheduledExecutorService syncExecutor;
     private ExecutorService metricSyncExecutor;
     private SharedPreferences appachhiPref;
+    SharedPreferences.Editor appachhiPrefEditor;
+
+    public static PerfachhiConfig perfachhiConfig;
+
     private final Runnable scheduleSyncRunnable = new Runnable() {
         @Override
         public void run() {
             uploadAllMetric();
         }
     };
+
 
     public static DeviceDetailUtils deviceDetailUtils;
     public static DeviceDataObject deviceDataObject;
@@ -117,6 +125,7 @@ public class SyncManager {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public static SyncManager create(Application application) {
         loadApiKey(application);
 
@@ -124,6 +133,7 @@ public class SyncManager {
         deviceDataObject = deviceDetailUtils.fetchDeviceData(application.getBaseContext());
 
 
+        perfachhiConfig = new PerfachhiConfig(application.getApplicationContext());
 
         return new SyncManager(application.getSharedPreferences("appachhi_pref", Context.MODE_PRIVATE));
     }
@@ -143,6 +153,7 @@ public class SyncManager {
 
 
     }
+    //Trigger metrics
 
     public void startSync() {
         if (KEY == null) {
@@ -163,67 +174,80 @@ public class SyncManager {
 
     private void uploadAllMetric() {
         Log.d(TAG, "Upload All Metric");
+
+        checkConfigStats();
+
         uploadDeviceDetails();
         if (!isDeviceDetailUploaded()) {
             Log.d(TAG, "Device Detail not uploaded yet");
             // Don't Proceed if the device is not synced already
             return;
         }
+
+
+
+       /* try {
+            checkConfigStats();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
         //If device is uploaded, then you start uploading all the sessions.
         /*if (isDeviceDetailUploaded()) {*/
-            // Proceed to uploading session only when the device detail is uploaded
-            Log.d(TAG, "uploadAllMetric: isDeviceDetailUpload : " + isDeviceDetailUploaded());
-            uploadSessions(appachhiDB.sessionDao());
+        // Proceed to uploading session only when the device detail is uploaded
+        Log.d(TAG, "uploadAllMetric: isDeviceDetailUpload : " + isDeviceDetailUploaded());
+        uploadSessions(appachhiDB.sessionDao());
 
-            // Fetch all the synced session ids
-            List<String> allSyncedSessionIds = appachhiDB.sessionDao().allSyncedSessionIds();
+        // Fetch all the synced session ids
+        List<String> allSyncedSessionIds = appachhiDB.sessionDao().allSyncedSessionIds();
 
-            // Upload Screen Transition for all the synced session only
-            uploadScreenTransitionForSession(allSyncedSessionIds, appachhiDB.screenTransitionDao());
+        // Upload Screen Transition for all the synced session only
+        uploadScreenTransitionForSession(allSyncedSessionIds, appachhiDB.screenTransitionDao());
 
-            // Upload CpuUsage for all the synced session only
-            uploadCpuUsage(allSyncedSessionIds, appachhiDB.cpuUsageDao());
+        // Upload CpuUsage for all the synced session only
+        uploadCpuUsage(allSyncedSessionIds, appachhiDB.cpuUsageDao());
 
-            // Upload FPS for all the synced session only
-            uploadFps(allSyncedSessionIds, appachhiDB.fpsDao());
+        // Upload FPS for all the synced session only
+        uploadFps(allSyncedSessionIds, appachhiDB.fpsDao());
 
-            // Upload GC for all the synced session only
-            uploadGc(allSyncedSessionIds, appachhiDB.gcDao());
+        // Upload GC for all the synced session only
+        uploadGc(allSyncedSessionIds, appachhiDB.gcDao());
 
-            // Upload Memory for all the synced session only
-            uploadMemory(allSyncedSessionIds, appachhiDB.memoryDao());
+        // Upload Memory for all the synced session only
+        uploadMemory(allSyncedSessionIds, appachhiDB.memoryDao());
 
-            // Upload Memory Leak for all the synced session only
-            uploadMemoryLeak(allSyncedSessionIds, appachhiDB.memoryLeakDao());
+        // Upload Memory Leak for all the synced session only
+        uploadMemoryLeak(allSyncedSessionIds, appachhiDB.memoryLeakDao());
 
-            // Upload Method Trace for all the synced session only
-            uploadMethodTrace(allSyncedSessionIds, appachhiDB.methodTraceDao());
+        // Upload Method Trace for all the synced session only
+        uploadMethodTrace(allSyncedSessionIds, appachhiDB.methodTraceDao());
 
-            // Upload Network Usage for all the synced session only
-            uploadNetworkUsage(allSyncedSessionIds, appachhiDB.networkDao());
-
-
-            // Upload Frame Drop for all the synced session only
-            uploadFrameDrop(allSyncedSessionIds, appachhiDB.frameDropDao());
+        // Upload Network Usage for all the synced session only
+        uploadNetworkUsage(allSyncedSessionIds, appachhiDB.networkDao());
 
 
-            // Upload Api Call for all the synced session only
-            uploadNetworkCall(allSyncedSessionIds, appachhiDB.apiCallDao());
+        // Upload Frame Drop for all the synced session only
+        uploadFrameDrop(allSyncedSessionIds, appachhiDB.frameDropDao());
 
-            // Upload Screenshot for all synced session only
 
-            uploadScreenShot(allSyncedSessionIds, appachhiDB.screenshotDao());
+        // Upload Api Call for all the synced session only
+        uploadNetworkCall(allSyncedSessionIds, appachhiDB.apiCallDao());
 
-            uploadLogs(allSyncedSessionIds, appachhiDB.logsDao());
+        // Upload Screenshot for all synced session only
 
-            uploadStartupTime(allSyncedSessionIds, appachhiDB.startupDao());
+        uploadScreenShot(allSyncedSessionIds, appachhiDB.screenshotDao());
 
-            uploadBatteryStats(allSyncedSessionIds, appachhiDB.batteryDataDao());
-            // Check flag f
+        uploadLogs(allSyncedSessionIds, appachhiDB.logsDao());
+
+        uploadStartupTime(allSyncedSessionIds, appachhiDB.startupDao());
+
+        uploadBatteryStats(allSyncedSessionIds, appachhiDB.batteryDataDao());
+        // Check flag f
 
         //}
 
     }
+
 
     private void uploadScreenShot(List<String> allSyncedSessionIds, final ScreenshotDao screenshotDao) {
         List<ScreenshotEntity> screenshotEntities = screenshotDao.unSyncedScreenshotEntityForSession(allSyncedSessionIds, 20);
@@ -244,7 +268,6 @@ public class SyncManager {
     private void deleteImage(String itemPath) {
         File file = new File(itemPath);
         boolean deleted = file.delete();
-
         Log.d(TAG, "deleteImage: Status : " + deleted);
     }
 
@@ -502,9 +525,129 @@ public class SyncManager {
         });
     }
 
+
+    private void checkConfigStats() {
+
+        Log.d(TAG, "checkConfigStats: Entereds");
+
+        Request request =  new Request.Builder()
+                .url(String.format("%s/%s/%s/%s", BASE_URL, "config", "projectbyApiKey", KEY))
+                .get()
+                .addHeader("Authorization", String.format("Bearer %s", KEY))
+                .build();
+
+        //{"startup":true,"gc":true,"network":true,"method":true,"API":true,"FPS":true,"memoryUsage":true,"memoryLeak":true,"screenTransition":true}
+        try {
+            Response response = getClient().newCall(request).execute();
+            if (response.isSuccessful()) {
+                Log.d(TAG, "Success");
+                JSONObject responseObject = new JSONObject(response.body().string());
+
+                //  Log.d(TAG, "checkConfigStats: Response String : " + response.body().string());
+                JSONObject configJSONObject = new JSONObject(responseObject.get("config").toString());
+
+                String fps = configJSONObject.get("FPS").toString();
+                String gcs = configJSONObject.get("gc").toString();
+                String memory_leak = configJSONObject.get("memoryLeak").toString();
+// FPS, GC, Memory Leak, Network, Memory Usage, Battery
+                String network_usage = configJSONObject.get("network").toString(); //Add these key values in the JSON response from the backend.
+                String memory_usage = configJSONObject.get("memoryUsage").toString(); //Add these key values in the JSON response from the backend.
+                String battery_stats = configJSONObject.get("battery").toString(); //Add these key values in the JSON response from the backend.
+// Change to "battery"
+                Log.d(TAG, "Values: Called + " + fps + " + " + gcs + " : " + memory_leak + " : " + network_usage + " : " + memory_usage + " : " + battery_stats);
+
+                //Log.d(TAG, "checkConfigStats: " + gcsStatus);
+
+                //configUploaded();
+
+                // saveMetricDetails(fps, gcs, memory_leak, network_usage, memory_usage, battery_stats);
+                triggerMetrics(fps, gcs, memory_leak, network_usage, memory_usage, battery_stats);
+
+            }
+            else {
+                Log.d(TAG, "checkConfigStats: ERROR : " + response.message());
+            }
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void triggerMetrics(String fps, String gcs, String memory_leak, String network_usage, String memory_usage, String battery_stats) {
+
+        //Update the values to the shared pref
+
+
+        Log.d(TAG, "SyncManager triggerMetrics: Called : FPS = " + fps + " + GC : " + gcs + " : Memory Leak :  "
+                + memory_leak + " : Network Usage : " + network_usage + " : Memory Usage : " + memory_usage +
+                " : Battery Stats : " + battery_stats);
+        //Appachhi.getInstance().checkConfigStats();
+        //    Appachhi appachhi = new Appachhi();
+
+
+        if (fps.equals("true")) {
+            Appachhi.getInstance().addFpsModule(true);
+            Appachhi.getInstance().addFrameDropModule(true);
+        } else {
+            Appachhi.getInstance().addFpsModule(false);
+            Appachhi.getInstance().addFrameDropModule(false);
+
+        }
+
+        if (gcs.equals("true")) {
+            Appachhi.getInstance().addGCModule(true);
+        } else {
+            Appachhi.getInstance().addGCModule(false);
+        }
+
+        if (memory_leak.equals("true")) {
+            Appachhi.getInstance().addMemoryLeakModule(true);
+        } else {
+            Appachhi.getInstance().addMemoryLeakModule(false);
+        }
+
+        if (network_usage.equals("true")) {
+            Appachhi.getInstance().addNetworkUsageModule(true);
+        } else {
+            Appachhi.getInstance().addNetworkUsageModule(false);
+        }
+
+        if (memory_usage.equals("true")) {
+            Appachhi.getInstance().addMemoryInfoModule(true);
+        } else {
+            Appachhi.getInstance().addMemoryInfoModule(false);
+        }
+
+        if (battery_stats.equals("true")) {
+            Appachhi.getInstance().addBatteryStatsModule(true);
+
+        } else {
+            Appachhi.getInstance().addBatteryStatsModule(false);
+        }
+    }
+
+    private void saveMetricDetails(String fps, String gcs, String memory_leak, String network_usage,
+                                   String memory_usage, String battery_stats) {
+
+
+        appachhiPrefEditor = appachhiPref.edit();
+
+        appachhiPrefEditor.putString("fps_status", fps);
+        appachhiPrefEditor.putString("gcs_status", gcs);
+        appachhiPrefEditor.putString("memory_leak_status", memory_leak);
+        appachhiPrefEditor.putString("network_usage_status", network_usage);
+        appachhiPrefEditor.putString("memory_usage_status", memory_usage);
+        appachhiPrefEditor.putString("battery_stats_status", memory_usage);
+
+        appachhiPrefEditor.apply();
+
+
+        //Appachhi.getInstance().checkConfigStats();
+    }
+
     private Request getRequest(String path, String contentArray) {
         RequestBody requestBody = RequestBody.create(MediaType.get("application/json"), contentArray);
 
+        // Create a new endpoint to get the project details - change path variable.
         return new Request.Builder()
                 .url(String.format("%s/%s", BASE_URL, path))
                 .post(requestBody)
@@ -580,6 +723,16 @@ public class SyncManager {
         return okHttpClient;
     }
 
+    public boolean isConfigFetched() {
+        return appachhiPref.getBoolean(CONFIG_FETCHED, false);
+    }
+
+    public void configUploaded() {
+        appachhiPref.edit().putBoolean(CONFIG_FETCHED, true).apply();
+        Log.d(TAG, "configUploaded: flag set to true");
+
+    }
+
     private boolean isDeviceDetailUploaded() {
         return appachhiPref.getBoolean(DEVICE_ID_UPLOADED, false);
     }
@@ -607,7 +760,7 @@ public class SyncManager {
             storedDeviceId = UUID.randomUUID().toString();
             appachhiPref.edit().putString(DEVICE_ID_KEY, storedDeviceId).apply();
         }
-       // Log.d(TAG, "getDeviceId: key : " + storedDeviceId);
+        // Log.d(TAG, "getDeviceId: key : " + storedDeviceId);
         return storedDeviceId;
     }
 
@@ -634,6 +787,9 @@ public class SyncManager {
         if (isDeviceDetailUploaded()) {
             return;
         }
+
+
+
         try {
 
 
@@ -673,7 +829,7 @@ public class SyncManager {
                 JSONObject jsonObject2 = new JSONObject(response.body().string());
                 String deviceIDfromResponse = jsonObject2.get("id").toString();
 
-               // Log.d(TAG, "setDeviceID: ID : " + deviceIDfromResponse);
+                // Log.d(TAG, "setDeviceID: ID : " + deviceIDfromResponse);
 
                 //Log.d(TAG, "uploadDeviceDetails: Device ID from response : " + deviceIDfromResponse);
 

@@ -52,6 +52,7 @@
 
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:id="@+id/screen_trans_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -59,6 +60,7 @@
                     android:orientation="horizontal">
 
                     <View
+
                         android:layout_width="15dp"
                         android:layout_height="match_parent"
                         android:background="@color/color_screen_transition_tag"></View>
@@ -96,6 +98,8 @@
                 </LinearLayout>
 
                 <TextView
+                    android:visibility="gone"
+
                     android:id="@+id/screen_trans_desc_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -106,6 +110,8 @@
                     android:textSize="13sp" />
 
                 <LinearLayout
+                    android:visibility="gone"
+
                     android:id="@+id/memoryUsage_metric_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -152,6 +158,8 @@
 
 
                 <LinearLayout
+                    android:visibility="gone"
+
                     android:id="@+id/cpuUsage_metric_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -198,6 +206,8 @@
 
 
                 <LinearLayout
+                    android:visibility="gone"
+
                     android:id="@+id/networkUsage_metric_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -243,6 +253,8 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
+
                     android:id="@+id/fps_metric_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -289,6 +301,8 @@
 
 
                 <LinearLayout
+                    android:visibility="gone"
+
                     android:id="@+id/methodCalls_metric_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -346,6 +360,8 @@
 
 
                 <LinearLayout
+                    android:visibility="gone"
+
                     android:id="@+id/memoryLeak_metric_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -437,6 +453,8 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
+
                     android:id="@+id/apiCalls_metric_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -82,6 +82,7 @@ public class MemoryLeakDataModule extends BaseDataModule<List<MemoryLeakInfo>> i
             List<MemoryLeakInfo> memoryLeakInfos = new ArrayList<>();
             Log.d(TAG,leaks.toString());
             for (Leak leak : leaks) {
+
                 MemoryLeakInfo memoryLeakInfo = new MemoryLeakInfo(leak.getClassName(), leak.getLeakTrace());
                 memoryLeakInfos.add(memoryLeakInfo);
                 showNotification(application.getApplicationContext(), String.format("Class leaked : %s", leak.getClassName()));
@@ -92,6 +93,8 @@ public class MemoryLeakDataModule extends BaseDataModule<List<MemoryLeakInfo>> i
             }
         }
     }
+
+
 
     private static void showNotification(Context context, CharSequence message) {
 
